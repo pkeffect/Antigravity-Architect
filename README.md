@@ -1,6 +1,6 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue) ![Platform](https://img.shields.io/badge/Platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange) ![Agent-First](https://img.shields.io/badge/Architecture-Agent--First-purple) ![Context-Aware](https://img.shields.io/badge/AI-Context%20Assimilator-green)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue) ![Platform](https://img.shields.io/badge/Platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange) ![CI](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg) ![Agent-First](https://img.shields.io/badge/Architecture-Agent--First-purple)
 
 **Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It is designed for **Google Antigravity**, **Project IDX**, **Gemini Code Assist**, and **VS Code**.
 
@@ -25,9 +25,43 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Memory:** Initializes a `scratchpad.md` for long-term session memory.
 
 ### 🛡️ Production Engineering
-*   **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories so folder structures persist in Git.
-*   **Cloud-Ready:** Generates `.idx/dev.nix` (for Google IDX) and `.devcontainer/devcontainer.json` (for GitHub Codespaces/VS Code).
+*   **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories.
+*   **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
+*   **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
 *   **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
+
+---
+
+## 🛠️ Development
+
+This project includes a professional development environment with a robust test suite.
+
+### Requirements
+*   Python 3.10+
+*   `pip install -e .[dev]`
+
+### Running Tests
+We use **pytest** for testing (50+ passing tests).
+
+```bash
+# Run all tests
+pytest tests/
+
+# Run with coverage report
+pytest tests/ --cov=antigravity_master_setup
+```
+
+### Code Quality
+We enforce strict quality standards using **Ruff** and **MyPy**.
+
+```bash
+# Linting & Formatting
+ruff check antigravity_master_setup.py
+ruff format antigravity_master_setup.py
+
+# Type Checking
+mypy antigravity_master_setup.py --ignore-missing-imports
+```
 
 ---
 
