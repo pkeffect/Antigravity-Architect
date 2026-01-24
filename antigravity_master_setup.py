@@ -215,6 +215,119 @@ Please report security vulnerabilities by opening a private issue or contacting 
 We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 """
 
+    # GitHub Templates - Issue Templates, PR Template, FUNDING
+    GITHUB_BUG_REPORT = """---
+name: 🐛 Bug Report
+about: Report a bug or unexpected behavior
+title: "[BUG] "
+labels: bug
+assignees: ''
+---
+
+## 🐛 Bug Description
+<!-- A clear description of what the bug is. -->
+
+## 📋 Steps to Reproduce
+1. Run `...`
+2. Enter '...'
+3. See error
+
+## ✅ Expected Behavior
+<!-- What you expected to happen. -->
+
+## ❌ Actual Behavior
+<!-- What actually happened. -->
+
+## 🖥️ Environment
+- **OS:** <!-- e.g., Windows 11, macOS, Ubuntu 22.04 -->
+- **Python Version:** <!-- e.g., 3.12 -->
+
+## 📜 Error Output
+```
+[Paste error here]
+```
+"""
+
+    GITHUB_FEATURE_REQUEST = """---
+name: ✨ Feature Request
+about: Suggest a new feature or enhancement
+title: "[FEATURE] "
+labels: enhancement
+assignees: ''
+---
+
+## ✨ Feature Description
+<!-- A clear description of the feature you'd like. -->
+
+## 🎯 Problem Statement
+<!-- What problem does this feature solve? -->
+
+## 💡 Proposed Solution
+<!-- Describe how you envision this feature working. -->
+
+## 🔄 Alternatives Considered
+<!-- Any alternative solutions or workarounds? -->
+
+## 📋 Checklist
+- [ ] I have searched existing issues to ensure this is not a duplicate
+"""
+
+    GITHUB_QUESTION = """---
+name: ❓ Question
+about: Ask a question about usage
+title: "[QUESTION] "
+labels: question
+assignees: ''
+---
+
+## ❓ Question
+<!-- What would you like to know? -->
+
+## 📋 Context
+<!-- What are you trying to accomplish? -->
+
+## 🔍 What I've Tried
+<!-- Have you checked the docs? Tried anything? -->
+"""
+
+    GITHUB_PR_TEMPLATE = """## 📋 Description
+<!-- Brief summary of the changes in this PR. -->
+
+## 🔗 Related Issue
+<!-- Link to related issue: Closes #123 -->
+
+## 🏷️ Type of Change
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 💥 Breaking change
+- [ ] 📚 Documentation update
+
+## ✅ Checklist
+- [ ] My code follows the project's coding style
+- [ ] I have added/updated tests for my changes
+- [ ] All tests pass
+- [ ] I have updated documentation (if applicable)
+- [ ] My commits follow Conventional Commits
+
+## 🧪 How Has This Been Tested?
+<!-- Describe how you verified your changes. -->
+"""
+
+    GITHUB_FUNDING = """# Funding links
+# github: [username]
+# ko_fi:
+# patreon:
+# open_collective:
+# custom: ["https://example.com"]
+"""
+
+    GITHUB_ISSUE_CONFIG = """blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/{owner}/{repo}#readme
+    about: Check the README for usage instructions
+"""
+
     LICENSE_TEMPLATES: dict[str, str] = {
         "mit": """MIT License
 
@@ -893,6 +1006,42 @@ class AntigravityGenerator:
         write_file(
             os.path.join(base_dir, AntigravityResources.CODE_OF_CONDUCT_FILE),
             AntigravityResources.CODE_OF_CONDUCT_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+
+        # Generate GitHub Templates (Professional Repository Standards)
+        github_dir = os.path.join(base_dir, ".github")
+        issue_template_dir = os.path.join(github_dir, "ISSUE_TEMPLATE")
+        create_folder(issue_template_dir)
+
+        write_file(
+            os.path.join(issue_template_dir, "bug_report.md"),
+            AntigravityResources.GITHUB_BUG_REPORT,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(issue_template_dir, "feature_request.md"),
+            AntigravityResources.GITHUB_FEATURE_REQUEST,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(issue_template_dir, "question.md"),
+            AntigravityResources.GITHUB_QUESTION,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(issue_template_dir, "config.yml"),
+            AntigravityResources.GITHUB_ISSUE_CONFIG,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(github_dir, "PULL_REQUEST_TEMPLATE.md"),
+            AntigravityResources.GITHUB_PR_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(github_dir, "FUNDING.yml"),
+            AntigravityResources.GITHUB_FUNDING,
             exist_ok=safe_mode,
         )
 

@@ -50,6 +50,7 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.
 *   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
 *   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` to professionalize your repository from Day 1.
+*   **GitHub Templates:** Generates `.github/` with issue templates (bug report, feature request, question), PR template, and FUNDING.yml for full GitHub compliance.
 *   **License Management:** Select from standard licenses (MIT, Apache, GPL) via CLI flag or interactive prompt.
 
 ### 🏗️ Modern Architecture (v1.4.0)

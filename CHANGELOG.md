@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [1.4.0] - 2026-01-24
 
+### Added
+- **GitHub Templates**: Auto-generates `.github/` with professional templates
+  - Issue templates: bug report, feature request, question
+  - Pull request template with checklist
+  - FUNDING.yml for sponsorship links
+  - Issue config.yml for template configuration
+- **Versioning Automation**: Added bump2version configuration to pyproject.toml
+  - Auto-updates VERSION in script, pyproject.toml, and README badge
+  - Creates git commit and tag automatically
+
 ### Changed
 - **Major Refactoring**: Transformed script into hybrid class-based architecture
   - Created `AntigravityResources` class for all templates, constants, and mappings
@@ -15,12 +25,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Created `AntigravityGenerator` class for project generation orchestration
 - **Architecture**: Reorganized ~800+ lines into 5 focused, maintainable classes
 - **Compatibility**: Maintained 100% backward compatibility via module-level function aliases
+- **CONTRIBUTING.md**: Expanded with full guidelines, architecture docs, and versioning info
 
 ### Technical
 - All 59 tests passing (100% regression-free)
 - Zero external dependencies added
 - Single-file portability preserved
-- Improved code organization and maintainability
+- Script size: 1,393 lines, 48.3KB
 
 ## [1.3.0] - 2026-01-24
 
