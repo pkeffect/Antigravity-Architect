@@ -301,5 +301,24 @@ The script generates `.devcontainer/devcontainer.json`.
 
 ---
 
+## 🤝 Contributing
+
+We use a **dev branch workflow**:
+
+- **All PRs should target the `dev` branch**
+- `main` branch is for stable releases only
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
+- See [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md) for branch setup
+
+Quick start:
+```bash
+git checkout dev
+git checkout -b feat/your-feature
+# Make changes, commit, push
+# Open PR to dev branch (CI will run automatically)
+```
+
+---
+
 ## 📜 License
 This script is open-source. Feel free to modify the `00_identity.md` rule to change your Agent's personality!
