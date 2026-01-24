@@ -568,12 +568,12 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
         print(f"\n⚠️  Project '{project_name}' already exists.")
         choice = input("Select mode: [U]pdate (Safe) / [O]verwrite (Risky) / [C]ancel: ").lower()
 
-        if choice == 'u':
+        if choice == "u":
             print("🛡️  Safe Update Mode Active: Only missing files will be created.")
             safe_mode = True
-        elif choice == 'o':
+        elif choice == "o":
             confirm = input("💥 WARNING: This will overwrite files. Type 'yes' to confirm: ")
-            if confirm.lower() != 'yes':
+            if confirm.lower() != "yes":
                 return False
         else:
             return False
@@ -613,10 +613,14 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
     print(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
 
     # Generate configuration files - Safe Mode applies here
-    write_file(os.path.join(base_dir, ".gitignore"), build_gitignore(final_stack), exist_ok=True) # Always safe for gitignore? Or use safe_mode? Using exist_ok=True prevents overwriting user's gitignore
+    write_file(
+        os.path.join(base_dir, ".gitignore"), build_gitignore(final_stack), exist_ok=True
+    )  # Always safe for gitignore? Or use safe_mode? Using exist_ok=True prevents overwriting user's gitignore
     write_file(os.path.join(base_dir, ".idx", "dev.nix"), build_nix_config(final_stack), exist_ok=safe_mode)
     write_file(os.path.join(base_dir, ".devcontainer", "devcontainer.json"), DEVCONTAINER_JSON, exist_ok=safe_mode)
-    write_file(os.path.join(base_dir, "README.md"), f"# {project_name}\n\nStack: {', '.join(final_stack)}", exist_ok=True) # Never overwrite README
+    write_file(
+        os.path.join(base_dir, "README.md"), f"# {project_name}\n\nStack: {', '.join(final_stack)}", exist_ok=True
+    )  # Never overwrite README
     write_file(os.path.join(base_dir, ".env.example"), "API_KEY=\nDB_URL=", exist_ok=safe_mode)
 
     # Generate agent files
@@ -626,7 +630,7 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
     write_file(
         os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"),
         build_scratchpad(final_stack, bool(brain_dump_path)),
-        exist_ok=True # Never reset scratchpad
+        exist_ok=True,  # Never reset scratchpad
     )
 
     write_file(
@@ -636,7 +640,7 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
 2. **Knowledge:** Check `docs/imported/` for assimilated rules.
 3. **Action:** Run `/bootstrap` to generate the application skeleton.
 """,
-        exist_ok=safe_mode
+        exist_ok=safe_mode,
     )
 
     print(f"\n✨ Success! Project '{project_name}' is fully configured.")
