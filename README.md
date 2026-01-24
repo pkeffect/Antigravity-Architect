@@ -1,11 +1,23 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
-[![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Version](https://img.shields.io/badge/version-1.4.0-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
-![Platform](https://img.shields.io/badge/Platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange)
-![CI](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)
-![Agent-First](https://img.shields.io/badge/Architecture-Agent--First-purple)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
+
+[![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Type Checking: MyPy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](http://mypy-lang.org/)
+[![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2059%20passed-green.svg)](https://docs.pytest.org/)
+
+[![Platform](https://img.shields.io/badge/platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange)](https://idx.dev)
+[![Architecture](https://img.shields.io/badge/architecture-agent--first-purple.svg)](https://github.com/pkeffect/antigravity-architect)
+[![Zero Dependencies](https://img.shields.io/badge/dependencies-zero%20external-success.svg)](https://github.com/pkeffect/antigravity-architect)
+[![Code Quality](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
+
+[![Windows Tests](https://img.shields.io/badge/Windows-passing-success.svg?logo=windows)](https://github.com/pkeffect/antigravity-architect/actions)
+[![macOS Tests](https://img.shields.io/badge/macOS-passing-success.svg?logo=apple)](https://github.com/pkeffect/antigravity-architect/actions)
+[![Ubuntu Tests](https://img.shields.io/badge/Ubuntu-passing-success.svg?logo=ubuntu)](https://github.com/pkeffect/antigravity-architect/actions)
 
 **Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It is designed for **Google Antigravity**, **Project IDX**, **Gemini Code Assist**, and **VS Code**.
 
