@@ -205,6 +205,15 @@ DEVCONTAINER_JSON = """{
 }
 """
 
+DEVCONTAINER_JSON = """{
+  "name": "Antigravity Universal",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": { "ghcr.io/devcontainers/features/common-utils:2": {} }
+}
+"""
+
+AGENT_DIR = ".agent"
+
 # ==============================================================================
 # 2. SYSTEM UTILITIES & LOGGING
 # ==============================================================================
@@ -284,17 +293,29 @@ def validate_file_path(filepath: str | None) -> bool:
         return False
 
 
-def write_file(path: str, content: str) -> bool:
+def write_file(path: str, content: str, exist_ok: bool = False) -> bool:
     """
     Writes a new file, creating parent directories as needed.
-
-    Returns True on success, False on failure.
+    
+    Args:
+        path: Destination path
+        content: File content
+        exist_ok: If True, skip formatting if file exists (Safe Mode).
+                  If False, overwrite existing file (Default).
+    
+    Returns True on success/creation, False on failure or skipped.
     """
     try:
+        if exist_ok and os.path.exists(path):
+            logging.info(f"⏭️  Skipped (Exists): {path}")
+            return True
+
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
             f.write(content.strip() + "\n")
-        logging.info(f"✅ Created: {path}")
+        
+        icon = "✅" if not os.path.exists(path) else "📝"
+        logging.info(f"{icon} Wrote: {path}")
         return True
     except OSError as e:
         logging.error(f"❌ Error writing {path}: {e}")
@@ -443,9 +464,9 @@ def identify_category(text: str) -> str:
 def get_destination_path(base_dir: str, category: str, safe_title: str) -> str:
     """Determines the file destination based on category."""
     category_paths: dict[str, str] = {
-        "rules": os.path.join(base_dir, ".agent", "rules", f"imported_{safe_title}.md"),
-        "workflows": os.path.join(base_dir, ".agent", "workflows", f"imported_{safe_title}.md"),
-        "skills": os.path.join(base_dir, ".agent", "skills", f"imported_{safe_title}", "SKILL.md"),
+        "rules": os.path.join(base_dir, AGENT_DIR, "rules", f"imported_{safe_title}.md"),
+        "workflows": os.path.join(base_dir, AGENT_DIR, "workflows", f"imported_{safe_title}.md"),
+        "skills": os.path.join(base_dir, AGENT_DIR, "skills", f"imported_{safe_title}", "SKILL.md"),
         "docs": os.path.join(base_dir, "docs", "imported", f"{safe_title}.md"),
     }
     return category_paths.get(category, category_paths["docs"])
@@ -474,7 +495,7 @@ def process_brain_dump(filepath: str | None, base_dir: str) -> list[str]:
 
     # 1. Archive Raw Content
     raw_dest = os.path.join(base_dir, "context", "raw", "master_brain_dump.md")
-    write_file(raw_dest, full_text)
+    write_file(raw_dest, full_text, exist_ok=True)
 
     # 2. Extract Tech Stack Keywords
     detected_keywords: set[str] = set()
@@ -509,27 +530,27 @@ def process_brain_dump(filepath: str | None, base_dir: str) -> list[str]:
 # ==============================================================================
 
 
-def generate_agent_files(base_dir: str, keywords: list[str]) -> None:
+def generate_agent_files(base_dir: str, keywords: list[str], safe_mode: bool = False) -> None:
     """Generates all .agent/ rules, workflows, and skills."""
 
     # Generate static rules
     for filename, content in AGENT_RULES.items():
-        path = os.path.join(base_dir, ".agent", "rules", filename)
-        write_file(path, content)
+        path = os.path.join(base_dir, AGENT_DIR, "rules", filename)
+        write_file(path, content, exist_ok=safe_mode)
 
     # Generate dynamic tech stack rule
-    tech_stack_path = os.path.join(base_dir, ".agent", "rules", "01_tech_stack.md")
-    write_file(tech_stack_path, build_tech_stack_rule(keywords))
+    tech_stack_path = os.path.join(base_dir, AGENT_DIR, "rules", "01_tech_stack.md")
+    write_file(tech_stack_path, build_tech_stack_rule(keywords), exist_ok=safe_mode)
 
     # Generate workflows
     for filename, content in AGENT_WORKFLOWS.items():
-        path = os.path.join(base_dir, ".agent", "workflows", filename)
-        write_file(path, content)
+        path = os.path.join(base_dir, AGENT_DIR, "workflows", filename)
+        write_file(path, content, exist_ok=safe_mode)
 
     # Generate skills
     for filename, content in AGENT_SKILLS.items():
-        path = os.path.join(base_dir, ".agent", "skills", filename)
-        write_file(path, content)
+        path = os.path.join(base_dir, AGENT_DIR, "skills", filename)
+        write_file(path, content, exist_ok=safe_mode)
 
 
 def generate_project(project_name: str, keywords: list[str], brain_dump_path: str | None = None) -> bool:
@@ -542,9 +563,18 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
     base_dir = os.path.join(os.getcwd(), project_name)
 
     # Check for existing directory
+    safe_mode = False
     if os.path.exists(base_dir):
-        response = input(f"⚠️  '{project_name}' exists. Overwrite? (y/n): ")
-        if response.lower() != "y":
+        print(f"\n⚠️  Project '{project_name}' already exists.")
+        choice = input("Select mode: [U]pdate (Safe) / [O]verwrite (Risky) / [C]ancel: ").lower()
+        
+        if choice == 'u':
+            print("🛡️  Safe Update Mode Active: Only missing files will be created.")
+            safe_mode = True
+        elif choice == 'o':
+            confirm = input("💥 WARNING: This will overwrite files. Type 'yes' to confirm: ")
+            if confirm.lower() != 'yes': return False
+        else:
             return False
 
     print(f"\n🚀 Constructing '{project_name}'...")
@@ -552,7 +582,7 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
     # Setup logging in target directory
     setup_logging(base_dir)
 
-    # Create directory structure
+    # Create directory structure (Safe to do even if exists)
     directories = [
         "src",
         "tests",
@@ -560,12 +590,12 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
         "context/raw",
         ".idx",
         ".devcontainer",
-        ".agent/rules",
-        ".agent/workflows",
-        ".agent/skills",
-        ".agent/memory",
-        ".agent/skills/git_automation",
-        ".agent/skills/secrets_manager",
+        f"{AGENT_DIR}/rules",
+        f"{AGENT_DIR}/workflows",
+        f"{AGENT_DIR}/skills",
+        f"{AGENT_DIR}/memory",
+        f"{AGENT_DIR}/skills/git_automation",
+        f"{AGENT_DIR}/skills/secrets_manager",
     ]
     for d in directories:
         create_folder(os.path.join(base_dir, d))
@@ -581,20 +611,21 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
         final_stack = ["linux"]
     print(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
 
-    # Generate configuration files
-    write_file(os.path.join(base_dir, ".gitignore"), build_gitignore(final_stack))
-    write_file(os.path.join(base_dir, ".idx", "dev.nix"), build_nix_config(final_stack))
-    write_file(os.path.join(base_dir, ".devcontainer", "devcontainer.json"), DEVCONTAINER_JSON)
-    write_file(os.path.join(base_dir, "README.md"), f"# {project_name}\n\nStack: {', '.join(final_stack)}")
-    write_file(os.path.join(base_dir, ".env.example"), "API_KEY=\nDB_URL=")
+    # Generate configuration files - Safe Mode applies here
+    write_file(os.path.join(base_dir, ".gitignore"), build_gitignore(final_stack), exist_ok=True) # Always safe for gitignore? Or use safe_mode? Using exist_ok=True prevents overwriting user's gitignore
+    write_file(os.path.join(base_dir, ".idx", "dev.nix"), build_nix_config(final_stack), exist_ok=safe_mode)
+    write_file(os.path.join(base_dir, ".devcontainer", "devcontainer.json"), DEVCONTAINER_JSON, exist_ok=safe_mode)
+    write_file(os.path.join(base_dir, "README.md"), f"# {project_name}\n\nStack: {', '.join(final_stack)}", exist_ok=True) # Never overwrite README
+    write_file(os.path.join(base_dir, ".env.example"), "API_KEY=\nDB_URL=", exist_ok=safe_mode)
 
     # Generate agent files
-    generate_agent_files(base_dir, final_stack)
+    generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
 
     # Generate memory and bootstrap
     write_file(
-        os.path.join(base_dir, ".agent", "memory", "scratchpad.md"),
+        os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"),
         build_scratchpad(final_stack, bool(brain_dump_path)),
+        exist_ok=True # Never reset scratchpad
     )
 
     write_file(
@@ -604,6 +635,7 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
 2. **Knowledge:** Check `docs/imported/` for assimilated rules.
 3. **Action:** Run `/bootstrap` to generate the application skeleton.
 """,
+        exist_ok=safe_mode
     )
 
     print(f"\n✨ Success! Project '{project_name}' is fully configured.")

@@ -29,6 +29,7 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
 *   **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
 *   **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
+*   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything). Never overwrites `README.md`, `scratchpad.md`, or your `.gitignore`.
 
 ---
 

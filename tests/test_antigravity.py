@@ -15,12 +15,23 @@ import pytest
 # Add parent directory to path so we can import the module
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+import logging
 import antigravity_master_setup as ag  # noqa: E402
 
 
 # ==============================================================================
 # FIXTURES
 # ==============================================================================
+
+
+@pytest.fixture(autouse=True)
+def cleanup_logging():
+    """Ensure logging handlers are closed after each test to prevent file locking."""
+    yield
+    logging.shutdown()
+    for handler in logging.getLogger().handlers[:]:
+        handler.close()
+        logging.getLogger().removeHandler(handler)
 
 
 @pytest.fixture
@@ -395,6 +406,34 @@ class TestFileIO:
         assert "first" in content
         assert "second" in content
 
+    def test_write_file_safe_mode_skips_existing(self, temp_dir):
+        """write_file with exist_ok=True should skip existing files."""
+        filepath = os.path.join(temp_dir, "existing.txt")
+        with open(filepath, "w") as f:
+            f.write("original content")
+            
+        # Try to write new content in safe mode
+        result = ag.write_file(filepath, "new content", exist_ok=True)
+        
+        assert result is True
+        # Content should NOT change
+        with open(filepath) as f:
+            assert f.read() == "original content"
+
+    def test_write_file_overwrite_mode_replaces_existing(self, temp_dir):
+        """write_file with exist_ok=False should overwrite existing files."""
+        filepath = os.path.join(temp_dir, "overwrite.txt")
+        with open(filepath, "w") as f:
+            f.write("original content")
+            
+        # Try to write new content in overwrite mode
+        result = ag.write_file(filepath, "new content", exist_ok=False)
+        
+        assert result is True
+        # Content SHOULD change
+        with open(filepath) as f:
+            assert f.read().strip() == "new content"
+
     def test_create_folder_creates_directory(self, temp_dir):
         """create_folder should create directory with .gitkeep."""
         folderpath = os.path.join(temp_dir, "new_folder")
@@ -402,6 +441,37 @@ class TestFileIO:
         assert result is True
         assert os.path.isdir(folderpath)
         assert os.path.exists(os.path.join(folderpath, ".gitkeep"))
+
+    @patch('builtins.input', return_value='u')
+    def test_generate_project_safe_update(self, mock_input, temp_dir):
+        """generate_project should respect safe update mode when directory exists."""
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+            project_name = "existing_project"
+            base_dir = os.path.join(temp_dir, project_name)
+            
+            # Create existing project with a file
+            os.makedirs(base_dir)
+            existing_file = os.path.join(base_dir, "README.md")
+            with open(existing_file, "w") as f:
+                f.write("# Original README")
+                
+            # Run generator in update mode
+            # We need to mock setup_logging to avoid file conflicts or clutter
+            with patch('antigravity_master_setup.setup_logging'):
+                result = ag.generate_project(project_name, ["python"])
+                
+            assert result is True
+            
+            # Check that README was NOT overwritten
+            with open(existing_file) as f:
+                assert f.read() == "# Original README"
+                
+            # Check that other files WERE created (e.g., .gitignore)
+            assert os.path.exists(os.path.join(base_dir, ".gitignore"))
+        finally:
+            os.chdir(original_cwd)
 
 
 # ==============================================================================
