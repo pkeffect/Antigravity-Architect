@@ -162,6 +162,21 @@ You are a Senior Polyglot Software Engineer and Product Architect.
 3. **Check:** Verify against `docs/` constraints.
 4. **Execute:** Write code.
 """,
+    "99_model_dispatch.md": """# Model Dispatch Protocol
+## Concept
+You are a multi-model intelligence. You must identify when your current capabilities are insufficient and request a "Context Handoff."
+
+## Capability Tiers
+1. **Tier 1 (Speed):** GPT-OSS, Gemini Flash. Use for: Chat, simple functions, docs.
+2. **Tier 2 (Logic):** Claude Sonnet, Gemini Pro. Use for: Refactoring, coding, standard planning.
+3. **Tier 3 (Reasoning):** Claude Opus (Thinking), Gemini Ultra. Use for: Architecture, security audits, root cause analysis.
+
+## Protocol
+IF a request exceeds your current Tier:
+1. **STOP.**
+2. Output: "🛑 **Context Handoff Required** -> [Target Tier]"
+3. Wait for the user to switch models.
+""",
 }
 
 AGENT_WORKFLOWS: dict[str, str] = {
@@ -455,6 +470,13 @@ def build_scratchpad(keywords: list[str], has_brain_dump: bool) -> str:
 - Project initialized.
 - Tech Stack: {", ".join(keywords)}.
 - Imported Knowledge: {"Yes" if has_brain_dump else "No"}.
+
+## Model Roles Map
+| Role | Recommended Model | User Selection (Fill this in) |
+| :--- | :--- | :--- |
+| **Architect** | Tier 3 (Opus/Ultra/o1) | [YOUR SELECTION HERE] |
+| **Builder** | Tier 2 (Sonnet/Pro) | [YOUR SELECTION HERE] |
+| **Assistant** | Tier 1 (Flash/Mini) | [YOUR SELECTION HERE] |
 """
 
 

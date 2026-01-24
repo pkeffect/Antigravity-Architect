@@ -22,13 +22,16 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Rules:** Generates "Always-On" directives (Persona, Security, Git Conventions, Chain-of-Thought).
 *   **Workflows:** Generates callable slash commands (`/plan`, `/bootstrap`, `/commit`, `/review`, `/save`).
 *   **Skills:** Generates tool definitions for Git Automation and Secret Management.
+*   **Skills:** Generates tool definitions for Git Automation and Secret Management.
 *   **Memory:** Initializes a `scratchpad.md` for long-term session memory.
+*   **Model Dispatch:** Generates a "Context Handoff" protocol that teaches the Agent to request higher-reasoning models (like o1 or Ultra) for complex tasks.
 
 ### 🛡️ Production Engineering
 *   **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories.
 *   **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
 *   **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
 *   **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
+*   **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.
 *   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
 *   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, and `AUDIT.md` to professionalize your repository from Day 1.
 
