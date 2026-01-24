@@ -200,11 +200,21 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+.cursorrules
 
 # Marimo
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Windsurf (Codeium)
+#  Windsurf is an AI-powered IDE with Cascade AI agent
+#  .windsurfrules contains project-specific AI instructions
+.windsurfrules
+
+# GitHub Copilot
+#  Project-specific instructions for GitHub Copilot
+/.github/copilot-instructions.md
 
 # --- Generated Project Artifacts (Local Testing) ---
 .agent/
