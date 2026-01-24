@@ -226,3 +226,4 @@ docs/
 BOOTSTRAP_INSTRUCTIONS.md
 antigravity_setup.log
 .env.example
+BRANCH_PROTECTION.md
