@@ -296,13 +296,13 @@ def validate_file_path(filepath: str | None) -> bool:
 def write_file(path: str, content: str, exist_ok: bool = False) -> bool:
     """
     Writes a new file, creating parent directories as needed.
-    
+
     Args:
         path: Destination path
         content: File content
         exist_ok: If True, skip formatting if file exists (Safe Mode).
                   If False, overwrite existing file (Default).
-    
+
     Returns True on success/creation, False on failure or skipped.
     """
     try:
@@ -313,7 +313,7 @@ def write_file(path: str, content: str, exist_ok: bool = False) -> bool:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
             f.write(content.strip() + "\n")
-        
+
         icon = "✅" if not os.path.exists(path) else "📝"
         logging.info(f"{icon} Wrote: {path}")
         return True
@@ -567,13 +567,14 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
     if os.path.exists(base_dir):
         print(f"\n⚠️  Project '{project_name}' already exists.")
         choice = input("Select mode: [U]pdate (Safe) / [O]verwrite (Risky) / [C]ancel: ").lower()
-        
+
         if choice == 'u':
             print("🛡️  Safe Update Mode Active: Only missing files will be created.")
             safe_mode = True
         elif choice == 'o':
             confirm = input("💥 WARNING: This will overwrite files. Type 'yes' to confirm: ")
-            if confirm.lower() != 'yes': return False
+            if confirm.lower() != 'yes':
+                return False
         else:
             return False
 
