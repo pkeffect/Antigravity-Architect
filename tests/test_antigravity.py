@@ -16,8 +16,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import logging
-import antigravity_master_setup as ag  # noqa: E402
 
+import antigravity_master_setup as ag  # noqa: E402
 
 # ==============================================================================
 # FIXTURES
@@ -54,7 +54,7 @@ Never commit secrets to the repository.
 ## Step 1: Build
 Run the build command.
 
-## Step 2: Deploy  
+## Step 2: Deploy
 Deploy to production server.
 
 # CLI Tool Usage
@@ -411,10 +411,10 @@ class TestFileIO:
         filepath = os.path.join(temp_dir, "existing.txt")
         with open(filepath, "w") as f:
             f.write("original content")
-            
+
         # Try to write new content in safe mode
         result = ag.write_file(filepath, "new content", exist_ok=True)
-        
+
         assert result is True
         # Content should NOT change
         with open(filepath) as f:
@@ -425,10 +425,10 @@ class TestFileIO:
         filepath = os.path.join(temp_dir, "overwrite.txt")
         with open(filepath, "w") as f:
             f.write("original content")
-            
+
         # Try to write new content in overwrite mode
         result = ag.write_file(filepath, "new content", exist_ok=False)
-        
+
         assert result is True
         # Content SHOULD change
         with open(filepath) as f:
@@ -442,7 +442,7 @@ class TestFileIO:
         assert os.path.isdir(folderpath)
         assert os.path.exists(os.path.join(folderpath, ".gitkeep"))
 
-    @patch('builtins.input', return_value='u')
+    @patch("builtins.input", return_value="u")
     def test_generate_project_safe_update(self, mock_input, temp_dir):
         """generate_project should respect safe update mode when directory exists."""
         original_cwd = os.getcwd()
@@ -450,24 +450,24 @@ class TestFileIO:
             os.chdir(temp_dir)
             project_name = "existing_project"
             base_dir = os.path.join(temp_dir, project_name)
-            
+
             # Create existing project with a file
             os.makedirs(base_dir)
             existing_file = os.path.join(base_dir, "README.md")
             with open(existing_file, "w") as f:
                 f.write("# Original README")
-                
+
             # Run generator in update mode
             # We need to mock setup_logging to avoid file conflicts or clutter
-            with patch('antigravity_master_setup.setup_logging'):
+            with patch("antigravity_master_setup.setup_logging"):
                 result = ag.generate_project(project_name, ["python"])
-                
+
             assert result is True
-            
+
             # Check that README was NOT overwritten
             with open(existing_file) as f:
                 assert f.read() == "# Original README"
-                
+
             # Check that other files WERE created (e.g., .gitignore)
             assert os.path.exists(os.path.join(base_dir, ".gitignore"))
         finally:
@@ -499,7 +499,7 @@ class TestProcessBrainDump:
         filepath = os.path.join(temp_dir, "tech_dump.md")
         with open(filepath, "w") as f:
             f.write(f"# Overview\n\n{content}")
-        
+
         result = ag.process_brain_dump(filepath, temp_dir)
         assert "python" in result
 
@@ -521,7 +521,7 @@ class TestGenerateAgentFiles:
     def test_creates_rule_files(self, temp_dir):
         """Should create all rule files."""
         ag.generate_agent_files(temp_dir, ["python"])
-        
+
         rules_dir = os.path.join(temp_dir, ".agent", "rules")
         assert os.path.exists(os.path.join(rules_dir, "00_identity.md"))
         assert os.path.exists(os.path.join(rules_dir, "01_tech_stack.md"))
@@ -530,7 +530,7 @@ class TestGenerateAgentFiles:
     def test_creates_workflow_files(self, temp_dir):
         """Should create all workflow files."""
         ag.generate_agent_files(temp_dir, ["python"])
-        
+
         workflows_dir = os.path.join(temp_dir, ".agent", "workflows")
         assert os.path.exists(os.path.join(workflows_dir, "plan.md"))
         assert os.path.exists(os.path.join(workflows_dir, "bootstrap.md"))
@@ -539,7 +539,7 @@ class TestGenerateAgentFiles:
     def test_creates_skill_files(self, temp_dir):
         """Should create all skill files."""
         ag.generate_agent_files(temp_dir, ["python"])
-        
+
         skills_dir = os.path.join(temp_dir, ".agent", "skills")
         assert os.path.exists(os.path.join(skills_dir, "git_automation", "SKILL.md"))
         assert os.path.exists(os.path.join(skills_dir, "secrets_manager", "SKILL.md"))
@@ -558,24 +558,27 @@ class TestIntegration:
         original_cwd = os.getcwd()
         try:
             os.chdir(temp_dir)
-            
-            with patch('builtins.input', return_value='n'):
+
+            with patch("builtins.input", return_value="n"):
                 # First call should succeed (no existing dir)
                 result = ag.generate_project("test-project", ["python"])
-            
+
             assert result is True
             project_dir = os.path.join(temp_dir, "test-project")
-            
+
             # Check essential files exist
             assert os.path.exists(os.path.join(project_dir, ".gitignore"))
             assert os.path.exists(os.path.join(project_dir, "README.md"))
             assert os.path.exists(os.path.join(project_dir, ".env.example"))
+            assert os.path.exists(os.path.join(project_dir, "CHANGELOG.md"))
+            assert os.path.exists(os.path.join(project_dir, "CONTRIBUTING.md"))
+            assert os.path.exists(os.path.join(project_dir, "AUDIT.md"))
             assert os.path.exists(os.path.join(project_dir, "BOOTSTRAP_INSTRUCTIONS.md"))
-            
+
             # Check directories exist
             assert os.path.isdir(os.path.join(project_dir, "src"))
             assert os.path.isdir(os.path.join(project_dir, "tests"))
             assert os.path.isdir(os.path.join(project_dir, ".agent"))
-            
+
         finally:
             os.chdir(original_cwd)

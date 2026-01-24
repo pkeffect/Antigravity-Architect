@@ -1,6 +1,6 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue) ![Platform](https://img.shields.io/badge/Platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange) ![CI](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg) ![Agent-First](https://img.shields.io/badge/Architecture-Agent--First-purple)
+![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue) ![Platform](https://img.shields.io/badge/Platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange) ![CI](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg) ![Agent-First](https://img.shields.io/badge/Architecture-Agent--First-purple)
 
 **Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It is designed for **Google Antigravity**, **Project IDX**, **Gemini Code Assist**, and **VS Code**.
 
@@ -29,7 +29,8 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
 *   **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
 *   **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
-*   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything). Never overwrites `README.md`, `scratchpad.md`, or your `.gitignore`.
+*   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
+*   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, and `AUDIT.md` to professionalize your repository from Day 1.
 
 ---
 
@@ -42,7 +43,8 @@ This project includes a professional development environment with a robust test 
 *   `pip install -e .[dev]`
 
 ### Running Tests
-We use **pytest** for testing (50+ passing tests).
+We use **pytest** for testing (59+ passing tests) across **Windows**, **macOS**, and **Ubuntu**.
+We support **Python 3.10** through **3.14-dev**.
 
 ```bash
 # Run all tests
@@ -127,6 +129,9 @@ my-project/
 ├── docs/
 │   └── imported/            # 📚 ASSIMILATED KNOWLEDGE
 ├── src/                     # Source Code
+├── CHANGELOG.md             # 📝 History
+├── CONTRIBUTING.md          # 🤝 Guidelines
+├── AUDIT.md                 # 🛡️ Security Log
 └── BOOTSTRAP_INSTRUCTIONS.md # The "Genie" Prompt
 ```
 

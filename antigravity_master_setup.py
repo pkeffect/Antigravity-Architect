@@ -113,6 +113,34 @@ CLASSIFICATION_RULES: dict[str, list[str]] = {
 }
 
 # D. Template Definitions for Generated Files
+CHANGELOG_TEMPLATE = """# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+- Initial release
+"""
+
+CONTRIBUTING_TEMPLATE = """# Contributing to the Project
+
+## Getting Started
+1. Clone the repo
+2. Install dependencies
+3. Run tests
+
+## Workflow
+- Use Conventional Commits
+- Create feature branches
+- Submit PRs for review
+"""
+
+AUDIT_TEMPLATE = """# Security & Quality Audit Log
+
+| Date | Auditor | Score | Notes |
+|------|---------|-------|-------|
+| TBA  | System  | -/100 | Initial Generation |
+"""
+
 AGENT_RULES: dict[str, str] = {
     "00_identity.md": """# System Identity
 You are a Senior Polyglot Software Engineer and Product Architect.
@@ -622,6 +650,11 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
         os.path.join(base_dir, "README.md"), f"# {project_name}\n\nStack: {', '.join(final_stack)}", exist_ok=True
     )  # Never overwrite README
     write_file(os.path.join(base_dir, ".env.example"), "API_KEY=\nDB_URL=", exist_ok=safe_mode)
+
+    # Generate Community Standards
+    write_file(os.path.join(base_dir, "CHANGELOG.md"), CHANGELOG_TEMPLATE, exist_ok=safe_mode)
+    write_file(os.path.join(base_dir, "CONTRIBUTING.md"), CONTRIBUTING_TEMPLATE, exist_ok=safe_mode)
+    write_file(os.path.join(base_dir, "AUDIT.md"), AUDIT_TEMPLATE, exist_ok=safe_mode)
 
     # Generate agent files
     generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
