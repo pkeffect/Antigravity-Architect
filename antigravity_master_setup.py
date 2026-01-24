@@ -764,7 +764,6 @@ def load_custom_templates(templates_path: str | None) -> dict[str, dict[str, str
     Returns a dict with keys 'rules', 'workflows', 'skills' containing template overrides.
     """
     if not templates_path:
-
         home_templates = Path.home() / ".antigravity" / "templates"
         if home_templates.exists():
             templates_path = str(home_templates)
@@ -1013,7 +1012,6 @@ def main() -> None:
     if args.name:
         run_cli_mode(args)
     else:
-
         run_interactive_mode()
 
 
