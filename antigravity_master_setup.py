@@ -233,13 +233,6 @@ DEVCONTAINER_JSON = """{
 }
 """
 
-DEVCONTAINER_JSON = """{
-  "name": "Antigravity Universal",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "features": { "ghcr.io/devcontainers/features/common-utils:2": {} }
-}
-"""
-
 AGENT_DIR = ".agent"
 
 # ==============================================================================
@@ -641,14 +634,13 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
     print(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
 
     # Generate configuration files - Safe Mode applies here
-    write_file(
-        os.path.join(base_dir, ".gitignore"), build_gitignore(final_stack), exist_ok=True
-    )  # Always safe for gitignore? Or use safe_mode? Using exist_ok=True prevents overwriting user's gitignore
+    # Note: .gitignore and README always use exist_ok=True to prevent overwriting user customizations
+    write_file(os.path.join(base_dir, ".gitignore"), build_gitignore(final_stack), exist_ok=True)
     write_file(os.path.join(base_dir, ".idx", "dev.nix"), build_nix_config(final_stack), exist_ok=safe_mode)
     write_file(os.path.join(base_dir, ".devcontainer", "devcontainer.json"), DEVCONTAINER_JSON, exist_ok=safe_mode)
     write_file(
         os.path.join(base_dir, "README.md"), f"# {project_name}\n\nStack: {', '.join(final_stack)}", exist_ok=True
-    )  # Never overwrite README
+    )
     write_file(os.path.join(base_dir, ".env.example"), "API_KEY=\nDB_URL=", exist_ok=safe_mode)
 
     # Generate Community Standards
@@ -659,11 +651,11 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
     # Generate agent files
     generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
 
-    # Generate memory and bootstrap
+    # Generate memory and bootstrap (scratchpad always preserved)
     write_file(
         os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"),
         build_scratchpad(final_stack, bool(brain_dump_path)),
-        exist_ok=True,  # Never reset scratchpad
+        exist_ok=True,
     )
 
     write_file(
