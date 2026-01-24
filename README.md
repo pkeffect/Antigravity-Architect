@@ -1,6 +1,11 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
-![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue) ![Platform](https://img.shields.io/badge/Platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange) ![CI](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg) ![Agent-First](https://img.shields.io/badge/Architecture-Agent--First-purple)
+[![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
+![Platform](https://img.shields.io/badge/Platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange)
+![CI](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)
+![Agent-First](https://img.shields.io/badge/Architecture-Agent--First-purple)
 
 **Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It is designed for **Google Antigravity**, **Project IDX**, **Gemini Code Assist**, and **VS Code**.
 
@@ -32,7 +37,8 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
 *   **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.
 *   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
-*   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, and `AUDIT.md` to professionalize your repository from Day 1.
+*   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` to professionalize your repository from Day 1.
+*   **License Management:** Select from standard licenses (MIT, Apache, GPL) via CLI flag or interactive prompt.
 
 ---
 
@@ -86,10 +92,10 @@ For automation and scripting, use command-line arguments:
 
 ```bash
 # Basic project creation
-python antigravity_master_setup.py --name my-app --stack python,react
+python antigravity_master_setup.py --name my-app --stack python,react --license mit
 
-# With brain dump and safe mode
-python antigravity_master_setup.py --name my-app --brain-dump ./specs.md --safe
+# With brain dump, safe mode, and custom license
+python antigravity_master_setup.py --name my-app --brain-dump ./specs.md --safe --license apache
 
 # Preview without creating files
 python antigravity_master_setup.py --name my-app --stack python --dry-run
@@ -169,6 +175,9 @@ my-project/
 ├── CHANGELOG.md             # 📝 History
 ├── CONTRIBUTING.md          # 🤝 Guidelines
 ├── AUDIT.md                 # 🛡️ Security Log
+├── SECURITY.md              # 🔒 Security Policy
+├── CODE_OF_CONDUCT.md       # 🤝 Ethics & Rules
+├── LICENSE                  # 📄 Legal
 └── BOOTSTRAP_INSTRUCTIONS.md # The "Genie" Prompt
 ```
 

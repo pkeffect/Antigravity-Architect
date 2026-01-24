@@ -148,6 +148,54 @@ AUDIT_TEMPLATE = """# Security & Quality Audit Log
 | TBA  | System  | -/100 | Initial Generation |
 """
 
+SECURITY_TEMPLATE = """# Security Policy
+
+## Supported Versions
+
+The following versions of this project are currently being supported with security updates.
+
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.0.x   | :white_check_mark: |
+| < 1.0.x | :x:                |
+
+## Reporting a Vulnerability
+
+Please report security vulnerabilities by opening a private issue or contacting the maintainers directly.
+"""
+
+CODE_OF_CONDUCT_TEMPLATE = """# Contributor Covenant Code of Conduct
+
+## Our Pledge
+
+We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+"""
+
+LICENSE_TEMPLATES: dict[str, str] = {
+    "mit": """MIT License
+
+Copyright (c) {year} {author}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+""",
+    "apache": """                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+""",
+    "gpl": """                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+""",
+}
+
 AGENT_RULES: dict[str, str] = {
     "00_identity.md": """# System Identity
 You are a Senior Polyglot Software Engineer and Product Architect.
@@ -609,6 +657,7 @@ def generate_project(
     brain_dump_path: str | None = None,
     safe_mode: bool | None = None,
     custom_templates: dict[str, dict[str, str]] | None = None,
+    license_type: str = "mit",
 ) -> bool:
     """
     Main project generation logic.
@@ -620,6 +669,7 @@ def generate_project(
         brain_dump_path: Optional path to a brain dump file.
         safe_mode: If True, non-destructive. If None, prompt user if dir exists.
         custom_templates: Optional dict of custom template overrides.
+        license_type: Project license type (mit, apache, gpl).
     Returns True on success, False on failure.
     """
     base_dir = os.path.join(os.getcwd(), project_name)
@@ -686,10 +736,18 @@ def generate_project(
     )
     write_file(os.path.join(base_dir, ".env.example"), "API_KEY=\nDB_URL=", exist_ok=safe_mode)
 
+    # Generate License
+    license_content = LICENSE_TEMPLATES.get(license_type, LICENSE_TEMPLATES["mit"])
+    if license_type == "mit":
+        license_content = license_content.format(year=datetime.now().year, author="pkeffect")
+    write_file(os.path.join(base_dir, "LICENSE"), license_content, exist_ok=safe_mode)
+
     # Generate Community Standards
     write_file(os.path.join(base_dir, "CHANGELOG.md"), CHANGELOG_TEMPLATE, exist_ok=safe_mode)
     write_file(os.path.join(base_dir, "CONTRIBUTING.md"), CONTRIBUTING_TEMPLATE, exist_ok=safe_mode)
     write_file(os.path.join(base_dir, "AUDIT.md"), AUDIT_TEMPLATE, exist_ok=safe_mode)
+    write_file(os.path.join(base_dir, "SECURITY.md"), SECURITY_TEMPLATE, exist_ok=safe_mode)
+    write_file(os.path.join(base_dir, "CODE_OF_CONDUCT.md"), CODE_OF_CONDUCT_TEMPLATE, exist_ok=safe_mode)
 
     # Generate agent files
     generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
@@ -753,6 +811,14 @@ Examples:
     parser.add_argument("--fix", action="store_true", help="Attempt to fix issues found by --doctor")
 
     parser.add_argument("--list-keywords", action="store_true", help="List all supported tech stack keywords")
+    parser.add_argument(
+        "--license",
+        "-l",
+        type=str,
+        choices=["mit", "apache", "gpl"],
+        default="mit",
+        help="Project license (default: mit)",
+    )
 
     return parser
 
@@ -847,6 +913,9 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
         "CHANGELOG.md",
         "CONTRIBUTING.md",
         "AUDIT.md",
+        "SECURITY.md",
+        "CODE_OF_CONDUCT.md",
+        "LICENSE",
     ]
 
     for file_path in optional_files:
@@ -925,7 +994,10 @@ def run_interactive_mode() -> None:
         if not any(x in manual_keywords for x in ("macos", "windows", "linux")):
             manual_keywords.append("linux")
 
-    generate_project(project_name, manual_keywords, brain_dump_path)
+    print("\nLicense (mit, apache, gpl):")
+    license_choice = input("Choice [mit]: ").strip().lower() or "mit"
+
+    generate_project(project_name, manual_keywords, brain_dump_path, license_type=license_choice)
 
 
 def run_cli_mode(args: argparse.Namespace) -> None:

@@ -40,12 +40,14 @@
 | Version Flag | `--version` | ✅ Works |
 | List Keywords | `--list-keywords` | ✅ Works |
 | CLI Project Creation | `--name --stack` | ✅ Works |
+| License Selection | `--license` | ✅ Works |
 | Dry Run Mode | `--dry-run` | ✅ Works |
 | Safe Mode | `--safe` | ✅ Works |
 | Doctor Mode | `--doctor ./path` | ✅ Works |
 | Doctor Fix | `--doctor --fix` | ✅ Works |
 | Template Override | `--templates` | ✅ Works |
 | Brain Dump CLI | `--brain-dump` | ✅ Works |
+| Community Files | `SECURITY.md`, etc. | ✅ Generated |
 | Interactive Mode | (no args) | ✅ Preserved |
 
 ---

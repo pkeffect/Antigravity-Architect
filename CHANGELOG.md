@@ -13,8 +13,12 @@ All notable changes to this project will be documented in this file.
 - **Doctor Mode:** Validate existing projects with `--doctor ./path`.
   - Reports missing directories, files, and empty files.
   - `--fix` flag to auto-repair issues.
-- **List Keywords:** `--list-keywords` displays all supported tech stack keywords.
-- **Template Overrides:** Load custom templates from `~/.antigravity/templates/` or `--templates` path.
+- **License Selection:** Added `--license` flag (mit, apache, gpl) and interactive choice.
+- **Community Standards Expansion:** Auto-generation of `SECURITY.md` and `CODE_OF_CONDUCT.md`.
+- **Aesthetics:** Added GitHub badges for Ruff, Black, and Python support to README.
+- **Doctor Improvements:** Expanded health check to validate all 16 core files/folders.
+- **CLI Project Creation:** Added `--license` command.
+- **Bug Fix:** Resolved `argparse` action type error.
 
 ### Changed
 - `generate_project()` now accepts `safe_mode` and `custom_templates` parameters.
