@@ -29,7 +29,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.4.0"
+VERSION = "1.4.2"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -326,6 +326,357 @@ contact_links:
   - name: 📚 Documentation
     url: https://github.com/{owner}/{repo}#readme
     about: Check the README for usage instructions
+"""
+
+    GITHUB_COPILOT_INSTRUCTIONS = """# GitHub Copilot Instructions
+
+## Project Context
+
+This project uses **{tech_stack}** as its core technology stack. All code should follow the conventions and patterns established in the existing codebase.
+
+## Development Workflow
+
+### Before Making Changes
+1. Check `docs/imported/` for project-specific documentation
+2. Review `context/raw/` for original specifications
+3. Consult `.agent/rules/` for coding standards and conventions
+4. Read `CONTRIBUTING.md` for contribution guidelines
+
+### Testing
+```bash
+# Run tests before committing
+# [Add your test command here]
+```
+
+### Code Quality
+```bash
+# Lint and format code
+# [Add your linting commands here]
+```
+
+## Project-Specific Patterns
+
+### File Organization
+- Source code: `src/`
+- Tests: `tests/`
+- Documentation: `docs/`
+- Configuration: Root directory
+
+### Coding Standards
+1. **Security First**: Never commit secrets, API keys, or credentials
+   - Use `.env` for environment variables
+   - Reference `.env.example` for required variables
+2. **Type Safety**: Use type hints/annotations where applicable
+3. **Error Handling**: Always validate inputs and handle edge cases
+4. **Documentation**: Add comments for complex logic
+
+### Commit Conventions
+Use [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+- `feat:` New features
+- `fix:` Bug fixes
+- `docs:` Documentation changes
+- `refactor:` Code refactoring
+- `test:` Test additions/updates
+- `chore:` Maintenance tasks
+
+**Examples:**
+```
+feat: add user authentication
+fix: resolve memory leak in data processor
+docs: update API documentation
+```
+
+## Common Tasks
+
+### Adding a New Feature
+1. Create a feature branch: `git checkout -b feat/feature-name`
+2. Review related files in `src/` for patterns
+3. Write tests first (TDD approach recommended)
+4. Implement the feature
+5. Run tests and linting
+6. Commit with conventional commit message
+
+### Fixing a Bug
+1. Reproduce the bug with a failing test
+2. Review `SECURITY.md` if security-related
+3. Fix the issue
+4. Verify all tests pass
+5. Document the fix in `CHANGELOG.md`
+
+### Refactoring Code
+1. Ensure all tests pass before starting
+2. Make incremental changes
+3. Run tests after each change
+4. Update documentation if public APIs change
+
+## Integration Points
+
+### Environment Variables
+Required variables are documented in `.env.example`. Never hardcode:
+- API keys
+- Database credentials
+- Service endpoints
+- Secret tokens
+
+### External Dependencies
+- Review existing dependencies before adding new ones
+- Prefer stable, well-maintained packages
+- Document why each dependency is needed
+
+## AI Agent Workflows
+
+This project includes AI agent workflows in `.agent/workflows/`. Use these commands:
+
+- `/plan` - Generate project plan from specifications
+- `/bootstrap` - Create initial code structure
+- `/review` - Audit code for security and quality
+- `/commit` - Generate conventional commit messages
+- `/save` - Update project memory/scratchpad
+
+## Key Files Reference
+
+- [README.md](README.md) - Project overview and setup
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+- [SECURITY.md](SECURITY.md) - Security policies
+- [CHANGELOG.md](CHANGELOG.md) - Version history
+- [.env.example](.env.example) - Environment configuration
+
+## Quick Tips
+
+1. **Read First, Code Second**: Always check existing patterns before writing new code
+2. **Test Coverage Matters**: Aim for comprehensive test coverage
+3. **Security is Paramount**: When in doubt, ask before handling sensitive data
+4. **Document Decisions**: Use comments to explain "why", not "what"
+5. **Follow the Stack**: Stick to {tech_stack} unless discussing alternatives
+"""
+
+    CURSOR_RULES = """# Cursor IDE Rules
+
+You are an expert AI coding assistant working in Cursor IDE with access to this **{tech_stack}** project.
+
+## Core Directives
+
+### Security & Safety
+- Never output API keys, tokens, or credentials in chat or code
+- Always use environment variables (`.env`) for sensitive data
+- Validate all user inputs before processing
+- Check for common vulnerabilities (SQL injection, XSS, CSRF)
+
+### Code Quality Standards
+- Follow the tech stack conventions for {tech_stack}
+- Use type hints/annotations where applicable
+- Write self-documenting code with clear variable names
+- Add comments only to explain "why", not "what"
+- Maintain consistent code style throughout the project
+
+### Git Workflow
+Use Conventional Commits format:
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `docs:` - Documentation only
+- `refactor:` - Code restructuring
+- `test:` - Test additions/updates
+- `chore:` - Maintenance tasks
+
+Example: `feat: add user authentication system`
+
+### Development Workflow
+1. **Before Coding**: Check `.agent/rules/` for project-specific guidelines
+2. **Context Awareness**: Review `docs/imported/` and `context/raw/` for specifications
+3. **Testing First**: Write or update tests before implementing features (TDD)
+4. **Incremental Changes**: Make small, focused commits
+5. **Code Review**: Self-review changes before committing
+
+### Project Structure
+- Source code: `src/`
+- Tests: `tests/`
+- Documentation: `docs/`
+- Agent rules: `.agent/rules/`
+- Workflows: `.agent/workflows/`
+- Configuration: Root directory
+
+### AI Agent Workflows
+This project includes callable workflows in `.agent/workflows/`:
+- `/plan` - Generate implementation plan from requirements
+- `/bootstrap` - Create initial code scaffolding
+- `/review` - Security and quality audit
+- `/commit` - Generate conventional commit messages
+- `/save` - Update project memory/scratchpad
+
+### Key Files to Reference
+- [README.md](README.md) - Project overview
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+- [SECURITY.md](SECURITY.md) - Security policies
+- `.agent/rules/01_tech_stack.md` - Tech stack specifics
+- `.env.example` - Required environment variables
+
+### When to Ask for Clarification
+- Ambiguous requirements or edge cases
+- Security-sensitive operations
+- Breaking changes to public APIs
+- Architecture decisions affecting multiple components
+
+### Cursor-Specific Features
+- Use `Cmd/Ctrl+K` for inline edits
+- Use `Cmd/Ctrl+L` for chat with context
+- Reference files with `@filename` in chat
+- Use Composer mode for multi-file edits
+
+## Tech Stack: {tech_stack}
+
+Adhere to best practices and conventions specific to this technology stack.
+"""
+
+    WINDSURF_RULES = """# Windsurf IDE Rules (Cascade AI)
+
+You are Cascade, the AI coding agent in Windsurf IDE, working on a **{tech_stack}** project.
+
+## Identity & Capabilities
+- You are a senior software engineer with expertise in {tech_stack}
+- You have agentic capabilities: planning, reasoning, multi-step execution
+- You can read, write, and refactor code across multiple files
+- You understand project architecture and dependencies
+
+## Core Principles
+
+### 1. Security-First Development
+```
+✅ DO:
+- Store secrets in `.env` files (never commit)
+- Use environment variables via `os.getenv()` or similar
+- Validate and sanitize all user inputs
+- Follow OWASP security best practices
+
+❌ DON'T:
+- Print or log sensitive credentials
+- Hardcode API keys or passwords
+- Trust user input without validation
+- Ignore security warnings
+```
+
+### 2. Code Quality Standards
+- **Readability**: Clear variable/function names over brevity
+- **Type Safety**: Use type hints (Python), TypeScript, or equivalent
+- **Error Handling**: Graceful degradation with proper error messages
+- **Testing**: Write tests alongside features (TDD preferred)
+- **Documentation**: Update docs when changing public APIs
+
+### 3. Git Conventions
+All commits must follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>: <description>
+
+Types:
+- feat: New feature
+- fix: Bug fix
+- docs: Documentation only
+- refactor: Code restructure without behavior change
+- test: Adding or updating tests
+- chore: Tooling, dependencies, config
+
+Examples:
+feat: add JWT authentication middleware
+fix: resolve race condition in data processor
+docs: update API endpoint documentation
+```
+
+### 4. Cascade Workflow Integration
+
+#### Before Starting Work
+1. Review `.agent/rules/` for project-specific guidelines
+2. Check `docs/imported/` for requirements and specifications
+3. Read `context/raw/` for original design documents
+4. Examine `.agent/workflows/` for standard procedures
+
+#### During Development
+- Make incremental changes with clear reasoning
+- Run tests after each significant change
+- Keep the user informed of progress and blockers
+- Ask for clarification on ambiguous requirements
+
+#### After Completion
+- Self-review code for quality and security
+- Update relevant documentation
+- Suggest next steps or improvements
+- Update `.agent/memory/scratchpad.md` with decisions made
+
+## Project Structure
+```
+src/          # Source code
+tests/        # Test suites
+docs/         # Documentation
+.agent/       # AI agent configuration
+  rules/      # Always-active directives
+  workflows/  # Callable procedures
+  skills/     # Tool definitions
+  memory/     # Session persistence
+context/raw/  # Original specifications
+```
+
+## Agent Workflows (Slash Commands)
+Invoke these for common tasks:
+
+- `/plan` → Generate detailed implementation plan
+- `/bootstrap` → Scaffold code structure for feature
+- `/review` → Security and quality audit
+- `/commit` → Create conventional commit message
+- `/save` → Persist session context and decisions
+
+## Technology Stack
+**Active Stack**: {tech_stack}
+
+### Stack-Specific Guidelines
+Refer to `.agent/rules/01_tech_stack.md` for:
+- Framework versions and conventions
+- Preferred libraries and tools
+- File organization patterns
+- Build and deployment processes
+
+## Environment Configuration
+Required environment variables are documented in `.env.example`:
+- Copy to `.env` for local development
+- Never commit `.env` to version control
+- Use secret management for production
+
+## Key Reference Files
+| File | Purpose |
+|------|---------|
+| [README.md](README.md) | Project overview & setup |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Development guidelines |
+| [SECURITY.md](SECURITY.md) | Security policies |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
+| `.agent/rules/00_identity.md` | Agent persona & goals |
+
+## Memory & Context
+- **Session Memory**: `.agent/memory/scratchpad.md`
+- **Long-term Context**: `context/raw/` directory
+- **Imported Knowledge**: `docs/imported/` directory
+
+Update scratchpad with:
+- Architectural decisions and rationale
+- Unresolved questions or blockers
+- Next steps and TODOs
+- Lessons learned during development
+
+## Windsurf-Specific Features
+- **Cascade Flow**: Multi-step agentic reasoning
+- **Context Awareness**: Automatic codebase understanding
+- **Multi-file Editing**: Coordinated changes across files
+- **Memory Persistence**: Long-term project context
+
+## When to Escalate
+Ask the user before:
+- Making breaking changes to public APIs
+- Modifying core architecture
+- Adding new major dependencies
+- Implementing security-sensitive features
+- Deleting or renaming existing functionality
+
+---
+
+**Remember**: You are Cascade, an intelligent coding agent. Think step-by-step, reason about trade-offs, and always prioritize code quality and security.
 """
 
     LICENSE_TEMPLATES: dict[str, str] = {
@@ -1042,6 +1393,23 @@ class AntigravityGenerator:
         write_file(
             os.path.join(github_dir, "FUNDING.yml"),
             AntigravityResources.GITHUB_FUNDING,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(github_dir, "copilot-instructions.md"),
+            AntigravityResources.GITHUB_COPILOT_INSTRUCTIONS.format(tech_stack=", ".join(final_stack)),
+            exist_ok=safe_mode,
+        )
+
+        # Generate Cursor and Windsurf Rules (AI IDE Compatibility)
+        write_file(
+            os.path.join(base_dir, ".cursorrules"),
+            AntigravityResources.CURSOR_RULES.format(tech_stack=", ".join(final_stack)),
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, ".windsurfrules"),
+            AntigravityResources.WINDSURF_RULES.format(tech_stack=", ".join(final_stack)),
             exist_ok=safe_mode,
         )
 

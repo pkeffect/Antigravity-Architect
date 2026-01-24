@@ -1,25 +1,34 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
-[![Version](https://img.shields.io/badge/version-1.4.0-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+<!-- Project & Build Status -->
+[![Version](https://img.shields.io/badge/version-1.4.2-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
 
+<!-- Code Quality -->
 [![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Type Checking: MyPy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](http://mypy-lang.org/)
 [![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2059%20passed-green.svg)](https://docs.pytest.org/)
-
-[![Platform](https://img.shields.io/badge/platform-Google%20Antigravity%20%7C%20IDX%20%7C%20VS%20Code-orange)](https://idx.dev)
-[![Architecture](https://img.shields.io/badge/architecture-agent--first-purple.svg)](https://github.com/pkeffect/antigravity-architect)
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-zero%20external-success.svg)](https://github.com/pkeffect/antigravity-architect)
+[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2062%20passed-green.svg)](https://docs.pytest.org/)
 [![Code Quality](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
 
+<!-- Platform Support -->
 [![Windows Tests](https://img.shields.io/badge/Windows-passing-success.svg?logo=windows)](https://github.com/pkeffect/antigravity-architect/actions)
 [![macOS Tests](https://img.shields.io/badge/macOS-passing-success.svg?logo=apple)](https://github.com/pkeffect/antigravity-architect/actions)
 [![Ubuntu Tests](https://img.shields.io/badge/Ubuntu-passing-success.svg?logo=ubuntu)](https://github.com/pkeffect/antigravity-architect/actions)
 
-**Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It is designed for **Google Antigravity**, **Project IDX**, **Gemini Code Assist**, and **VS Code**.
+<!-- AI IDE Compatibility -->
+[![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-compatible-success.svg?logo=github)](https://github.com/features/copilot)
+[![Cursor IDE](https://img.shields.io/badge/Cursor%20IDE-compatible-success.svg)](https://cursor.com)
+[![Windsurf](https://img.shields.io/badge/Windsurf%20Cascade-compatible-success.svg)](https://windsurf.com)
+[![Google IDX](https://img.shields.io/badge/Google%20IDX-compatible-success.svg)](https://idx.dev)
+
+<!-- Architecture & Design -->
+[![Architecture](https://img.shields.io/badge/architecture-agent--first-purple.svg)](https://github.com/pkeffect/antigravity-architect)
+[![Zero Dependencies](https://img.shields.io/badge/dependencies-zero%20external-success.svg)](https://github.com/pkeffect/antigravity-architect)
+
+**Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It generates projects optimized for **GitHub Copilot**, **Cursor IDE**, **Windsurf (Cascade AI)**, **Google IDX**, and any AI coding assistant.
 
 Unlike standard scaffolding tools (like `create-react-app`) that just build code, this script builds a **Brain** for your AI. It constructs a "Self-Describing Repository" that teaches the Agent how to behave, what rules to follow, and automatically assimilates your existing documentation into the Agent's memory.
 
@@ -50,7 +59,7 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.
 *   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
 *   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` to professionalize your repository from Day 1.
-*   **GitHub Templates:** Generates `.github/` with issue templates (bug report, feature request, question), PR template, and FUNDING.yml for full GitHub compliance.
+*   **GitHub Templates:** Generates `.github/` with issue templates (bug report, feature request, question), PR template, FUNDING.yml, and **copilot-instructions.md** for AI agent guidance.
 *   **License Management:** Select from standard licenses (MIT, Apache, GPL) via CLI flag or interactive prompt.
 
 ### 🏗️ Modern Architecture (v1.4.0)
@@ -63,6 +72,25 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **100% Backward Compatible:** All existing functions preserved via module-level aliases
 *   **Improved Maintainability:** 800+ lines reorganized for better code organization and scalability
 
+### 🤖 Universal AI IDE Compatibility (v1.4.1)
+*   **GitHub Copilot Support:** Generates `.github/copilot-instructions.md` with project-aware guidance
+    - Works in VS Code, Visual Studio, JetBrains IDEs
+    - Includes development workflows, security protocols, and commit conventions
+    - Dynamically adapts to detected tech stack
+*   **Cursor IDE Integration:** Creates `.cursorrules` for AI Composer
+    - Optimized for Cursor's inline edits and multi-file Composer mode
+    - Includes `@file` reference patterns and keyboard shortcuts
+    - Tech stack-specific best practices and conventions
+*   **Windsurf (Cascade AI) Support:** Generates `.windsurfrules` for agentic coding
+    - Tailored for Cascade's multi-step reasoning and planning
+    - Memory persistence and context management guidelines
+    - Workflow integration with `.agent/` structure
+*   **Google IDX / Gemini CLI:** Native support via `.idx/dev.nix` and `.agent/` architecture
+*   **Universal Fallback:** `.agent/` directory structure works with ANY AI coding assistant
+    - Rules, workflows, skills, and memory accessible to all AI tools
+    - Semantic file organization for optimal RAG (Retrieval Augmented Generation)
+    - Human-readable markdown format for maximum compatibility
+
 ---
 
 ## 🛠️ Development
@@ -74,7 +102,7 @@ This project includes a professional development environment with a robust test 
 *   `pip install -e .[dev]`
 
 ### Running Tests
-We use **pytest** for testing (59+ passing tests) across **Windows**, **macOS**, and **Ubuntu**.
+We use **pytest** for testing (62+ passing tests) across **Windows**, **macOS**, and **Ubuntu**.
 We support **Python 3.10** through **3.14-dev**.
 
 ```bash

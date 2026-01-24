@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.4.2] - 2026-01-24
+
+### Changed
+- Version synchronization across all project files
+- Documentation consistency improvements
+
+## [1.4.1] - 2026-01-24
+
+### Added
+- **AI IDE Compatibility**: Auto-generates `.cursorrules` and `.windsurfrules` for maximum compatibility
+  - Cursor IDE support with dedicated rules file and Composer mode guidance
+  - Windsurf IDE support with Cascade AI-specific workflows and memory integration
+  - Comprehensive instructions tailored to each IDE's unique features
+- **GitHub Copilot Instructions**: Auto-generates `.github/copilot-instructions.md` for all new projects
+  - Provides comprehensive AI agent guidance with project context
+  - Includes development workflows, coding standards, and commit conventions
+  - Documents common tasks, integration points, and key file references
+  - Template dynamically includes detected tech stack
+- **Universal AI Assistant Support**: Projects now work seamlessly across multiple AI coding tools
+  - GitHub Copilot (VS Code, Visual Studio, JetBrains)
+  - Cursor IDE with AI Composer
+  - Windsurf with Cascade AI agent
+  - Google Gemini CLI / Project IDX
+  - Generic AI assistants via .agent/ structure
+
+### Changed
+- **GitHub Templates**: AI instruction files now part of standard scaffolding
+- **Documentation**: Updated README with AI IDE compatibility matrix
+- **Test Coverage**: Added tests for .cursorrules and .windsurfrules generation
+
+### Technical
+- All 62+ tests passing (100% regression-free)
+- Zero external dependencies added
+- Single-file portability preserved
+- Script size: ~1,700 lines, 62KB
+
 ## [1.4.0] - 2026-01-24
 
 ### Added

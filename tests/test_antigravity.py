@@ -575,6 +575,38 @@ class TestIntegration:
             assert os.path.exists(os.path.join(project_dir, "AUDIT.md"))
             assert os.path.exists(os.path.join(project_dir, "BOOTSTRAP_INSTRUCTIONS.md"))
 
+            # Check GitHub templates exist
+            assert os.path.exists(os.path.join(project_dir, ".github", "PULL_REQUEST_TEMPLATE.md"))
+            assert os.path.exists(os.path.join(project_dir, ".github", "FUNDING.yml"))
+            assert os.path.exists(os.path.join(project_dir, ".github", "copilot-instructions.md"))
+
+            # Check AI IDE compatibility files exist
+            assert os.path.exists(os.path.join(project_dir, ".cursorrules"))
+            assert os.path.exists(os.path.join(project_dir, ".windsurfrules"))
+
+            # Verify copilot instructions content
+            copilot_file = os.path.join(project_dir, ".github", "copilot-instructions.md")
+            with open(copilot_file, "r", encoding="utf-8") as f:
+                content = f.read()
+                assert "GitHub Copilot Instructions" in content
+                assert "Development Workflow" in content
+                assert "python" in content  # Tech stack should be included
+
+            # Verify Cursor rules content
+            cursor_file = os.path.join(project_dir, ".cursorrules")
+            with open(cursor_file, "r", encoding="utf-8") as f:
+                content = f.read()
+                assert "Cursor IDE Rules" in content
+                assert "python" in content
+
+            # Verify Windsurf rules content
+            windsurf_file = os.path.join(project_dir, ".windsurfrules")
+            with open(windsurf_file, "r", encoding="utf-8") as f:
+                content = f.read()
+                assert "Windsurf IDE Rules" in content
+                assert "Cascade" in content
+                assert "python" in content
+
             # Check directories exist
             assert os.path.isdir(os.path.join(project_dir, "src"))
             assert os.path.isdir(os.path.join(project_dir, "tests"))
