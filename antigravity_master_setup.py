@@ -1080,8 +1080,23 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
     print(f"Summary: {len(passed)} passed, {len(warnings)} warnings, {len(issues)} issues")
 
     if issues:
-        print("\n🏆 Project is fully healthy!")
-        return True
+        print("\n🚨 Issues Found:")
+        for issue in issues:
+            print(f"  {issue}")
+
+    if warnings:
+        print("\n⚠️  Warnings:")
+        for warning in warnings:
+            print(f"  {warning}")
+
+    print(f"\n{AntigravityResources.SEPARATOR}")
+
+    if issues:
+        print("❌ Project needs attention!")
+        return False
+
+    print("🏆 Project is fully healthy!")
+    return True
 
 
 def list_keywords() -> None:
