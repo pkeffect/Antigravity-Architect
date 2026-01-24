@@ -1048,7 +1048,7 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
         AntigravityResources.BOOTSTRAP_FILE: "Bootstrap guide",
     }
 
-    for file_path, description in required_files.items():
+    for file_path, _description in required_files.items():
         full_path = base_dir / file_path
         if full_path.exists():
             if full_path.stat().st_size == 0:
