@@ -72,24 +72,57 @@ mypy antigravity_master_setup.py --ignore-missing-imports
 
 ## 🚀 Usage
 
-### 1. Run the Script
+### Interactive Mode (Default)
 No external dependencies required. Just run it with Python 3.
 
 ```bash
 python antigravity_master_setup.py
 ```
 
-### 2. Follow the Prompt
 The script will ask for an optional "Brain Dump" file, or you can manually input your stack.
 
-```text
-[Optional] Drag & Drop a Brain Dump file (Specs/Notes/Code):
-Path: /Users/me/docs/project_specs.txt
+### CLI Mode (v1.3+)
+For automation and scripting, use command-line arguments:
 
-Project Name: my-super-app
+```bash
+# Basic project creation
+python antigravity_master_setup.py --name my-app --stack python,react
+
+# With brain dump and safe mode
+python antigravity_master_setup.py --name my-app --brain-dump ./specs.md --safe
+
+# Preview without creating files
+python antigravity_master_setup.py --name my-app --stack python --dry-run
+
+# Use custom templates
+python antigravity_master_setup.py --name my-app --templates ~/.antigravity/templates/
 ```
 
-### 3. Initialize the Agent
+### Doctor Mode (v1.3+)
+Validate an existing project's `.agent/` structure:
+
+```bash
+# Check project health
+python antigravity_master_setup.py --doctor ./my-project
+
+# Auto-fix missing directories
+python antigravity_master_setup.py --doctor ./my-project --fix
+```
+
+### Other Commands
+
+```bash
+# Show version
+python antigravity_master_setup.py --version
+
+# List all supported tech stack keywords
+python antigravity_master_setup.py --list-keywords
+
+# Show help
+python antigravity_master_setup.py --help
+```
+
+### Initialize the Agent
 Once the folder is created:
 1.  Open the folder in **Google Antigravity** (or Project IDX / VS Code).
 2.  Open the **Chat Interface**.

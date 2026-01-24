@@ -9,7 +9,10 @@ embedded rules, workflows, skills, and memory for AI agents.
 Designed for Google Antigravity, Project IDX, Gemini Code Assist, and VS Code.
 
 Usage:
-    python antigravity_master_setup.py
+    python antigravity_master_setup.py                      # Interactive mode
+    python antigravity_master_setup.py --name my-project    # CLI mode
+    python antigravity_master_setup.py --doctor ./project   # Validate project
+    python antigravity_master_setup.py --list-keywords      # Show supported keywords
 
 Author: pkeffect
 License: MIT
@@ -17,12 +20,16 @@ License: MIT
 
 from __future__ import annotations
 
+import argparse
 import logging
 import os
 import re
 import sys
 import tempfile
 from datetime import datetime
+from pathlib import Path
+
+VERSION = "1.3.0"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -596,18 +603,29 @@ def generate_agent_files(base_dir: str, keywords: list[str], safe_mode: bool = F
         write_file(path, content, exist_ok=safe_mode)
 
 
-def generate_project(project_name: str, keywords: list[str], brain_dump_path: str | None = None) -> bool:
+def generate_project(
+    project_name: str,
+    keywords: list[str],
+    brain_dump_path: str | None = None,
+    safe_mode: bool | None = None,
+    custom_templates: dict[str, dict[str, str]] | None = None,
+) -> bool:
     """
     Main project generation logic.
 
     Creates the full project structure with all configurations and agent files.
+    Args:
+        project_name: Name of the project to create.
+        keywords: List of tech stack keywords.
+        brain_dump_path: Optional path to a brain dump file.
+        safe_mode: If True, non-destructive. If None, prompt user if dir exists.
+        custom_templates: Optional dict of custom template overrides.
     Returns True on success, False on failure.
     """
     base_dir = os.path.join(os.getcwd(), project_name)
 
-    # Check for existing directory
-    safe_mode = False
-    if os.path.exists(base_dir):
+    # Handle safe_mode: if not explicitly set and directory exists, prompt user
+    if safe_mode is None and os.path.exists(base_dir):
         print(f"\n⚠️  Project '{project_name}' already exists.")
         choice = input("Select mode: [U]pdate (Safe) / [O]verwrite (Risky) / [C]ancel: ").lower()
 
@@ -618,8 +636,11 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
             confirm = input("💥 WARNING: This will overwrite files. Type 'yes' to confirm: ")
             if confirm.lower() != "yes":
                 return False
+            safe_mode = False
         else:
             return False
+    elif safe_mode is None:
+        safe_mode = False
 
     print(f"\n🚀 Constructing '{project_name}'...")
 
@@ -697,21 +718,196 @@ def generate_project(project_name: str, keywords: list[str], brain_dump_path: st
 
 
 # ==============================================================================
-# 6. MAIN EXECUTION FLOW
+# 6. CLI, DOCTOR MODE, AND MAIN EXECUTION
 # ==============================================================================
 
 
-def main() -> None:
-    """Main entry point for the Antigravity Architect."""
+def build_cli_parser() -> argparse.ArgumentParser:
+    """Build the argument parser for CLI mode."""
+    parser = argparse.ArgumentParser(
+        prog="antigravity_master_setup.py",
+        description="🌌 Antigravity Architect: Agent-First Project Bootstrapper",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python antigravity_master_setup.py                           # Interactive mode
+  python antigravity_master_setup.py --name my-app --stack python,react
+  python antigravity_master_setup.py --name my-app --brain-dump ./specs.md --safe
+  python antigravity_master_setup.py --doctor ./existing-project
+  python antigravity_master_setup.py --list-keywords
+        """,
+    )
+
+    parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
+
+    parser.add_argument("--name", "-n", type=str, help="Project name (required for CLI mode)")
+    parser.add_argument(
+        "--stack", "-s", type=str, help="Comma-separated tech stack keywords (e.g., python,react,docker)"
+    )
+    parser.add_argument("--brain-dump", "-b", type=str, help="Path to brain dump file for Knowledge Assimilation")
+    parser.add_argument("--safe", action="store_true", help="Enable Safe Update Mode (non-destructive)")
+    parser.add_argument("--dry-run", action="store_true", help="Preview actions without creating files")
+    parser.add_argument("--templates", "-t", type=str, help="Path to custom templates directory")
+
+    parser.add_argument("--doctor", type=str, metavar="PATH", help="Validate an existing project's .agent/ structure")
+    parser.add_argument("--fix", action="store_true", help="Attempt to fix issues found by --doctor")
+
+    parser.add_argument("--list-keywords", action="store_true", help="List all supported tech stack keywords")
+
+    return parser
+
+
+def load_custom_templates(templates_path: str | None) -> dict[str, dict[str, str]]:
+    """
+    Load custom templates from a directory, merging with defaults.
+
+    Returns a dict with keys 'rules', 'workflows', 'skills' containing template overrides.
+    """
+    if not templates_path:
+
+        home_templates = Path.home() / ".antigravity" / "templates"
+        if home_templates.exists():
+            templates_path = str(home_templates)
+        else:
+            return {}
+
+    templates_dir = Path(templates_path)
+    if not templates_dir.exists():
+        logging.warning(f"⚠️ Templates directory not found: {templates_path}")
+        return {}
+
+    overrides: dict[str, dict[str, str]] = {"rules": {}, "workflows": {}, "skills": {}}
+
+    for category in overrides:
+        category_dir = templates_dir / category
+        if category_dir.exists():
+            for file_path in category_dir.glob("*.md"):
+                content = file_path.read_text(encoding="utf-8")
+                overrides[category][file_path.name] = content
+                logging.info(f"📦 Loaded custom template: {category}/{file_path.name}")
+
+    return overrides
+
+
+def doctor_project(project_path: str, fix: bool = False) -> bool:
+    """
+    Validate an existing project's .agent/ structure.
+
+    Returns True if healthy, False if issues found.
+    """
+    print(f"\n🩺 Running Doctor on: {project_path}")
+    print("=" * 50)
+
+    base_dir = Path(project_path)
+    if not base_dir.exists():
+        print(f"❌ Project directory not found: {project_path}")
+        return False
+
+    issues: list[str] = []
+    warnings: list[str] = []
+    passed: list[str] = []
+
+    required_dirs = [
+        ".agent/rules",
+        ".agent/workflows",
+        ".agent/skills",
+        ".agent/memory",
+    ]
+
+    for dir_path in required_dirs:
+        full_path = base_dir / dir_path
+        if full_path.exists():
+            passed.append(f"✅ {dir_path}/ exists")
+        else:
+            issues.append(f"❌ Missing: {dir_path}/")
+            if fix:
+                full_path.mkdir(parents=True, exist_ok=True)
+                (full_path / ".gitkeep").touch()
+                print(f"   🔧 Fixed: Created {dir_path}/")
+
+    required_files = {
+        ".agent/rules/00_identity.md": "Agent identity rule",
+        ".agent/rules/01_tech_stack.md": "Tech stack rule",
+        ".agent/memory/scratchpad.md": "Memory scratchpad",
+        "BOOTSTRAP_INSTRUCTIONS.md": "Bootstrap guide",
+    }
+
+    for file_path, description in required_files.items():
+        full_path = base_dir / file_path
+        if full_path.exists():
+            if full_path.stat().st_size == 0:
+                warnings.append(f"⚠️  {file_path} exists but is empty")
+            else:
+                passed.append(f"✅ {file_path} exists ({description})")
+        else:
+            issues.append(f"❌ Missing: {file_path} ({description})")
+
+    optional_files = [
+        ".gitignore",
+        "README.md",
+        "CHANGELOG.md",
+        "CONTRIBUTING.md",
+        "AUDIT.md",
+    ]
+
+    for file_path in optional_files:
+        full_path = base_dir / file_path
+        if full_path.exists():
+            passed.append(f"✅ {file_path} exists")
+        else:
+            warnings.append(f"⚠️  Optional: {file_path} not found")
+
+    for item in passed:
+        print(item)
+    for item in warnings:
+        print(item)
+    for item in issues:
+        print(item)
+
+    print("=" * 50)
+    print(f"Summary: {len(passed)} passed, {len(warnings)} warnings, {len(issues)} issues")
+
+    if issues:
+        print("\n💡 Tip: Run with --fix to attempt automatic repairs.")
+        return False
+    elif warnings:
+        print("\n✨ Project is healthy with minor recommendations.")
+        return True
+    else:
+        print("\n🏆 Project is fully healthy!")
+        return True
+
+
+def list_keywords() -> None:
+    """Display all supported tech stack keywords."""
+    print("\n🛠 Supported Tech Stack Keywords")
+    print("=" * 50)
+
+    categories = {
+        "Languages": ["python", "node", "javascript", "rust", "go", "java", "php", "ruby"],
+        "Frameworks": ["react", "nextjs", "django", "flask", "fastapi"],
+        "Infrastructure": ["docker", "sql", "postgres"],
+        "OS / Platforms": ["macos", "windows", "linux"],
+        "IDEs": ["vscode", "idea"],
+    }
+
+    for category, keywords in categories.items():
+        print(f"\n{category}:")
+        print(f"  {', '.join(keywords)}")
+
+    print("\n" + "=" * 50)
+    print("Usage: --stack python,react,docker")
+
+
+def run_interactive_mode() -> None:
+    """Original interactive mode for backwards compatibility."""
     print("=========================================================")
-    print("   🌌 Antigravity Architect: The Master Script")
+    print(f"   🌌 Antigravity Architect v{VERSION}")
     print("   Dynamic Parsing | Knowledge Distribution | Universal")
     print("=========================================================")
 
-    # Initialize logging to temp directory initially
     setup_logging()
 
-    # STEP 1: INPUTS
     print("\n[Optional] Drag & Drop a Brain Dump file (Specs/Notes/Code):")
     brain_dump_path: str | None = input("Path: ").strip().strip("'\"") or None
 
@@ -721,18 +917,104 @@ def main() -> None:
         print("❌ Project name is required.")
         return
 
-    # Get keywords manually if no brain dump
     manual_keywords: list[str] = []
     if not brain_dump_path:
         print("\nTech Stack (e.g. python, react, aws):")
         k_in = input("Keywords: ")
         manual_keywords = parse_keywords(k_in)
-        # Add default OS if none specified
+
         if not any(x in manual_keywords for x in ("macos", "windows", "linux")):
             manual_keywords.append("linux")
 
-    # STEP 2: GENERATE PROJECT
     generate_project(project_name, manual_keywords, brain_dump_path)
+
+
+def run_cli_mode(args: argparse.Namespace) -> None:
+    """Run in CLI mode with provided arguments."""
+    print("=========================================================")
+    print(f"   🌌 Antigravity Architect v{VERSION} (CLI Mode)")
+    print("=========================================================")
+
+    setup_logging()
+
+    custom_templates = load_custom_templates(args.templates)
+    if custom_templates:
+        print(f"📦 Loaded {sum(len(v) for v in custom_templates.values())} custom templates")
+
+    project_name = sanitize_name(args.name)
+    if not project_name:
+        print("❌ Invalid project name.")
+        return
+
+    keywords = parse_keywords(args.stack) if args.stack else []
+    if not any(x in keywords for x in ("macos", "windows", "linux")):
+        keywords.append("linux")
+
+    if args.dry_run:
+        print("\n🔍 DRY RUN MODE - No files will be created")
+        print("=" * 50)
+        print(f"Project Name: {project_name}")
+        print(f"Tech Stack: {', '.join(keywords)}")
+        print(f"Brain Dump: {args.brain_dump or 'None'}")
+        print(f"Safe Mode: {args.safe}")
+        print(f"Templates: {args.templates or 'Default'}")
+        print("\nDirectories that would be created:")
+        dirs = [
+            "src",
+            "tests",
+            "docs/imported",
+            "context/raw",
+            ".idx",
+            ".devcontainer",
+            ".agent/rules",
+            ".agent/workflows",
+            ".agent/skills",
+            ".agent/memory",
+        ]
+        for d in dirs:
+            print(f"  📁 {project_name}/{d}/")
+        print("\nFiles that would be created:")
+        files = [
+            ".gitignore",
+            "README.md",
+            "CHANGELOG.md",
+            "CONTRIBUTING.md",
+            "AUDIT.md",
+            "BOOTSTRAP_INSTRUCTIONS.md",
+            ".env.example",
+        ]
+        for f in files:
+            print(f"  📄 {project_name}/{f}")
+        print("\n✅ Dry run complete. No changes made.")
+        return
+
+    generate_project(
+        project_name,
+        keywords,
+        args.brain_dump,
+        safe_mode=args.safe,
+        custom_templates=custom_templates,
+    )
+
+
+def main() -> None:
+    """Main entry point for the Antigravity Architect."""
+    parser = build_cli_parser()
+    args = parser.parse_args()
+
+    if args.list_keywords:
+        list_keywords()
+        return
+
+    if args.doctor:
+        doctor_project(args.doctor, fix=args.fix)
+        return
+
+    if args.name:
+        run_cli_mode(args)
+    else:
+
+        run_interactive_mode()
 
 
 if __name__ == "__main__":
