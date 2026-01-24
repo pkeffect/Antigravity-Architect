@@ -22,9 +22,8 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Rules:** Generates "Always-On" directives (Persona, Security, Git Conventions, Chain-of-Thought).
 *   **Workflows:** Generates callable slash commands (`/plan`, `/bootstrap`, `/commit`, `/review`, `/save`).
 *   **Skills:** Generates tool definitions for Git Automation and Secret Management.
-*   **Skills:** Generates tool definitions for Git Automation and Secret Management.
 *   **Memory:** Initializes a `scratchpad.md` for long-term session memory.
-*   **Model Dispatch:** Generates a "Context Handoff" protocol that teaches the Agent to request higher-reasoning models (like o1 or Ultra) for complex tasks.
+*   **Model Dispatch:** Generates a "Context Handoff" protocol (`99_model_dispatch.md`) that teaches the Agent to request higher-reasoning models (like o1 or Ultra) for complex tasks.
 
 ### 🛡️ Production Engineering
 *   **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories.
@@ -111,7 +110,9 @@ my-project/
 │   │   ├── 00_identity.md   # Persona & Goals
 │   │   ├── 01_tech_stack.md # Dynamic stack definitions
 │   │   ├── 02_security.md   # OWASP & Secret handling
+│   │   ├── 03_git.md        # Conventional Commits
 │   │   ├── 04_reasoning.md  # Chain-of-Thought enforcer
+│   │   ├── 99_model_dispatch.md # Model Handoff Protocol
 │   │   └── imported_*.md    # Rules assimilated from your Brain Dump
 │   ├── workflows/           # Callable Commands (/slash)
 │   │   ├── plan.md          # /plan
