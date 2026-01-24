@@ -40,6 +40,16 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 *   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` to professionalize your repository from Day 1.
 *   **License Management:** Select from standard licenses (MIT, Apache, GPL) via CLI flag or interactive prompt.
 
+### 🏗️ Modern Architecture (v1.4.0)
+*   **Hybrid Class-Based Design:** Refactored into 5 focused classes while maintaining single-file portability
+    - `AntigravityResources` - Centralized templates, constants, and mappings
+    - `AntigravityEngine` - File system operations and validation utilities
+    - `AntigravityBuilder` - Dynamic configuration generators
+    - `AntigravityAssimilator` - Intelligent brain dump parsing
+    - `AntigravityGenerator` - High-level project generation orchestration
+*   **100% Backward Compatible:** All existing functions preserved via module-level aliases
+*   **Improved Maintainability:** 800+ lines reorganized for better code organization and scalability
+
 ---
 
 ## 🛠️ Development

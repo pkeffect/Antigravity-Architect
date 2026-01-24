@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [1.4.0] - 2026-01-24
+
+### Changed
+- **Major Refactoring**: Transformed script into hybrid class-based architecture
+  - Created `AntigravityResources` class for all templates, constants, and mappings
+  - Created `AntigravityEngine` class for file system operations and validation
+  - Created `AntigravityBuilder` class for dynamic configuration generators
+  - Created `AntigravityAssimilator` class for brain dump parsing logic
+  - Created `AntigravityGenerator` class for project generation orchestration
+- **Architecture**: Reorganized ~800+ lines into 5 focused, maintainable classes
+- **Compatibility**: Maintained 100% backward compatibility via module-level function aliases
+
+### Technical
+- All 59 tests passing (100% regression-free)
+- Zero external dependencies added
+- Single-file portability preserved
+- Improved code organization and maintainability
+
 ## [1.3.0] - 2026-01-24
 
 ### Added

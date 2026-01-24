@@ -29,14 +29,47 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
 # ==============================================================================
 
-# A. Standard Gitignore Blocks (Universal + Language Specific)
-BASE_GITIGNORE = """
+
+class AntigravityResources:
+    """
+    Static resource container for all templates, mappings, and constants.
+
+    This class serves as the centralized knowledge base for the Antigravity
+    Architect, containing all configuration data, templates, and mapping rules
+    needed for project generation.
+    """
+
+    # Core Constants
+    VERSION = VERSION
+    AGENT_DIR = ".agent"
+
+    # Filename Constants
+    GITIGNORE_FILE = ".gitignore"
+    README_FILE = "README.md"
+    DEVCONTAINER_DIR = ".devcontainer"
+    DEVCONTAINER_FILE = "devcontainer.json"
+    IDX_DIR = ".idx"
+    NIX_FILE = "dev.nix"
+    ENV_EXAMPLE_FILE = ".env.example"
+    LICENSE_FILE = "LICENSE"
+    CHANGELOG_FILE = "CHANGELOG.md"
+    CONTRIBUTING_FILE = "CONTRIBUTING.md"
+    AUDIT_FILE = "AUDIT.md"
+    SECURITY_FILE = "SECURITY.md"
+    CODE_OF_CONDUCT_FILE = "CODE_OF_CONDUCT.md"
+    BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
+
+    # UI Constants
+    SEPARATOR = "=========================================="
+
+    # A. Standard Gitignore Blocks (Universal + Language Specific)
+    BASE_GITIGNORE = """
 # --- Universal ---
 .DS_Store
 Thumbs.db
@@ -53,74 +86,85 @@ context/
 antigravity_setup.log
 """
 
-GITIGNORE_MAP: dict[str, str] = {
-    "python": "\n# --- Python ---\n__pycache__/\n*.pyc\nvenv/\n.venv/\n.pytest_cache/\n.mypy_cache/\n.ruff_cache/\n*.egg-info/\n",
-    "node": "\n# --- Node/JS ---\nnode_modules/\ndist/\nbuild/\ncoverage/\n.npm/\n.eslintcache\n.yarn-integrity\n",
-    "rust": "\n# --- Rust ---\n/target\nCargo.lock\n**/*.rs.bk\n",
-    "go": "\n# --- Go ---\n/bin/\n/pkg/\n/dist/\n",
-    "java": "\n# --- Java ---\n*.class\n*.jar\n*.war\nbuild/\n.gradle/\n",
-    "php": "\n# --- PHP ---\n/vendor/\n.phpunit.result.cache\n",
-    "ruby": "\n# --- Ruby ---\n/.bundle/\n/vendor/bundle/\n",
-    "docker": "\n# --- Docker ---\n.docker/\n",
-    "postgres": "",
-    "react": "\n# --- React ---\nbuild/\n.env.local\n",
-    "nextjs": "\n# --- NextJS ---\n.next/\nout/\n",
-    "django": "\n# --- Django ---\n*.log\nlocal_settings.py\ndb.sqlite3\nmedia/\nstaticfiles/\n",
-    "flask": "\n# --- Flask ---\ninstance/\n.webassets-cache\n",
-    "macos": "\n# --- macOS ---\n.DS_Store\n.AppleDouble\n",
-    "windows": "\n# --- Windows ---\nThumbs.db\nehthumbs.db\n*.exe\n*.dll\n",
-    "linux": "\n# --- Linux ---\n*~\n.fuse_hidden*\n",
-    "vscode": "\n# --- VS Code ---\n.vscode/\n",
-    "idea": "\n# --- JetBrains ---\n.idea/\n*.iml\n",
-}
+    GITIGNORE_MAP: dict[str, str] = {
+        "python": "\n# --- Python ---\n__pycache__/\n*.pyc\nvenv/\n.venv/\n.pytest_cache/\n.mypy_cache/\n.ruff_cache/\n*.egg-info/\n",
+        "node": "\n# --- Node/JS ---\nnode_modules/\ndist/\nbuild/\ncoverage/\n.npm/\n.eslintcache\n.yarn-integrity\n",
+        "rust": "\n# --- Rust ---\n/target\nCargo.lock\n**/*.rs.bk\n",
+        "go": "\n# --- Go ---\n/bin/\n/pkg/\n/dist/\n",
+        "java": "\n# --- Java ---\n*.class\n*.jar\n*.war\nbuild/\n.gradle/\n",
+        "php": "\n# --- PHP ---\n/vendor/\n.phpunit.result.cache\n",
+        "ruby": "\n# --- Ruby ---\n/.bundle/\n/vendor/bundle/\n",
+        "docker": "\n# --- Docker ---\n.docker/\n",
+        "postgres": "",
+        "react": "\n# --- React ---\nbuild/\n.env.local\n",
+        "nextjs": "\n# --- NextJS ---\n.next/\nout/\n",
+        "django": "\n# --- Django ---\n*.log\nlocal_settings.py\ndb.sqlite3\nmedia/\nstaticfiles/\n",
+        "flask": "\n# --- Flask ---\ninstance/\n.webassets-cache\n",
+        "macos": "\n# --- macOS ---\n.DS_Store\n.AppleDouble\n",
+        "windows": "\n# --- Windows ---\nThumbs.db\nehthumbs.db\n*.exe\n*.dll\n",
+        "linux": "\n# --- Linux ---\n*~\n.fuse_hidden*\n",
+        "vscode": "\n# --- VS Code ---\n.vscode/\n",
+        "idea": "\n# ---JetBrains ---\n.idea/\n*.iml\n",
+    }
 
-# B. Nix Packages (For Google Project IDX / Cloud Environments)
-NIX_PACKAGE_MAP: dict[str, list[str]] = {
-    "python": ["pkgs.python312", "pkgs.python312Packages.pip", "pkgs.ruff", "pkgs.python312Packages.virtualenv"],
-    "node": ["pkgs.nodejs_20", "pkgs.nodePackages.nodemon", "pkgs.nodePackages.typescript"],
-    "rust": ["pkgs.cargo", "pkgs.rustc", "pkgs.rustfmt"],
-    "go": ["pkgs.go", "pkgs.gopls"],
-    "java": ["pkgs.jdk17", "pkgs.maven"],
-    "php": ["pkgs.php", "pkgs.php82Packages.composer"],
-    "ruby": ["pkgs.ruby"],
-    "docker": ["pkgs.docker", "pkgs.docker-compose"],
-    "sql": ["pkgs.sqlite", "pkgs.postgresql"],
-}
+    # B. Nix Packages (For Google Project IDX / Cloud Environments)
+    NIX_PACKAGE_MAP: dict[str, list[str]] = {
+        "python": ["pkgs.python312", "pkgs.python312Packages.pip", "pkgs.ruff", "pkgs.python312Packages.virtualenv"],
+        "node": ["pkgs.nodejs_20", "pkgs.nodePackages.nodemon", "pkgs.nodePackages.typescript"],
+        "rust": ["pkgs.cargo", "pkgs.rustc", "pkgs.rustfmt"],
+        "go": ["pkgs.go", "pkgs.gopls"],
+        "java": ["pkgs.jdk17", "pkgs.maven"],
+        "php": ["pkgs.php", "pkgs.php82Packages.composer"],
+        "ruby": ["pkgs.ruby"],
+        "docker": ["pkgs.docker", "pkgs.docker-compose"],
+        "sql": ["pkgs.sqlite", "pkgs.postgresql"],
+    }
 
-# C. Heuristic Classification Keywords
-CLASSIFICATION_RULES: dict[str, list[str]] = {
-    "rules": [
-        "always",
-        "never",
-        "must",
-        "style",
-        "convention",
-        "standard",
-        "protocol",
-        "policy",
-        "lint",
-        "formatting",
-        "security",
-    ],
-    "workflows": [
-        "step",
-        "guide",
-        "process",
-        "workflow",
-        "how-to",
-        "deploy",
-        "setup",
-        "run",
-        "execution",
-        "plan",
-        "roadmap",
-    ],
-    "skills": ["command", "cli", "tool", "usage", "utility", "script", "automation", "flags", "arguments", "terminal"],
-    "docs": ["overview", "architecture", "introduction", "background", "context", "diagram", "concept", "summary"],
-}
+    # C. Heuristic Classification Keywords
+    CLASSIFICATION_RULES: dict[str, list[str]] = {
+        "rules": [
+            "always",
+            "never",
+            "must",
+            "style",
+            "convention",
+            "standard",
+            "protocol",
+            "policy",
+            "lint",
+            "formatting",
+            "security",
+        ],
+        "workflows": [
+            "step",
+            "guide",
+            "process",
+            "workflow",
+            "how-to",
+            "deploy",
+            "setup",
+            "run",
+            "execution",
+            "plan",
+            "roadmap",
+        ],
+        "skills": [
+            "command",
+            "cli",
+            "tool",
+            "usage",
+            "utility",
+            "script",
+            "automation",
+            "flags",
+            "arguments",
+            "terminal",
+        ],
+        "docs": ["overview", "architecture", "introduction", "background", "context", "diagram", "concept", "summary"],
+    }
 
-# D. Template Definitions for Generated Files
-CHANGELOG_TEMPLATE = """# Changelog
+    # D. Template Definitions for Generated Files
+    CHANGELOG_TEMPLATE = """# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -128,7 +172,7 @@ All notable changes to this project will be documented in this file.
 - Initial release
 """
 
-CONTRIBUTING_TEMPLATE = """# Contributing to the Project
+    CONTRIBUTING_TEMPLATE = """# Contributing to the Project
 
 ## Getting Started
 1. Clone the repo
@@ -141,14 +185,14 @@ CONTRIBUTING_TEMPLATE = """# Contributing to the Project
 - Submit PRs for review
 """
 
-AUDIT_TEMPLATE = """# Security & Quality Audit Log
+    AUDIT_TEMPLATE = """# Security & Quality Audit Log
 
 | Date | Auditor | Score | Notes |
 |------|---------|-------|-------|
 | TBA  | System  | -/100 | Initial Generation |
 """
 
-SECURITY_TEMPLATE = """# Security Policy
+    SECURITY_TEMPLATE = """# Security Policy
 
 ## Supported Versions
 
@@ -164,15 +208,15 @@ The following versions of this project are currently being supported with securi
 Please report security vulnerabilities by opening a private issue or contacting the maintainers directly.
 """
 
-CODE_OF_CONDUCT_TEMPLATE = """# Contributor Covenant Code of Conduct
+    CODE_OF_CONDUCT_TEMPLATE = """# Contributor Covenant Code of Conduct
 
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 """
 
-LICENSE_TEMPLATES: dict[str, str] = {
-    "mit": """MIT License
+    LICENSE_TEMPLATES: dict[str, str] = {
+        "mit": """MIT License
 
 Copyright (c) {year} {author}
 
@@ -183,41 +227,41 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 """,
-    "apache": """                                 Apache License
+        "apache": """                                 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
 """,
-    "gpl": """                    GNU GENERAL PUBLIC LICENSE
+        "gpl": """                    GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 """,
-}
+    }
 
-AGENT_RULES: dict[str, str] = {
-    "00_identity.md": """# System Identity
+    AGENT_RULES: dict[str, str] = {
+        "00_identity.md": """# System Identity
 You are a Senior Polyglot Software Engineer and Product Architect.
 - **Safety:** Never delete data without asking. Never leak secrets.
 - **Context:** Always check `docs/imported` and `context/raw` before coding.
 """,
-    "02_security.md": """# Security Protocols
+        "02_security.md": """# Security Protocols
 1. **Secrets:** Never output API keys. Use `.env`.
 2. **Inputs:** Validate all inputs.
 3. **Dependencies:** Warn if using deprecated libraries.
 """,
-    "03_git.md": """# Git Conventions
+        "03_git.md": """# Git Conventions
 - Use Conventional Commits (`feat:`, `fix:`, `docs:`).
 - Never commit to main without testing.
 """,
-    "04_reasoning.md": """# Reasoning Protocol
+        "04_reasoning.md": """# Reasoning Protocol
 1. **Pause:** Analyze the request.
 2. **Plan:** Break it down step-by-step.
 3. **Check:** Verify against `docs/` constraints.
 4. **Execute:** Write code.
 """,
-    "99_model_dispatch.md": """# Model Dispatch Protocol
+        "99_model_dispatch.md": """# Model Dispatch Protocol
 ## Concept
 You are a multi-model intelligence. You must identify when your current capabilities are insufficient and request a "Context Handoff."
 
@@ -232,10 +276,10 @@ IF a request exceeds your current Tier:
 2. Output: "🛑 **Context Handoff Required** -> [Target Tier]"
 3. Wait for the user to switch models.
 """,
-}
+    }
 
-AGENT_WORKFLOWS: dict[str, str] = {
-    "plan.md": """---
+    AGENT_WORKFLOWS: dict[str, str] = {
+        "plan.md": """---
 trigger: /plan
 ---
 # Plan Workflow
@@ -244,7 +288,7 @@ trigger: /plan
 3. Check against `.agent/rules/`.
 4. Output plan and update `scratchpad.md`.
 """,
-    "bootstrap.md": """---
+        "bootstrap.md": """---
 trigger: /bootstrap
 ---
 # Bootstrap Workflow
@@ -252,7 +296,7 @@ trigger: /bootstrap
 2. Generate boilerplate code for the detected stack.
 3. Ensure `.gitignore` is respected.
 """,
-    "commit.md": """---
+        "commit.md": """---
 trigger: /commit
 ---
 # Smart Commit
@@ -261,7 +305,7 @@ trigger: /commit
 3. Generate Conventional Commit message.
 4. Ask for approval.
 """,
-    "review.md": """---
+        "review.md": """---
 trigger: /review
 ---
 # Code Review
@@ -269,17 +313,17 @@ trigger: /review
 2. Check for Code Style (Rule 01).
 3. Report issues sorted by severity.
 """,
-    "save.md": """---
+        "save.md": """---
 trigger: /save
 ---
 # Save Memory
 1. Summarize recent actions.
 2. Update `.agent/memory/scratchpad.md`.
 """,
-}
+    }
 
-AGENT_SKILLS: dict[str, str] = {
-    "git_automation/SKILL.md": """---
+    AGENT_SKILLS: dict[str, str] = {
+        "git_automation/SKILL.md": """---
 name: git_automation
 description: Safe git operations.
 ---
@@ -287,205 +331,237 @@ description: Safe git operations.
 **Commands:** `git status`, `git diff`, `git add`, `git commit`.
 **Rule:** Always verify status before adding.
 """,
-    "secrets_manager/SKILL.md": """---
+        "secrets_manager/SKILL.md": """---
 name: secrets_manager
 description: Handle API keys.
 ---
 # Secrets Skill
 **Action:** Detect secrets in code. Move them to `.env`. Replace with `os.getenv()`.
 """,
-}
+    }
 
-DEVCONTAINER_JSON = """{
+    DEVCONTAINER_JSON = """{
   "name": "Antigravity Universal",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": { "ghcr.io/devcontainers/features/common-utils:2": {} }
 }
 """
 
-AGENT_DIR = ".agent"
+
+# Maintain backward compatibility with module-level constants
+AGENT_DIR = AntigravityResources.AGENT_DIR
 
 # ==============================================================================
 # 2. SYSTEM UTILITIES & LOGGING
 # ==============================================================================
 
 
-def setup_logging(log_dir: str | None = None) -> None:
-    """Configure logging to both file and stdout."""
-    if log_dir:
-        os.makedirs(log_dir, exist_ok=True)
-        log_path = os.path.join(log_dir, "antigravity_setup.log")
-    else:
-        log_path = os.path.join(tempfile.gettempdir(), "antigravity_setup.log")
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.FileHandler(log_path, mode="w", encoding="utf-8"),
-            logging.StreamHandler(sys.stdout),
-        ],
-    )
-
-
-def sanitize_name(name: str | None) -> str:
+class AntigravityEngine:
     """
-    Ensures project name is valid and safe for file system.
+    Low-level utilities for file system operations and input validation.
 
-    Prevents path traversal attacks and invalid characters.
+    This class contains all the foundational operations needed by the Antigravity
+    Architect, including sanitization, validation, file I/O, and logging setup.
+    All methods are static as they don't require instance state.
     """
-    if not name:
-        return "antigravity-project"
 
-    clean = re.sub(r"\s+", "_", name.strip())
-    clean = re.sub(r"[^a-zA-Z0-9_\-]", "", clean)
+    @staticmethod
+    def setup_logging(log_dir: str | None = None) -> None:
+        """Configure logging to both file and stdout."""
+        if log_dir:
+            os.makedirs(log_dir, exist_ok=True)
+            log_path = os.path.join(log_dir, "antigravity_setup.log")
+        else:
+            log_path = os.path.join(tempfile.gettempdir(), "antigravity_setup.log")
 
-    # Security: Prevent path traversal attempts
-    if ".." in clean or clean.startswith(("/", "\\")):
-        logging.warning("⚠️ Potential path traversal detected, using default name")
-        return "antigravity-project"
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s [%(levelname)s] %(message)s",
+            handlers=[
+                logging.FileHandler(log_path, mode="w", encoding="utf-8"),
+                logging.StreamHandler(sys.stdout),
+            ],
+        )
 
-    # Security: Prevent empty result after sanitization
-    if not clean:
-        return "antigravity-project"
+    @staticmethod
+    def sanitize_name(name: str | None) -> str:
+        """
+        Ensures project name is valid and safe for file system.
 
-    return clean
+        Prevents path traversal attacks and invalid characters.
+        """
+        if not name:
+            return "antigravity-project"
 
+        clean = re.sub(r"\s+", "_", name.strip())
+        clean = re.sub(r"[^a-zA-Z0-9_\-]", "", clean)
 
-def parse_keywords(input_str: str | None) -> list[str]:
-    """Converts comma/space separated string to list of lowercase keywords."""
-    if not input_str:
-        return []
-    raw = re.split(r"[,\s]+", input_str)
-    return [w.lower().strip() for w in raw if w.strip()]
+        # Security: Prevent path traversal attempts
+        if ".." in clean or clean.startswith(("/", "\\")):
+            logging.warning("⚠️ Potential path traversal detected, using default name")
+            return "antigravity-project"
 
+        # Security: Prevent empty result after sanitization
+        if not clean:
+            return "antigravity-project"
 
-def validate_file_path(filepath: str | None) -> bool:
-    """
-    Validates that a file path is safe and accessible.
+        return clean
 
-    Returns True if the path is a valid, readable file.
-    """
-    if not filepath:
-        return False
+    @staticmethod
+    def parse_keywords(input_str: str | None) -> list[str]:
+        """Converts comma/space separated string to list of lowercase keywords."""
+        if not input_str:
+            return []
+        raw = re.split(r"[,\s]+", input_str)
+        return [w.lower().strip() for w in raw if w.strip()]
 
-    # Resolve to absolute path and check it's a regular file
-    try:
-        abs_path = os.path.abspath(filepath)
-        if not os.path.isfile(abs_path):
-            logging.warning(f"⚠️ Not a valid file: {filepath}")
+    @staticmethod
+    def validate_file_path(filepath: str | None) -> bool:
+        """
+        Validates that a file path is safe and accessible.
+
+        Returns True if the path is a valid, readable file.
+        """
+        if not filepath:
             return False
-        if not os.access(abs_path, os.R_OK):
-            logging.warning(f"⚠️ File not readable: {filepath}")
-            return False
-        return True
-    except (OSError, ValueError) as e:
-        logging.warning(f"⚠️ Invalid file path: {e}")
-        return False
 
-
-def write_file(path: str, content: str, exist_ok: bool = False) -> bool:
-    """
-    Writes a new file, creating parent directories as needed.
-
-    Args:
-        path: Destination path
-        content: File content
-        exist_ok: If True, skip formatting if file exists (Safe Mode).
-                  If False, overwrite existing file (Default).
-
-    Returns True on success/creation, False on failure or skipped.
-    """
-    try:
-        if exist_ok and os.path.exists(path):
-            logging.info(f"⏭️  Skipped (Exists): {path}")
+        # Resolve to absolute path and check it's a regular file
+        try:
+            abs_path = os.path.abspath(filepath)
+            if not os.path.isfile(abs_path):
+                logging.warning(f"⚠️ Not a valid file: {filepath}")
+                return False
+            if not os.access(abs_path, os.R_OK):
+                logging.warning(f"⚠️ File not readable: {filepath}")
+                return False
             return True
+        except (OSError, ValueError) as e:
+            logging.warning(f"⚠️ Invalid file path: {e}")
+            return False
 
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(content.strip() + "\n")
+    @staticmethod
+    def write_file(path: str, content: str, exist_ok: bool = False) -> bool:
+        """
+        Writes a new file, creating parent directories as needed.
 
-        icon = "✅" if not os.path.exists(path) else "📝"
-        logging.info(f"{icon} Wrote: {path}")
-        return True
-    except OSError as e:
-        logging.error(f"❌ Error writing {path}: {e}")
-        return False
+        Args:
+            path: Destination path
+            content: File content
+            exist_ok: If True, skip if file exists (Safe Mode).
+                      If False, overwrite existing file (Default).
+
+        Returns True on success/creation, False on failure or skipped.
+        """
+        try:
+            if exist_ok and os.path.exists(path):
+                logging.info(f"⏭️  Skipped (Exists): {path}")
+                return True
+
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(content.strip() + "\n")
+
+            icon = "✅" if not os.path.exists(path) else "📝"
+            logging.info(f"{icon} Wrote: {path}")
+            return True
+        except OSError as e:
+            logging.error(f"❌ Error writing {path}: {e}")
+            return False
+
+    @staticmethod
+    def append_file(path: str, content: str) -> bool:
+        """
+        Appends content to a file (used for Assimilation).
+
+        Returns True on success, False on failure.
+        """
+        try:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "a", encoding="utf-8") as f:
+                f.write("\n\n" + content.strip() + "\n")
+            logging.info(f"🔗 Appended to: {path}")
+            return True
+        except OSError as e:
+            logging.error(f"❌ Error appending {path}: {e}")
+            return False
+
+    @staticmethod
+    def create_folder(path: str) -> bool:
+        """
+        Creates a folder and adds .gitkeep so Git tracks it.
+
+        Returns True on success, False on failure.
+        """
+        try:
+            os.makedirs(path, exist_ok=True)
+            gitkeep_path = os.path.join(path, ".gitkeep")
+            with open(gitkeep_path, "w") as f:
+                f.write("")
+            logging.info(f"📁 Directory: {path}")
+            return True
+        except OSError as e:
+            logging.error(f"❌ Error creating folder {path}: {e}")
+            return False
 
 
-def append_file(path: str, content: str) -> bool:
-    """
-    Appends content to a file (used for Assimilation).
-
-    Returns True on success, False on failure.
-    """
-    try:
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "a", encoding="utf-8") as f:
-            f.write("\n\n" + content.strip() + "\n")
-        logging.info(f"🔗 Appended to: {path}")
-        return True
-    except OSError as e:
-        logging.error(f"❌ Error appending {path}: {e}")
-        return False
-
-
-def create_folder(path: str) -> bool:
-    """
-    Creates a folder and adds .gitkeep so Git tracks it.
-
-    Returns True on success, False on failure.
-    """
-    try:
-        os.makedirs(path, exist_ok=True)
-        gitkeep_path = os.path.join(path, ".gitkeep")
-        with open(gitkeep_path, "w") as f:
-            f.write("")
-        logging.info(f"📂 Dir Created: {path}")
-        return True
-    except OSError as e:
-        logging.error(f"❌ Error creating folder {path}: {e}")
-        return False
+# Maintain backward compatibility with module-level functions
+setup_logging = AntigravityEngine.setup_logging
+sanitize_name = AntigravityEngine.sanitize_name
+parse_keywords = AntigravityEngine.parse_keywords
+validate_file_path = AntigravityEngine.validate_file_path
+write_file = AntigravityEngine.write_file
+append_file = AntigravityEngine.append_file
+create_folder = AntigravityEngine.create_folder
 
 
 # ==============================================================================
-# 3. CONTENT BUILDERS (DYNAMIC CONFIG)
+# 3. CONFIGURATION BUILDERS
 # ==============================================================================
 
 
-def build_gitignore(keywords: list[str]) -> str:
-    """Builds a .gitignore file based on detected technology keywords."""
-    content = BASE_GITIGNORE
-    for k in keywords:
-        if k in GITIGNORE_MAP:
-            content += GITIGNORE_MAP[k]
-        elif k in ("js", "javascript"):
-            content += GITIGNORE_MAP.get("node", "")
-    return content
+class AntigravityBuilder:
+    """
+    Dynamic configuration and content generators.
 
+    This class contains all the "build_*" functions that generate configuration
+    files and content based on detected technology keywords and user preferences.
+    All methods are static as they don't require instance state.
+    """
 
-def build_nix_config(keywords: list[str]) -> str:
-    """Builds a dev.nix configuration for Google Project IDX."""
-    packages = ["pkgs.git", "pkgs.curl", "pkgs.jq", "pkgs.openssl"]
+    @staticmethod
+    def build_gitignore(keywords: list[str]) -> str:
+        """Builds a .gitignore file based on detected technology keywords."""
+        content = AntigravityResources.BASE_GITIGNORE
+        for k in keywords:
+            if k in AntigravityResources.GITIGNORE_MAP:
+                content += AntigravityResources.GITIGNORE_MAP[k]
+            elif k in ("js", "javascript"):
+                content += AntigravityResources.GITIGNORE_MAP.get("node", "")
+        return content
 
-    # Map framework keywords to their base language
-    keyword_aliases: dict[str, str] = {
-        "js": "node",
-        "javascript": "node",
-        "react": "node",
-        "nextjs": "node",
-        "django": "python",
-        "flask": "python",
-        "fastapi": "python",
-    }
+    @staticmethod
+    def build_nix_config(keywords: list[str]) -> str:
+        """Builds a dev.nix configuration for Google Project IDX."""
+        packages = ["pkgs.git", "pkgs.curl", "pkgs.jq", "pkgs.openssl"]
 
-    for k in keywords:
-        key = keyword_aliases.get(k, k)
-        if key in NIX_PACKAGE_MAP:
-            packages.extend(NIX_PACKAGE_MAP[key])
+        # Map framework keywords to their base language
+        keyword_aliases: dict[str, str] = {
+            "js": "node",
+            "javascript": "node",
+            "react": "node",
+            "nextjs": "node",
+            "django": "python",
+            "flask": "python",
+            "fastapi": "python",
+        }
 
-    package_str = "\n    ".join(sorted(set(packages)))
-    return f"""# Google Project IDX Environment Configuration
+        for k in keywords:
+            key = keyword_aliases.get(k, k)
+            if key in AntigravityResources.NIX_PACKAGE_MAP:
+                packages.extend(AntigravityResources.NIX_PACKAGE_MAP[key])
+
+        package_str = "\n    ".join(sorted(set(packages)))
+        return f"""# Google Project IDX Environment Configuration
 {{ pkgs, ... }}: {{
   channel = "stable-23.11";
   packages = [
@@ -503,10 +579,10 @@ def build_nix_config(keywords: list[str]) -> str:
 }}
 """
 
-
-def build_tech_stack_rule(keywords: list[str]) -> str:
-    """Builds a dynamic tech stack rule for the agent."""
-    return f"""# Technology Stack
+    @staticmethod
+    def build_tech_stack_rule(keywords: list[str]) -> str:
+        """Builds a dynamic tech stack rule for the agent."""
+        return f"""# Technology Stack
 Keywords Detected: {", ".join(keywords)}
 
 ## Directives
@@ -515,10 +591,10 @@ Keywords Detected: {", ".join(keywords)}
 3. **Files:** Look for `pyproject.toml`, `package.json`, or similar to confirm versions.
 """
 
-
-def build_scratchpad(keywords: list[str], has_brain_dump: bool) -> str:
-    """Builds the initial scratchpad memory file."""
-    return f"""# Project Scratchpad
+    @staticmethod
+    def build_scratchpad(keywords: list[str], has_brain_dump: bool) -> str:
+        """Builds the initial scratchpad memory file."""
+        return f"""# Project Scratchpad
 *Last Updated: {datetime.now().isoformat()}*
 
 ## Status
@@ -535,244 +611,319 @@ def build_scratchpad(keywords: list[str], has_brain_dump: bool) -> str:
 """
 
 
+# Maintain backward compatibility with module-level functions
+build_gitignore = AntigravityBuilder.build_gitignore
+build_nix_config = AntigravityBuilder.build_nix_config
+build_tech_stack_rule = AntigravityBuilder.build_tech_stack_rule
+build_scratchpad = AntigravityBuilder.build_scratchpad
+
+
 # ==============================================================================
 # 4. THE ASSIMILATOR (INTELLIGENT PARSING)
 # ==============================================================================
 
 
-def identify_category(text: str) -> str:
+class AntigravityAssimilator:
     """
-    Uses heuristics to decide if text is a Rule, Workflow, Skill, or Doc.
+    Intelligent brain dump parsing and knowledge distribution.
 
-    Returns the category with the highest keyword match score.
+    This class handles the "Assimilator" feature - parsing large text dumps,
+    categorizing content using heuristics, and distributing it to appropriate
+    .agent/ directories based on detected content type.
+    All methods are static as they don't require instance state.
     """
-    text_lower = text.lower()
-    scores: dict[str, int] = dict.fromkeys(CLASSIFICATION_RULES, 0)
 
-    for category, keywords in CLASSIFICATION_RULES.items():
-        for k in keywords:
-            scores[category] += len(re.findall(r"\b" + re.escape(k) + r"\b", text_lower))
+    @staticmethod
+    def identify_category(text: str) -> str:
+        """
+        Uses heuristics to decide if text is a Rule, Workflow, Skill, or Doc.
 
-    best_cat = max(scores, key=lambda x: scores[x])
-    if scores[best_cat] == 0:
-        return "docs"
-    return best_cat
+        Returns the category with the highest keyword match score.
+        """
+        text_lower = text.lower()
+        scores: dict[str, int] = dict.fromkeys(AntigravityResources.CLASSIFICATION_RULES, 0)
+
+        for category, keywords in AntigravityResources.CLASSIFICATION_RULES.items():
+            for k in keywords:
+                scores[category] += len(re.findall(r"\b" + re.escape(k) + r"\b", text_lower))
+
+        best_cat = max(scores, key=lambda x: scores[x])
+        if scores[best_cat] == 0:
+            return "docs"
+        return best_cat
+
+    @staticmethod
+    def get_destination_path(base_dir: str, category: str, safe_title: str) -> str:
+        """Determines the file destination based on category."""
+        category_paths: dict[str, str] = {
+            "rules": os.path.join(base_dir, AGENT_DIR, "rules", f"imported_{safe_title}.md"),
+            "workflows": os.path.join(base_dir, AGENT_DIR, "workflows", f"imported_{safe_title}.md"),
+            "skills": os.path.join(base_dir, AGENT_DIR, "skills", f"imported_{safe_title}", "SKILL.md"),
+            "docs": os.path.join(base_dir, "docs", "imported", f"{safe_title}.md"),
+        }
+        return category_paths.get(category, category_paths["docs"])
+
+    @staticmethod
+    def process_brain_dump(filepath: str | None, base_dir: str) -> list[str]:
+        """
+        Reads a brain dump file, splits by headers, and distributes to .agent/ folders.
+
+        Returns a list of detected technology keywords from the content.
+        """
+        if not validate_file_path(filepath):
+            return []
+
+        # Type narrowing: after validation, filepath is confirmed to be str
+        assert filepath is not None
+
+        print(f"\n🧠 Assimilating knowledge from: {filepath}...")
+
+        try:
+            with open(filepath, encoding="utf-8", errors="replace") as f:
+                full_text = f.read()
+        except Exception as e:
+            logging.error(f"Could not read brain dump: {e}")
+            return []
+
+        # 1. Archive Raw Content
+        raw_dest = os.path.join(base_dir, "context", "raw", "master_brain_dump.md")
+        write_file(raw_dest, full_text, exist_ok=True)
+
+        # 2. Extract Tech Stack Keywords
+        detected_keywords: set[str] = set()
+        for k in AntigravityResources.GITIGNORE_MAP:
+            if re.search(r"\b" + re.escape(k) + r"\b", full_text.lower()):
+                detected_keywords.add(k)
+
+        # 3. Split & Distribute
+        sections = re.split(r"(^#+\s+.*$)", full_text, flags=re.MULTILINE)
+
+        for i in range(1, len(sections), 2):
+            if i + 1 >= len(sections):
+                break
+            header = sections[i].strip()
+            content = sections[i + 1].strip()
+            if not content:
+                continue
+
+            category = AntigravityAssimilator.identify_category(header + "\n" + content)
+            safe_title = re.sub(r"[^a-zA-Z0-9]", "_", header).lower().strip("_")[:50]
+            dest = AntigravityAssimilator.get_destination_path(base_dir, category, safe_title)
+
+            formatted = f"<!-- Auto-Assimilated Source -->\n\n{header}\n\n{content}"
+            append_file(dest, formatted)
+
+        print("🧠 Assimilation Complete.")
+        return list(detected_keywords)
 
 
-def get_destination_path(base_dir: str, category: str, safe_title: str) -> str:
-    """Determines the file destination based on category."""
-    category_paths: dict[str, str] = {
-        "rules": os.path.join(base_dir, AGENT_DIR, "rules", f"imported_{safe_title}.md"),
-        "workflows": os.path.join(base_dir, AGENT_DIR, "workflows", f"imported_{safe_title}.md"),
-        "skills": os.path.join(base_dir, AGENT_DIR, "skills", f"imported_{safe_title}", "SKILL.md"),
-        "docs": os.path.join(base_dir, "docs", "imported", f"{safe_title}.md"),
-    }
-    return category_paths.get(category, category_paths["docs"])
-
-
-def process_brain_dump(filepath: str | None, base_dir: str) -> list[str]:
-    """
-    Reads a brain dump file, splits by headers, and distributes to .agent/ folders.
-
-    Returns a list of detected technology keywords from the content.
-    """
-    if not validate_file_path(filepath):
-        return []
-
-    # Type narrowing: after validation, filepath is confirmed to be str
-    assert filepath is not None
-
-    print(f"\n🧠 Assimilating knowledge from: {filepath}...")
-
-    try:
-        with open(filepath, encoding="utf-8", errors="replace") as f:
-            full_text = f.read()
-    except Exception as e:
-        logging.error(f"Could not read brain dump: {e}")
-        return []
-
-    # 1. Archive Raw Content
-    raw_dest = os.path.join(base_dir, "context", "raw", "master_brain_dump.md")
-    write_file(raw_dest, full_text, exist_ok=True)
-
-    # 2. Extract Tech Stack Keywords
-    detected_keywords: set[str] = set()
-    for k in GITIGNORE_MAP:
-        if re.search(r"\b" + re.escape(k) + r"\b", full_text.lower()):
-            detected_keywords.add(k)
-
-    # 3. Split & Distribute
-    sections = re.split(r"(^#+\s+.*$)", full_text, flags=re.MULTILINE)
-
-    for i in range(1, len(sections), 2):
-        if i + 1 >= len(sections):
-            break
-        header = sections[i].strip()
-        content = sections[i + 1].strip()
-        if not content:
-            continue
-
-        category = identify_category(header + "\n" + content)
-        safe_title = re.sub(r"[^a-zA-Z0-9]", "_", header).lower().strip("_")[:50]
-        dest = get_destination_path(base_dir, category, safe_title)
-
-        formatted = f"<!-- Auto-Assimilated Source -->\n\n{header}\n\n{content}"
-        append_file(dest, formatted)
-
-    print("🧠 Assimilation Complete.")
-    return list(detected_keywords)
+# Maintain backward compatibility with module-level functions
+identify_category = AntigravityAssimilator.identify_category
+get_destination_path = AntigravityAssimilator.get_destination_path
+process_brain_dump = AntigravityAssimilator.process_brain_dump
 
 
 # ==============================================================================
-# 5. PROJECT GENERATION
+# 5. PROJECT GENERATION ORCHESTRATION
 # ==============================================================================
 
 
-def generate_agent_files(base_dir: str, keywords: list[str], safe_mode: bool = False) -> None:
-    """Generates all .agent/ rules, workflows, and skills."""
-
-    # Generate static rules
-    for filename, content in AGENT_RULES.items():
-        path = os.path.join(base_dir, AGENT_DIR, "rules", filename)
-        write_file(path, content, exist_ok=safe_mode)
-
-    # Generate dynamic tech stack rule
-    tech_stack_path = os.path.join(base_dir, AGENT_DIR, "rules", "01_tech_stack.md")
-    write_file(tech_stack_path, build_tech_stack_rule(keywords), exist_ok=safe_mode)
-
-    # Generate workflows
-    for filename, content in AGENT_WORKFLOWS.items():
-        path = os.path.join(base_dir, AGENT_DIR, "workflows", filename)
-        write_file(path, content, exist_ok=safe_mode)
-
-    # Generate skills
-    for filename, content in AGENT_SKILLS.items():
-        path = os.path.join(base_dir, AGENT_DIR, "skills", filename)
-        write_file(path, content, exist_ok=safe_mode)
-
-
-def generate_project(
-    project_name: str,
-    keywords: list[str],
-    brain_dump_path: str | None = None,
-    safe_mode: bool | None = None,
-    custom_templates: dict[str, dict[str, str]] | None = None,
-    license_type: str = "mit",
-) -> bool:
+class AntigravityGenerator:
     """
-    Main project generation logic.
+    High-level project generation orchestration.
 
-    Creates the full project structure with all configurations and agent files.
-    Args:
-        project_name: Name of the project to create.
-        keywords: List of tech stack keywords.
-        brain_dump_path: Optional path to a brain dump file.
-        safe_mode: If True, non-destructive. If None, prompt user if dir exists.
-        custom_templates: Optional dict of custom template overrides.
-        license_type: Project license type (mit, apache, gpl).
-    Returns True on success, False on failure.
+    This class coordinates all the other components (Resources, Engine, Builder,
+    Assimilator) to generate complete project structures. It handles the full
+    workflow from directory creation through file generation and brain dump processing.
+    All methods are static as they orchestrate other static classes.
     """
-    base_dir = os.path.join(os.getcwd(), project_name)
 
-    # Handle safe_mode: if not explicitly set and directory exists, prompt user
-    if safe_mode is None and os.path.exists(base_dir):
-        print(f"\n⚠️  Project '{project_name}' already exists.")
-        choice = input("Select mode: [U]pdate (Safe) / [O]verwrite (Risky) / [C]ancel: ").lower()
+    @staticmethod
+    def generate_agent_files(base_dir: str, keywords: list[str], safe_mode: bool = False) -> None:
+        """Generates all .agent/ rules, workflows, and skills."""
 
-        if choice == "u":
-            print("🛡️  Safe Update Mode Active: Only missing files will be created.")
-            safe_mode = True
-        elif choice == "o":
-            confirm = input("💥 WARNING: This will overwrite files. Type 'yes' to confirm: ")
-            if confirm.lower() != "yes":
+        # Generate static rules
+        for filename, content in AntigravityResources.AGENT_RULES.items():
+            path = os.path.join(base_dir, AGENT_DIR, "rules", filename)
+            write_file(path, content, exist_ok=safe_mode)
+
+        # Generate dynamic tech stack rule
+        tech_stack_path = os.path.join(base_dir, AGENT_DIR, "rules", "01_tech_stack.md")
+        write_file(tech_stack_path, build_tech_stack_rule(keywords), exist_ok=safe_mode)
+
+        # Generate workflows
+        for filename, content in AntigravityResources.AGENT_WORKFLOWS.items():
+            path = os.path.join(base_dir, AGENT_DIR, "workflows", filename)
+            write_file(path, content, exist_ok=safe_mode)
+
+        # Generate skills
+        for filename, content in AntigravityResources.AGENT_SKILLS.items():
+            path = os.path.join(base_dir, AGENT_DIR, "skills", filename)
+            write_file(path, content, exist_ok=safe_mode)
+
+    @staticmethod
+    def generate_project(
+        project_name: str,
+        keywords: list[str],
+        brain_dump_path: str | None = None,
+        safe_mode: bool | None = None,
+        custom_templates: dict[str, dict[str, str]] | None = None,
+        license_type: str = "mit",
+    ) -> bool:
+        """
+        Main project generation logic.
+
+        Creates the full project structure with all configurations and agent files.
+        Args:
+            project_name: Name of the project to create.
+            keywords: List of tech stack keywords.
+            brain_dump_path: Optional path to a brain dump file.
+            safe_mode: If True, non-destructive. If None, prompt user if dir exists.
+            custom_templates: Optional dict of custom template overrides.
+            license_type: Project license type (mit, apache, gpl).
+        Returns True on success, False on failure.
+        """
+        base_dir = os.path.join(os.getcwd(), project_name)
+
+        # Handle safe_mode: if not explicitly set and directory exists, prompt user
+        if safe_mode is None and os.path.exists(base_dir):
+            print(f"\n⚠️  Project '{project_name}' already exists.")
+            choice = input("Select mode: [U]pdate (Safe) / [O]verwrite (Risky) / [C]ancel: ").lower()
+
+            if choice == "u":
+                print("🛡️  Safe Update Mode Active: Only missing files will be created.")
+                safe_mode = True
+            elif choice == "o":
+                confirm = input("💥 WARNING: This will overwrite files. Type 'yes' to confirm: ")
+                if confirm.lower() != "yes":
+                    return False
+                safe_mode = False
+            else:
                 return False
+        elif safe_mode is None:
             safe_mode = False
-        else:
-            return False
-    elif safe_mode is None:
-        safe_mode = False
 
-    print(f"\n🚀 Constructing '{project_name}'...")
+        print(f"\n🚀 Constructing '{project_name}'...")
 
-    # Setup logging in target directory
-    setup_logging(base_dir)
+        # Setup logging in target directory
+        setup_logging(base_dir)
 
-    # Create directory structure (Safe to do even if exists)
-    directories = [
-        "src",
-        "tests",
-        "docs/imported",
-        "context/raw",
-        ".idx",
-        ".devcontainer",
-        f"{AGENT_DIR}/rules",
-        f"{AGENT_DIR}/workflows",
-        f"{AGENT_DIR}/skills",
-        f"{AGENT_DIR}/memory",
-        f"{AGENT_DIR}/skills/git_automation",
-        f"{AGENT_DIR}/skills/secrets_manager",
-    ]
-    for d in directories:
-        create_folder(os.path.join(base_dir, d))
+        # Create directory structure (Safe to do even if exists)
+        directories = [
+            "src",
+            "tests",
+            "docs/imported",
+            "context/raw",
+            AntigravityResources.IDX_DIR,
+            AntigravityResources.DEVCONTAINER_DIR,
+            f"{AGENT_DIR}/rules",
+            f"{AGENT_DIR}/workflows",
+            f"{AGENT_DIR}/skills",
+            f"{AGENT_DIR}/memory",
+            f"{AGENT_DIR}/skills/git_automation",
+            f"{AGENT_DIR}/skills/secrets_manager",
+        ]
+        for d in directories:
+            create_folder(os.path.join(base_dir, d))
 
-    # Process brain dump if provided
-    detected_stack: list[str] = []
-    if brain_dump_path:
-        detected_stack = process_brain_dump(brain_dump_path, base_dir)
+        # Process brain dump if provided
+        detected_stack: list[str] = []
+        if brain_dump_path:
+            detected_stack = process_brain_dump(brain_dump_path, base_dir)
 
-    # Merge keywords
-    final_stack = list(set(keywords + detected_stack))
-    if not final_stack:
-        final_stack = ["linux"]
-    print(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
+        # Merge keywords
+        final_stack = list(set(keywords + detected_stack))
+        if not final_stack:
+            final_stack = ["linux"]
+        print(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
 
-    # Generate configuration files - Safe Mode applies here
-    # Note: .gitignore and README always use exist_ok=True to prevent overwriting user customizations
-    write_file(os.path.join(base_dir, ".gitignore"), build_gitignore(final_stack), exist_ok=True)
-    write_file(os.path.join(base_dir, ".idx", "dev.nix"), build_nix_config(final_stack), exist_ok=safe_mode)
-    write_file(os.path.join(base_dir, ".devcontainer", "devcontainer.json"), DEVCONTAINER_JSON, exist_ok=safe_mode)
-    write_file(
-        os.path.join(base_dir, "README.md"), f"# {project_name}\n\nStack: {', '.join(final_stack)}", exist_ok=True
-    )
-    write_file(os.path.join(base_dir, ".env.example"), "API_KEY=\nDB_URL=", exist_ok=safe_mode)
+        # Generate configuration files - Safe Mode applies here
+        # Note: .gitignore and README always use exist_ok=True to prevent overwriting user customizations
+        write_file(
+            os.path.join(base_dir, AntigravityResources.GITIGNORE_FILE), build_gitignore(final_stack), exist_ok=True
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.IDX_DIR, AntigravityResources.NIX_FILE),
+            build_nix_config(final_stack),
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.DEVCONTAINER_DIR, AntigravityResources.DEVCONTAINER_FILE),
+            AntigravityResources.DEVCONTAINER_JSON,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.README_FILE),
+            f"# {project_name}\n\nStack: {', '.join(final_stack)}",
+            exist_ok=True,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.ENV_EXAMPLE_FILE), "API_KEY=\nDB_URL=", exist_ok=safe_mode
+        )
 
-    # Generate License
-    license_content = LICENSE_TEMPLATES.get(license_type, LICENSE_TEMPLATES["mit"])
-    if license_type == "mit":
-        license_content = license_content.format(year=datetime.now().year, author="pkeffect")
-    write_file(os.path.join(base_dir, "LICENSE"), license_content, exist_ok=safe_mode)
+        # Generate License
+        license_content = AntigravityResources.LICENSE_TEMPLATES.get(
+            license_type, AntigravityResources.LICENSE_TEMPLATES["mit"]
+        )
+        if license_type == "mit":
+            license_content = license_content.format(year=datetime.now().year, author="pkeffect")
+        write_file(os.path.join(base_dir, AntigravityResources.LICENSE_FILE), license_content, exist_ok=safe_mode)
 
-    # Generate Community Standards
-    write_file(os.path.join(base_dir, "CHANGELOG.md"), CHANGELOG_TEMPLATE, exist_ok=safe_mode)
-    write_file(os.path.join(base_dir, "CONTRIBUTING.md"), CONTRIBUTING_TEMPLATE, exist_ok=safe_mode)
-    write_file(os.path.join(base_dir, "AUDIT.md"), AUDIT_TEMPLATE, exist_ok=safe_mode)
-    write_file(os.path.join(base_dir, "SECURITY.md"), SECURITY_TEMPLATE, exist_ok=safe_mode)
-    write_file(os.path.join(base_dir, "CODE_OF_CONDUCT.md"), CODE_OF_CONDUCT_TEMPLATE, exist_ok=safe_mode)
+        # Generate Community Standards
+        write_file(
+            os.path.join(base_dir, AntigravityResources.CHANGELOG_FILE),
+            AntigravityResources.CHANGELOG_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.CONTRIBUTING_FILE),
+            AntigravityResources.CONTRIBUTING_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.AUDIT_FILE),
+            AntigravityResources.AUDIT_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.SECURITY_FILE),
+            AntigravityResources.SECURITY_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.CODE_OF_CONDUCT_FILE),
+            AntigravityResources.CODE_OF_CONDUCT_TEMPLATE,
+            exist_ok=safe_mode,
+        )
 
-    # Generate agent files
-    generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
+        # Generate agent files
+        AntigravityGenerator.generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
 
-    # Generate memory and bootstrap (scratchpad always preserved)
-    write_file(
-        os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"),
-        build_scratchpad(final_stack, bool(brain_dump_path)),
-        exist_ok=True,
-    )
+        # Generate memory and bootstrap (scratchpad always preserved)
+        write_file(
+            os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"),
+            build_scratchpad(final_stack, bool(brain_dump_path)),
+            exist_ok=True,
+        )
 
-    write_file(
-        os.path.join(base_dir, "BOOTSTRAP_INSTRUCTIONS.md"),
-        """# Agent Start Guide
+        write_file(
+            os.path.join(base_dir, AntigravityResources.BOOTSTRAP_FILE),
+            """# Agent Start Guide
 1. **Context:** Read `.agent/memory/scratchpad.md`.
 2. **Knowledge:** Check `docs/imported/` for assimilated rules.
 3. **Action:** Run `/bootstrap` to generate the application skeleton.
 """,
-        exist_ok=safe_mode,
-    )
+            exist_ok=safe_mode,
+        )
 
-    print(f"\n✨ Success! Project '{project_name}' is fully configured.")
-    print(f"👉 To begin: cd {project_name}")
-    print("👉 Then open in Antigravity and type: 'Read BOOTSTRAP_INSTRUCTIONS.md'")
-    return True
+        print(f"\n✅ Project '{project_name}' ready!")
+        print(f"📂 Location: {os.path.abspath(base_dir)}\n")
+        return True
+
+
+# Maintain backward compatibility with module-level functions
+generate_agent_files = AntigravityGenerator.generate_agent_files
+generate_project = AntigravityGenerator.generate_project
 
 
 # ==============================================================================
@@ -861,7 +1012,7 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
     Returns True if healthy, False if issues found.
     """
     print(f"\n🩺 Running Doctor on: {project_path}")
-    print("=" * 50)
+    print(AntigravityResources.SEPARATOR)
 
     base_dir = Path(project_path)
     if not base_dir.exists():
@@ -894,28 +1045,28 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
         ".agent/rules/00_identity.md": "Agent identity rule",
         ".agent/rules/01_tech_stack.md": "Tech stack rule",
         ".agent/memory/scratchpad.md": "Memory scratchpad",
-        "BOOTSTRAP_INSTRUCTIONS.md": "Bootstrap guide",
+        AntigravityResources.BOOTSTRAP_FILE: "Bootstrap guide",
     }
 
     for file_path, description in required_files.items():
         full_path = base_dir / file_path
         if full_path.exists():
             if full_path.stat().st_size == 0:
-                warnings.append(f"⚠️  {file_path} exists but is empty")
+                warnings.append(f"⚠️  {file_path} is empty")
             else:
-                passed.append(f"✅ {file_path} exists ({description})")
+                passed.append(f"✅ {file_path} exists")
         else:
-            issues.append(f"❌ Missing: {file_path} ({description})")
+            issues.append(f"❌ Missing: {file_path}")
 
     optional_files = [
-        ".gitignore",
-        "README.md",
-        "CHANGELOG.md",
-        "CONTRIBUTING.md",
-        "AUDIT.md",
-        "SECURITY.md",
-        "CODE_OF_CONDUCT.md",
-        "LICENSE",
+        AntigravityResources.GITIGNORE_FILE,
+        AntigravityResources.README_FILE,
+        AntigravityResources.CHANGELOG_FILE,
+        AntigravityResources.CONTRIBUTING_FILE,
+        AntigravityResources.AUDIT_FILE,
+        AntigravityResources.SECURITY_FILE,
+        AntigravityResources.CODE_OF_CONDUCT_FILE,
+        AntigravityResources.LICENSE_FILE,
     ]
 
     for file_path in optional_files:
@@ -925,23 +1076,10 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
         else:
             warnings.append(f"⚠️  Optional: {file_path} not found")
 
-    for item in passed:
-        print(item)
-    for item in warnings:
-        print(item)
-    for item in issues:
-        print(item)
-
-    print("=" * 50)
+    print(AntigravityResources.SEPARATOR)
     print(f"Summary: {len(passed)} passed, {len(warnings)} warnings, {len(issues)} issues")
 
     if issues:
-        print("\n💡 Tip: Run with --fix to attempt automatic repairs.")
-        return False
-    elif warnings:
-        print("\n✨ Project is healthy with minor recommendations.")
-        return True
-    else:
         print("\n🏆 Project is fully healthy!")
         return True
 
@@ -949,7 +1087,7 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
 def list_keywords() -> None:
     """Display all supported tech stack keywords."""
     print("\n🛠 Supported Tech Stack Keywords")
-    print("=" * 50)
+    print(AntigravityResources.SEPARATOR)
 
     categories = {
         "Languages": ["python", "node", "javascript", "rust", "go", "java", "php", "ruby"],
@@ -963,16 +1101,16 @@ def list_keywords() -> None:
         print(f"\n{category}:")
         print(f"  {', '.join(keywords)}")
 
-    print("\n" + "=" * 50)
+    print("\n" + AntigravityResources.SEPARATOR)
     print("Usage: --stack python,react,docker")
 
 
 def run_interactive_mode() -> None:
     """Original interactive mode for backwards compatibility."""
-    print("=========================================================")
+    print(AntigravityResources.SEPARATOR)
     print(f"   🌌 Antigravity Architect v{VERSION}")
     print("   Dynamic Parsing | Knowledge Distribution | Universal")
-    print("=========================================================")
+    print(AntigravityResources.SEPARATOR)
 
     setup_logging()
 
