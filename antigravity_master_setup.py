@@ -39,11 +39,11 @@ Thumbs.db
 .env
 .env.*
 !.env.example
-# --- Agent / AI ---
-.agent/logs/
-.agent/tmp/
-.agent/memory/history/
-agent_setup.log
+
+# --- Agent / AI (Full Privacy) ---
+.agent/
+context/
+antigravity_setup.log
 """
 
 GITIGNORE_MAP: dict[str, str] = {
