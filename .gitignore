@@ -215,7 +215,4 @@ context/
 docs/
 BOOTSTRAP_INSTRUCTIONS.md
 antigravity_setup.log
-CHANGELOG.md
-CONTRIBUTING.md
-AUDIT.md
 .env.example
