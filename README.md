@@ -1,7 +1,7 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-1.4.2-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-1.4.3-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
@@ -37,59 +37,65 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 ## ✨ Key Features
 
 ### 🧠 Knowledge Assimilation (New!)
-*   **The Brain Dump:** Drag and drop a massive text file (specs, notes, legacy code snippets). The script parses it, splits it by logical headers, and **automatically classifies** the information into Rules, Workflows, or Documentation.
-*   **Raw Context Preservation:** Saves the original dump to `context/raw/` so the Agent can reference the "source of truth."
+
+* **The Brain Dump:** Drag and drop a massive text file (specs, notes, legacy code snippets). The script parses it, splits it by logical headers, and **automatically classifies** the information into Rules, Workflows, or Documentation.
+* **Raw Context Preservation:** Saves the original dump to `context/raw/` so the Agent can reference the "source of truth."
 
 ### 🌐 Universal & Dynamic
-*   **Polyglot Support:** Supports Python, Node.js, TypeScript, Rust, Go, Java, PHP, Ruby, Docker, and SQL.
-*   **Dynamic Configuration:** Automatically builds `.gitignore`, `.idx/dev.nix`, and `.env` templates based on your input keywords or imported specs.
+
+* **Polyglot Support:** Supports Python, Node.js, TypeScript, Rust, Go, Java, PHP, Ruby, Docker, and SQL.
+* **Dynamic Configuration:** Automatically builds `.gitignore`, `.idx/dev.nix`, and `.env` templates based on your input keywords or imported specs.
 
 ### 🤖 Full Agent Architecture
-*   **Rules:** Generates "Always-On" directives (Persona, Security, Git Conventions, Chain-of-Thought).
-*   **Workflows:** Generates callable slash commands (`/plan`, `/bootstrap`, `/commit`, `/review`, `/save`).
-*   **Skills:** Generates tool definitions for Git Automation and Secret Management.
-*   **Memory:** Initializes a `scratchpad.md` for long-term session memory.
-*   **Model Dispatch:** Generates a "Context Handoff" protocol (`99_model_dispatch.md`) that teaches the Agent to request higher-reasoning models (like o1 or Ultra) for complex tasks.
+
+* **Rules:** Generates "Always-On" directives (Persona, Security, Git Conventions, Chain-of-Thought).
+* **Workflows:** Generates callable slash commands (`/plan`, `/bootstrap`, `/commit`, `/review`, `/save`).
+* **Skills:** Generates tool definitions for Git Automation and Secret Management.
+* **Memory:** Initializes a `scratchpad.md` for long-term session memory.
+* **Model Dispatch:** Generates a "Context Handoff" protocol (`99_model_dispatch.md`) that teaches the Agent to request higher-reasoning models (like o1 or Ultra) for complex tasks.
 
 ### 🛡️ Production Engineering
-*   **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories.
-*   **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
-*   **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
-*   **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
-*   **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.
-*   **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
-*   **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` to professionalize your repository from Day 1.
-*   **GitHub Templates:** Generates `.github/` with issue templates (bug report, feature request, question), PR template, FUNDING.yml, and **copilot-instructions.md** for AI agent guidance.
-*   **License Management:** Select from standard licenses (MIT, Apache, GPL) via CLI flag or interactive prompt.
+
+* **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories.
+* **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
+* **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
+* **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
+* **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.
+* **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
+* **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` to professionalize your repository from Day 1.
+* **GitHub Templates:** Generates `.github/` with issue templates (bug report, feature request, question), PR template, FUNDING.yml, and **copilot-instructions.md** for AI agent guidance.
+* **License Management:** Select from standard licenses (MIT, Apache, GPL) via CLI flag or interactive prompt.
 
 ### 🏗️ Modern Architecture (v1.4.0)
-*   **Hybrid Class-Based Design:** Refactored into 5 focused classes while maintaining single-file portability
-    - `AntigravityResources` - Centralized templates, constants, and mappings
-    - `AntigravityEngine` - File system operations and validation utilities
-    - `AntigravityBuilder` - Dynamic configuration generators
-    - `AntigravityAssimilator` - Intelligent brain dump parsing
-    - `AntigravityGenerator` - High-level project generation orchestration
-*   **100% Backward Compatible:** All existing functions preserved via module-level aliases
-*   **Improved Maintainability:** 800+ lines reorganized for better code organization and scalability
+
+* **Hybrid Class-Based Design:** Refactored into 5 focused classes while maintaining single-file portability
+  * `AntigravityResources` - Centralized templates, constants, and mappings
+  * `AntigravityEngine` - File system operations and validation utilities
+  * `AntigravityBuilder` - Dynamic configuration generators
+  * `AntigravityAssimilator` - Intelligent brain dump parsing
+  * `AntigravityGenerator` - High-level project generation orchestration
+* **100% Backward Compatible:** All existing functions preserved via module-level aliases
+* **Improved Maintainability:** 800+ lines reorganized for better code organization and scalability
 
 ### 🤖 Universal AI IDE Compatibility (v1.4.1)
-*   **GitHub Copilot Support:** Generates `.github/copilot-instructions.md` with project-aware guidance
-    - Works in VS Code, Visual Studio, JetBrains IDEs
-    - Includes development workflows, security protocols, and commit conventions
-    - Dynamically adapts to detected tech stack
-*   **Cursor IDE Integration:** Creates `.cursorrules` for AI Composer
-    - Optimized for Cursor's inline edits and multi-file Composer mode
-    - Includes `@file` reference patterns and keyboard shortcuts
-    - Tech stack-specific best practices and conventions
-*   **Windsurf (Cascade AI) Support:** Generates `.windsurfrules` for agentic coding
-    - Tailored for Cascade's multi-step reasoning and planning
-    - Memory persistence and context management guidelines
-    - Workflow integration with `.agent/` structure
-*   **Google IDX / Gemini CLI:** Native support via `.idx/dev.nix` and `.agent/` architecture
-*   **Universal Fallback:** `.agent/` directory structure works with ANY AI coding assistant
-    - Rules, workflows, skills, and memory accessible to all AI tools
-    - Semantic file organization for optimal RAG (Retrieval Augmented Generation)
-    - Human-readable markdown format for maximum compatibility
+
+* **GitHub Copilot Support:** Generates `.github/copilot-instructions.md` with project-aware guidance
+  * Works in VS Code, Visual Studio, JetBrains IDEs
+  * Includes development workflows, security protocols, and commit conventions
+  * Dynamically adapts to detected tech stack
+* **Cursor IDE Integration:** Creates `.cursorrules` for AI Composer
+  * Optimized for Cursor's inline edits and multi-file Composer mode
+  * Includes `@file` reference patterns and keyboard shortcuts
+  * Tech stack-specific best practices and conventions
+* **Windsurf (Cascade AI) Support:** Generates `.windsurfrules` for agentic coding
+  * Tailored for Cascade's multi-step reasoning and planning
+  * Memory persistence and context management guidelines
+  * Workflow integration with `.agent/` structure
+* **Google IDX / Gemini CLI:** Native support via `.idx/dev.nix` and `.agent/` architecture
+* **Universal Fallback:** `.agent/` directory structure works with ANY AI coding assistant
+  * Rules, workflows, skills, and memory accessible to all AI tools
+  * Semantic file organization for optimal RAG (Retrieval Augmented Generation)
+  * Human-readable markdown format for maximum compatibility
 
 ---
 
@@ -98,10 +104,12 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 This project includes a professional development environment with a robust test suite.
 
 ### Requirements
-*   Python 3.10+
-*   `pip install -e .[dev]`
+
+* Python 3.10+
+* `pip install -e .[dev]`
 
 ### Running Tests
+
 We use **pytest** for testing (62+ passing tests) across **Windows**, **macOS**, and **Ubuntu**.
 We support **Python 3.10** through **3.14-dev**.
 
@@ -114,6 +122,7 @@ pytest tests/ --cov=antigravity_master_setup
 ```
 
 ### Code Quality
+
 We enforce strict quality standards using **Ruff** and **MyPy**.
 
 ```bash
@@ -130,6 +139,7 @@ mypy antigravity_master_setup.py --ignore-missing-imports
 ## 🚀 Usage
 
 ### Interactive Mode (Default)
+
 No external dependencies required. Just run it with Python 3.
 
 ```bash
@@ -139,6 +149,7 @@ python antigravity_master_setup.py
 The script will ask for an optional "Brain Dump" file, or you can manually input your stack.
 
 ### CLI Mode (v1.3+)
+
 For automation and scripting, use command-line arguments:
 
 ```bash
@@ -156,6 +167,7 @@ python antigravity_master_setup.py --name my-app --templates ~/.antigravity/temp
 ```
 
 ### Doctor Mode (v1.3+)
+
 Validate an existing project's `.agent/` structure:
 
 ```bash
@@ -180,10 +192,12 @@ python antigravity_master_setup.py --help
 ```
 
 ### Initialize the Agent
+
 Once the folder is created:
-1.  Open the folder in **Google Antigravity** (or Project IDX / VS Code).
-2.  Open the **Chat Interface**.
-3.  Type the following command to kickstart the AI:
+
+1. Open the folder in **Google Antigravity** (or Project IDX / VS Code).
+2. Open the **Chat Interface**.
+3. Type the following command to kickstart the AI:
 
 > "Read BOOTSTRAP_INSTRUCTIONS.md and start."
 
@@ -252,12 +266,14 @@ The script parses your input string (or your Brain Dump file) for these keywords
 Once generated, your AI agent possesses the following capabilities out of the box:
 
 ### 🧠 Rules (Always Active)
-*   **Security Guard:** Will refuse to print secrets/API keys to chat.
-*   **Chain of Thought:** Forced to explain logic *before* writing code.
-*   **Git Standards:** Enforces **Conventional Commits** (e.g., `feat: added login`).
-*   **Context Awareness:** Automatically checks `docs/imported/` before making decisions.
+
+* **Security Guard:** Will refuse to print secrets/API keys to chat.
+* **Chain of Thought:** Forced to explain logic *before* writing code.
+* **Git Standards:** Enforces **Conventional Commits** (e.g., `feat: added login`).
+* **Context Awareness:** Automatically checks `docs/imported/` before making decisions.
 
 ### ⚡ Workflows (Slash Commands)
+
 Type these in the Antigravity Chat:
 
 | Command | Action |
@@ -273,31 +289,39 @@ Type these in the Antigravity Chat:
 ## ☁️ Environment Details
 
 ### For Google Project IDX / Antigravity
+
 The script generates `.idx/dev.nix`.
-*   If you selected `python`, the environment boots with Python 3.12, Pip, and Ruff installed.
-*   If you selected `node`, it boots with Node 20 and NPM.
-*   **Result:** You do not need to manually install system tools; the container builds itself.
+
+* If you selected `python`, the environment boots with Python 3.12, Pip, and Ruff installed.
+* If you selected `node`, it boots with Node 20 and NPM.
+* **Result:** You do not need to manually install system tools; the container builds itself.
 
 ### For VS Code / GitHub Codespaces
+
 The script generates `.devcontainer/devcontainer.json`.
-*   Uses the standard Microsoft Ubuntu base image.
-*   Pre-installs the `google.gemini-code-assist` extension if running in a supported container.
+
+* Uses the standard Microsoft Ubuntu base image.
+* Pre-installs the `google.gemini-code-assist` extension if running in a supported container.
 
 ---
 
 ## ❓ Troubleshooting
 
 **Q: The script crashes when typing the project name.**
-*   **A:** The script sanitizes inputs (removing special characters). Ensure you have write permissions in the folder where you are running the script. Check `antigravity_setup.log` for details.
+
+* **A:** The script sanitizes inputs (removing special characters). Ensure you have write permissions in the folder where you are running the script. Check `antigravity_setup.log` for details.
 
 **Q: The Agent isn't following the rules.**
-*   **A:** Ensure you are using a model capable of System Instruction injection (Gemini 1.5 Pro / Ultra recommended). Check that the `.agent` folder is in the root of your workspace.
+
+* **A:** Ensure you are using a model capable of System Instruction injection (Gemini 1.5 Pro / Ultra recommended). Check that the `.agent` folder is in the root of your workspace.
 
 **Q: Git isn't tracking my `src` folder.**
-*   **A:** The script automatically adds `.gitkeep` files to empty folders. If you deleted them manually, Git will ignore the empty folder.
+
+* **A:** The script automatically adds `.gitkeep` files to empty folders. If you deleted them manually, Git will ignore the empty folder.
 
 **Q: How does the "Assimilator" work?**
-*   **A:** It scans your text file for Markdown headers (e.g., `## Coding Style`). It then scans the content for keywords like "Always", "Workflow", or "CLI". Based on the score, it sorts that section into the `.agent/rules`, `.agent/workflows`, or `.agent/skills` folder automatically.
+
+* **A:** It scans your text file for Markdown headers (e.g., `## Coding Style`). It then scans the content for keywords like "Always", "Workflow", or "CLI". Based on the score, it sorts that section into the `.agent/rules`, `.agent/workflows`, or `.agent/skills` folder automatically.
 
 ---
 
@@ -305,11 +329,12 @@ The script generates `.devcontainer/devcontainer.json`.
 
 We use a **standard feature branch workflow**:
 
-- **All PRs should target the `main` branch**
-- Ensure all tests pass and linting is clean before submitting
-- See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
+* **All PRs should target the `main` branch**
+* Ensure all tests pass and linting is clean before submitting
+* See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
 
 Quick start:
+
 ```bash
 git checkout main
 git pull origin main
@@ -321,4 +346,5 @@ git checkout -b feat/your-feature
 ---
 
 ## 📜 License
+
 This script is open-source. Feel free to modify the `00_identity.md` rule to change your Agent's personality!

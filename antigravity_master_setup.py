@@ -29,7 +29,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.4.2"
+VERSION = "1.4.3"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -872,6 +872,27 @@ class AntigravityEngine:
         return clean
 
     @staticmethod
+    def slugify_title(title: str) -> str:
+        """
+        Converts a markdown header or arbitrary title into a safe filename slug.
+
+        Handles special characters, unicode, and edge cases for cross-platform safety.
+        Used primarily by the Assimilator for Brain Dump section titles.
+        """
+        # Remove markdown header markers
+        slug = re.sub(r"^#+\s*", "", title)
+        # Convert to lowercase and replace spaces/special chars with underscores
+        slug = re.sub(r"[^a-zA-Z0-9]", "_", slug.lower())
+        # Collapse multiple underscores
+        slug = re.sub(r"_+", "_", slug)
+        # Strip leading/trailing underscores
+        slug = slug.strip("_")
+        # Ensure non-empty and reasonable length
+        if not slug:
+            slug = "untitled"
+        return slug[:50]
+
+    @staticmethod
     def parse_keywords(input_str: str | None) -> list[str]:
         """Converts comma/space separated string to list of lowercase keywords."""
         if not input_str:
@@ -1171,7 +1192,7 @@ class AntigravityAssimilator:
                 continue
 
             category = AntigravityAssimilator.identify_category(header + "\n" + content)
-            safe_title = re.sub(r"[^a-zA-Z0-9]", "_", header).lower().strip("_")[:50]
+            safe_title = AntigravityEngine.slugify_title(header)
             dest = AntigravityAssimilator.get_destination_path(base_dir, category, safe_title)
 
             formatted = f"<!-- Auto-Assimilated Source -->\n\n{header}\n\n{content}"
@@ -1526,6 +1547,7 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
     """
     Validate an existing project's .agent/ structure.
 
+    In fix mode, regenerates missing or empty required files from internal templates.
     Returns True if healthy, False if issues found.
     """
     print(f"\n🩺 Running Doctor on: {project_path}")
@@ -1539,6 +1561,7 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
     issues: list[str] = []
     warnings: list[str] = []
     passed: list[str] = []
+    fixed: list[str] = []
 
     required_dirs = [
         ".agent/rules",
@@ -1556,24 +1579,70 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
             if fix:
                 full_path.mkdir(parents=True, exist_ok=True)
                 (full_path / ".gitkeep").touch()
-                print(f"   🔧 Fixed: Created {dir_path}/")
+                fixed.append(f"🔧 Created {dir_path}/")
 
-    required_files = {
-        ".agent/rules/00_identity.md": "Agent identity rule",
-        ".agent/rules/01_tech_stack.md": "Tech stack rule",
-        ".agent/memory/scratchpad.md": "Memory scratchpad",
-        AntigravityResources.BOOTSTRAP_FILE: "Bootstrap guide",
+    # Required files with their regeneration templates
+    required_files_templates: dict[str, tuple[str, str]] = {
+        ".agent/rules/00_identity.md": (
+            "Agent identity rule",
+            AntigravityResources.AGENT_RULES.get("00_identity.md", ""),
+        ),
+        ".agent/rules/01_tech_stack.md": (
+            "Tech stack rule",
+            build_tech_stack_rule(["linux"]),  # Default fallback stack
+        ),
+        ".agent/memory/scratchpad.md": (
+            "Memory scratchpad",
+            build_scratchpad(["linux"], False),
+        ),
+        AntigravityResources.BOOTSTRAP_FILE: (
+            "Bootstrap guide",
+            """# Agent Start Guide\n1. **Context:** Read `.agent/memory/scratchpad.md`.\n2. **Knowledge:** Check `docs/imported/` for assimilated rules.\n3. **Action:** Run `/bootstrap` to generate the application skeleton.\n""",
+        ),
     }
 
-    for file_path, _description in required_files.items():
+    for file_path, (_description, template) in required_files_templates.items():
         full_path = base_dir / file_path
-        if full_path.exists():
-            if full_path.stat().st_size == 0:
-                warnings.append(f"⚠️  {file_path} is empty")
-            else:
-                passed.append(f"✅ {file_path} exists")
-        else:
+        is_missing = not full_path.exists()
+        is_empty = full_path.exists() and full_path.stat().st_size == 0
+
+        if is_missing:
             issues.append(f"❌ Missing: {file_path}")
+            if fix and template:
+                full_path.parent.mkdir(parents=True, exist_ok=True)
+                full_path.write_text(template, encoding="utf-8")
+                fixed.append(f"🔧 Regenerated {file_path}")
+        elif is_empty:
+            warnings.append(f"⚠️  {file_path} is empty")
+            if fix and template:
+                full_path.write_text(template, encoding="utf-8")
+                fixed.append(f"🔧 Restored content to {file_path}")
+        else:
+            passed.append(f"✅ {file_path} exists")
+
+    # Check IDE configuration files (can be regenerated)
+    ide_files: dict[str, str] = {
+        ".cursorrules": AntigravityResources.CURSOR_RULES.format(tech_stack="linux"),
+        ".windsurfrules": AntigravityResources.WINDSURF_RULES.format(tech_stack="linux"),
+    }
+
+    for file_path, template in ide_files.items():
+        full_path = base_dir / file_path
+        is_missing = not full_path.exists()
+        is_empty = full_path.exists() and full_path.stat().st_size == 0
+
+        if is_missing:
+            warnings.append(f"⚠️  Optional: {file_path} not found")
+            if fix:
+                full_path.write_text(template, encoding="utf-8")
+                fixed.append(f"🔧 Generated {file_path}")
+        elif is_empty:
+            warnings.append(f"⚠️  {file_path} is empty")
+            if fix:
+                full_path.write_text(template, encoding="utf-8")
+                fixed.append(f"🔧 Restored content to {file_path}")
+        else:
+            passed.append(f"✅ {file_path} exists")
 
     optional_files = [
         AntigravityResources.GITIGNORE_FILE,
@@ -1596,6 +1665,11 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
     print(AntigravityResources.SEPARATOR)
     print(f"Summary: {len(passed)} passed, {len(warnings)} warnings, {len(issues)} issues")
 
+    if fixed:
+        print("\n🔧 Fixes Applied:")
+        for fix_msg in fixed:
+            print(f"  {fix_msg}")
+
     if issues:
         print("\n🚨 Issues Found:")
         for issue in issues:
@@ -1608,12 +1682,20 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
 
     print(f"\n{AntigravityResources.SEPARATOR}")
 
-    if issues:
+    # After fixes, re-evaluate health
+    remaining_issues = len(issues) - len([f for f in fixed if "Missing" in f or "Regenerated" in f])
+    if remaining_issues > 0 and not fix:
+        print("❌ Project needs attention! Run with --fix to repair.")
+        return False
+    elif fixed:
+        print("🏆 Project repaired and healthy!")
+        return True
+    elif issues:
         print("❌ Project needs attention!")
         return False
-
-    print("🏆 Project is fully healthy!")
-    return True
+    else:
+        print("🏆 Project is fully healthy!")
+        return True
 
 
 def list_keywords() -> None:
@@ -1693,13 +1775,16 @@ def run_cli_mode(args: argparse.Namespace) -> None:
 
     if args.dry_run:
         print("\n🔍 DRY RUN MODE - No files will be created")
-        print("=" * 50)
-        print(f"Project Name: {project_name}")
-        print(f"Tech Stack: {', '.join(keywords)}")
-        print(f"Brain Dump: {args.brain_dump or 'None'}")
-        print(f"Safe Mode: {args.safe}")
-        print(f"Templates: {args.templates or 'Default'}")
-        print("\nDirectories that would be created:")
+        print("=" * 60)
+        print(f"📦 Project Name: {project_name}")
+        print(f"⚙️  Tech Stack: {', '.join(keywords)}")
+        print(f"🧠 Brain Dump: {args.brain_dump or 'None'}")
+        print(f"🛡️  Safe Mode: {args.safe}")
+        print(f"📁 Templates: {args.templates or 'Default (Built-in)'}")
+        print(f"📜 License: {args.license}")
+        print("=" * 60)
+
+        print("\n📁 Directories that would be created:")
         dirs = [
             "src",
             "tests",
@@ -1707,26 +1792,72 @@ def run_cli_mode(args: argparse.Namespace) -> None:
             "context/raw",
             ".idx",
             ".devcontainer",
+            ".github/ISSUE_TEMPLATE",
             ".agent/rules",
             ".agent/workflows",
-            ".agent/skills",
+            ".agent/skills/git_automation",
+            ".agent/skills/secrets_manager",
             ".agent/memory",
         ]
         for d in dirs:
-            print(f"  📁 {project_name}/{d}/")
-        print("\nFiles that would be created:")
-        files = [
+            print(f"    � {project_name}/{d}/")
+
+        print("\n📄 Core Files that would be created:")
+        core_files = [
             ".gitignore",
             "README.md",
+            "LICENSE",
             "CHANGELOG.md",
             "CONTRIBUTING.md",
             "AUDIT.md",
+            "SECURITY.md",
+            "CODE_OF_CONDUCT.md",
             "BOOTSTRAP_INSTRUCTIONS.md",
             ".env.example",
         ]
-        for f in files:
-            print(f"  📄 {project_name}/{f}")
-        print("\n✅ Dry run complete. No changes made.")
+        for f in core_files:
+            print(f"    📄 {project_name}/{f}")
+
+        print("\n🤖 AI IDE Configuration Files:")
+        ide_files = [
+            (".cursorrules", f"Tech Stack: {', '.join(keywords)}"),
+            (".windsurfrules", f"Tech Stack: {', '.join(keywords)}"),
+            (".github/copilot-instructions.md", f"Tech Stack: {', '.join(keywords)}"),
+        ]
+        for f, desc in ide_files:
+            print(f"    🤖 {project_name}/{f} ({desc})")
+
+        print("\n📜 Agent Rules (.agent/rules/):")
+        for rule_file in AntigravityResources.AGENT_RULES:
+            print(f"    📜 {rule_file}")
+        print(f"    📜 01_tech_stack.md (Dynamic: {', '.join(keywords)})")
+
+        print("\n⚡ Agent Workflows (.agent/workflows/):")
+        for workflow_file in AntigravityResources.AGENT_WORKFLOWS:
+            print(f"    ⚡ {workflow_file}")
+
+        print("\n🛠️  Agent Skills (.agent/skills/):")
+        for skill_file in AntigravityResources.AGENT_SKILLS:
+            print(f"    🛠️  {skill_file}")
+
+        print("\n🧠 Agent Memory (.agent/memory/):")
+        print("    🧠 scratchpad.md")
+
+        print("\n📋 GitHub Templates (.github/):")
+        github_files = [
+            "ISSUE_TEMPLATE/bug_report.md",
+            "ISSUE_TEMPLATE/feature_request.md",
+            "ISSUE_TEMPLATE/question.md",
+            "ISSUE_TEMPLATE/config.yml",
+            "PULL_REQUEST_TEMPLATE.md",
+            "FUNDING.yml",
+        ]
+        for f in github_files:
+            print(f"    📋 {f}")
+
+        print("\n" + "=" * 60)
+        print("✅ Dry run complete. No changes made.")
+        print("   Run without --dry-run to create the project.")
         return
 
     generate_project(
