@@ -303,19 +303,19 @@ The script generates `.devcontainer/devcontainer.json`.
 
 ## 🤝 Contributing
 
-We use a **dev branch workflow**:
+We use a **standard feature branch workflow**:
 
-- **All PRs should target the `dev` branch**
-- `main` branch is for stable releases only
+- **All PRs should target the `main` branch**
+- Ensure all tests pass and linting is clean before submitting
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
-- See [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md) for branch setup
 
 Quick start:
 ```bash
-git checkout dev
+git checkout main
+git pull origin main
 git checkout -b feat/your-feature
 # Make changes, commit, push
-# Open PR to dev branch (CI will run automatically)
+# Open PR to main branch (CI will run automatically)
 ```
 
 ---

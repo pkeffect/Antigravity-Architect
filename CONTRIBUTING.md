@@ -20,7 +20,7 @@ Thank you for your interest in contributing! This guide will help you get starte
 ```bash
 git clone https://github.com/YOUR_USERNAME/antigravity-architect.git
 cd antigravity-architect
-git checkout dev  # Work on dev branch
+git checkout main  # Work on main branch
 ```
 
 ### 2. Install Dev Dependencies
@@ -88,11 +88,11 @@ Add new features to the appropriate class.
 
 ### 1. Create a Branch
 ```bash
-# Make sure you're on dev branch first
-git checkout dev
-git pull origin dev
+# Make sure you're on main branch first
+git checkout main
+git pull origin main
 
-# Create your feature branch from dev
+# Create your feature branch from main
 git checkout -b feat/my-new-feature
 ```
 
@@ -123,9 +123,9 @@ git commit -m "docs: update README badges"
 git push origin feat/my-new-feature
 ```
 
-**Important:** Open your Pull Request against the `dev` branch (NOT `main`).
+**Important:** Open your Pull Request against the `main` branch.
 
-The `dev` branch is where all development happens. The `main` branch is for stable releases only.
+All development happens on feature branches that are merged into `main` after passing CI and security checks.
 
 ---
 
