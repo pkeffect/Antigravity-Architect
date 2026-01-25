@@ -233,10 +233,17 @@ my-project/
 │   │   └── secrets_manager/ # API Key safety tool
 │   └── memory/              # Active Session Memory
 │       └── scratchpad.md    # The "Save Game" file
+├── .vscode/                 # 🛠️ VS CODE CONFIG
+│   ├── extensions.json      # Recommended plugins
+│   ├── settings.json        # Workspace settings
+│   ├── launch.json          # Debug configurations
+│   └── tasks.json           # Build tasks
 ├── .idx/                    # ☁️ GOOGLE IDX CONFIG
 │   └── dev.nix              # NixOS package definitions
 ├── .devcontainer/           # 🐳 UNIVERSAL CONTAINER CONFIG
 │   └── devcontainer.json    # VS Code / Codespaces config
+├── .cursorrules             # 🖱️ CURSOR IDE RULES
+├── .windsurfrules           # 🌬️ WINDSURF IDE RULES
 ├── context/
 │   └── raw/                 # 📥 DUMP ZONE (Original raw inputs)
 ├── docs/
