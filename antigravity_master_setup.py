@@ -21,6 +21,7 @@ License: MIT
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import re
@@ -29,7 +30,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.4.3"
+VERSION = "1.4.4"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -64,6 +65,15 @@ class AntigravityResources:
     SECURITY_FILE = "SECURITY.md"
     CODE_OF_CONDUCT_FILE = "CODE_OF_CONDUCT.md"
     BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
+
+    BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
+    VSCODE_DIR = ".vscode"
+    CURSOR_RULES_FILE = ".cursorrules"
+    WINDSURF_RULES_FILE = ".windsurfrules"
+
+    # Extension Constants
+    EXT_ESLINT = "dbaeumer.vscode-eslint"
+    EXT_PRETTIER = "esbenp.prettier-vscode"
 
     # UI Constants
     SEPARATOR = "=========================================="
@@ -103,7 +113,7 @@ antigravity_setup.log
         "macos": "\n# --- macOS ---\n.DS_Store\n.AppleDouble\n",
         "windows": "\n# --- Windows ---\nThumbs.db\nehthumbs.db\n*.exe\n*.dll\n",
         "linux": "\n# --- Linux ---\n*~\n.fuse_hidden*\n",
-        "vscode": "\n# --- VS Code ---\n.vscode/\n",
+        "vscode": f"\n# --- VS Code ---\n{VSCODE_DIR}/\n",
         "idea": "\n# ---JetBrains ---\n.idea/\n*.iml\n",
     }
 
@@ -811,6 +821,90 @@ description: Handle API keys.
 }
 """
 
+    VSCODE_EXTENSIONS_MAP: dict[str, list[str]] = {
+        "python": ["ms-python.python", "ms-python.vscode-pylance", "charliermarsh.ruff"],
+        "node": [EXT_ESLINT, EXT_PRETTIER],
+        "javascript": [EXT_ESLINT, EXT_PRETTIER],
+        "typescript": [EXT_ESLINT, EXT_PRETTIER],
+        "rust": ["rust-lang.rust-analyzer", "vadimcn.vscode-lldb"],
+        "go": ["golang.go"],
+        "java": ["vscjava.vscode-java-pack"],
+        "php": ["bmewburn.vscode-intelephense-client"],
+        "ruby": ["shopify.ruby-lsp"],
+        "docker": ["ms-azuretools.vscode-docker"],
+        "react": ["dsznajder.es7-react-js-snippets"],
+        "vue": ["vue.volar"],
+        "angular": ["angular.ng-template"],
+        "terraform": ["hashicorp.terraform"],
+        "general": [
+            "donjayamanne.githistory",
+            "eamodio.gitlens",
+            "usernamehw.errorlens",
+            "pkief.material-icon-theme",
+            "christian-kohler.path-intellisense",
+        ],
+    }
+
+    VSCODE_SETTINGS_TEMPLATE = """{{
+    "files.exclude": {{
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".agent/**": false,
+        "context/**": false
+    }},
+    "files.watcherExclude": {{
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.venv/**": true,
+        "**/.agent/**": true
+    }},
+    "search.exclude": {{
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/.venv": true,
+        "**/.agent": true
+    }},
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "{default_formatter}",
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "[python]": {{
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {{
+            "source.organizeImports": "explicit"
+        }}
+    }},
+    "[javascript]": {{
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }},
+    "[typescript]": {{
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }}
+}}"""
+
+    VSCODE_LAUNCH_TEMPLATE = """{{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    "version": "0.2.0",
+    "configurations": [
+{configurations}
+    ]
+}}"""
+
+    VSCODE_TASKS_TEMPLATE = """{{
+    "version": "2.0.0",
+    "tasks": [
+{tasks}
+    ]
+}}"""
+
 
 # Maintain backward compatibility with module-level constants
 AGENT_DIR = AntigravityResources.AGENT_DIR
@@ -1095,12 +1189,55 @@ Keywords Detected: {", ".join(keywords)}
 | **Assistant** | Tier 1 (Flash/Mini) | [YOUR SELECTION HERE] |
 """
 
+    @staticmethod
+    def build_vscode_config(keywords: list[str]) -> dict[str, str]:
+        """Builds all .vscode/ configuration files."""
+        extensions = []
+
+        # Map framework aliases
+        keyword_aliases = {
+            "js": "javascript",
+            "ts": "typescript",
+            "nextjs": "react",
+            "fastapi": "python",
+            "django": "python",
+            "flask": "python",
+        }
+
+        # Extensions
+        extensions.extend(AntigravityResources.VSCODE_EXTENSIONS_MAP["general"])
+
+        default_formatter = "none"
+
+        for k in keywords:
+            key = keyword_aliases.get(k, k)
+            if key in AntigravityResources.VSCODE_EXTENSIONS_MAP:
+                extensions.extend(AntigravityResources.VSCODE_EXTENSIONS_MAP[key])
+
+            if key == "python":
+                default_formatter = "charliermarsh.ruff"
+            elif key in ("javascript", "typescript", "react", "node") and default_formatter == "none":
+                default_formatter = AntigravityResources.EXT_PRETTIER
+
+        extensions = sorted(set(extensions))
+
+        files = {}
+        files["extensions.json"] = json.dumps({"recommendations": extensions}, indent=4)
+        files["settings.json"] = AntigravityResources.VSCODE_SETTINGS_TEMPLATE.format(
+            default_formatter=default_formatter
+        )
+        files["launch.json"] = AntigravityResources.VSCODE_LAUNCH_TEMPLATE.format(configurations="")
+        files["tasks.json"] = AntigravityResources.VSCODE_TASKS_TEMPLATE.format(tasks="")
+
+        return files
+
 
 # Maintain backward compatibility with module-level functions
 build_gitignore = AntigravityBuilder.build_gitignore
 build_nix_config = AntigravityBuilder.build_nix_config
 build_tech_stack_rule = AntigravityBuilder.build_tech_stack_rule
 build_scratchpad = AntigravityBuilder.build_scratchpad
+build_vscode_config = AntigravityBuilder.build_vscode_config
 
 
 # ==============================================================================
@@ -1299,6 +1436,7 @@ class AntigravityGenerator:
             "tests",
             "docs/imported",
             "context/raw",
+            AntigravityResources.VSCODE_DIR,
             AntigravityResources.IDX_DIR,
             AntigravityResources.DEVCONTAINER_DIR,
             f"{AGENT_DIR}/rules",
@@ -1424,15 +1562,20 @@ class AntigravityGenerator:
 
         # Generate Cursor and Windsurf Rules (AI IDE Compatibility)
         write_file(
-            os.path.join(base_dir, ".cursorrules"),
+            os.path.join(base_dir, AntigravityResources.CURSOR_RULES_FILE),
             AntigravityResources.CURSOR_RULES.format(tech_stack=", ".join(final_stack)),
             exist_ok=safe_mode,
         )
         write_file(
-            os.path.join(base_dir, ".windsurfrules"),
+            os.path.join(base_dir, AntigravityResources.WINDSURF_RULES_FILE),
             AntigravityResources.WINDSURF_RULES.format(tech_stack=", ".join(final_stack)),
             exist_ok=safe_mode,
         )
+
+        # Generate VS Code Configuration
+        vscode_files = build_vscode_config(final_stack)
+        for filename, content in vscode_files.items():
+            write_file(os.path.join(base_dir, AntigravityResources.VSCODE_DIR, filename), content, exist_ok=safe_mode)
 
         # Generate agent files
         AntigravityGenerator.generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
@@ -1543,17 +1686,64 @@ def load_custom_templates(templates_path: str | None) -> dict[str, dict[str, str
     return overrides
 
 
+def _doctor_check_dir(base_dir: Path, dir_path: str, fix: bool) -> tuple[str | None, str | None, str | None]:
+    """Checks directory existence and optionally fixes it."""
+    full_path = base_dir / dir_path
+    if full_path.exists():
+        return f"✅ {dir_path}/ exists", None, None
+
+    msg = f"❌ Missing: {dir_path}/"
+    fixed = None
+    if fix:
+        full_path.mkdir(parents=True, exist_ok=True)
+        (full_path / ".gitkeep").touch()
+        fixed = f"🔧 Created {dir_path}/"
+    return None, msg, fixed
+
+
+def _doctor_check_file(
+    base_dir: Path, file_path: str, template: str | None, fix: bool, optional: bool = False
+) -> tuple[str | None, str | None, str | None, str | None]:
+    """Checks file health and optionally fixes it."""
+    full_path = base_dir / file_path
+    is_missing = not full_path.exists()
+    is_empty = full_path.exists() and full_path.stat().st_size == 0
+
+    passed, warning, issue, fixed_msg = None, None, None, None
+
+    if is_missing:
+        if optional:
+            warning = f"⚠️  Optional: {file_path} not found"
+        else:
+            issue = f"❌ Missing: {file_path}"
+
+        if fix and template:
+            if is_missing:
+                full_path.parent.mkdir(parents=True, exist_ok=True)
+            full_path.write_text(template, encoding="utf-8")
+            fixed_msg = f"🔧 {'Generated' if is_missing else 'Regenerated'} {file_path}"
+    elif is_empty:
+        warning = f"⚠️  {file_path} is empty"
+        if fix and template:
+            full_path.write_text(template, encoding="utf-8")
+            fixed_msg = f"🔧 Restored content to {file_path}"
+    else:
+        passed = f"✅ {file_path} exists"
+
+    return passed, warning, issue, fixed_msg
+
+
 def doctor_project(project_path: str, fix: bool = False) -> bool:
     """
-    Validate an existing project's .agent/ structure.
+    Validates the integrity of an Antigravity project.
 
-    In fix mode, regenerates missing or empty required files from internal templates.
-    Returns True if healthy, False if issues found.
+    Checks for required directories and files.
+    If `fix` is True, attempts to repair missing structure and regenerate files.
     """
+    base_dir = Path(project_path).resolve()
     print(f"\n🩺 Running Doctor on: {project_path}")
     print(AntigravityResources.SEPARATOR)
 
-    base_dir = Path(project_path)
     if not base_dir.exists():
         print(f"❌ Project directory not found: {project_path}")
         return False
@@ -1563,25 +1753,23 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
     passed: list[str] = []
     fixed: list[str] = []
 
+    # 1. Check Directories
     required_dirs = [
         ".agent/rules",
         ".agent/workflows",
         ".agent/skills",
         ".agent/memory",
     ]
+    for d in required_dirs:
+        p, i, f = _doctor_check_dir(base_dir, d, fix)
+        if p:
+            passed.append(p)
+        if i:
+            issues.append(i)
+        if f:
+            fixed.append(f)
 
-    for dir_path in required_dirs:
-        full_path = base_dir / dir_path
-        if full_path.exists():
-            passed.append(f"✅ {dir_path}/ exists")
-        else:
-            issues.append(f"❌ Missing: {dir_path}/")
-            if fix:
-                full_path.mkdir(parents=True, exist_ok=True)
-                (full_path / ".gitkeep").touch()
-                fixed.append(f"🔧 Created {dir_path}/")
-
-    # Required files with their regeneration templates
+    # 2. Check Required Files
     required_files_templates: dict[str, tuple[str, str]] = {
         ".agent/rules/00_identity.md": (
             "Agent identity rule",
@@ -1601,49 +1789,34 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
         ),
     }
 
-    for file_path, (_description, template) in required_files_templates.items():
-        full_path = base_dir / file_path
-        is_missing = not full_path.exists()
-        is_empty = full_path.exists() and full_path.stat().st_size == 0
+    for file_path, (_desc, template) in required_files_templates.items():
+        p, w, i, f = _doctor_check_file(base_dir, file_path, template, fix, optional=False)
+        if p:
+            passed.append(p)
+        if w:
+            warnings.append(w)
+        if i:
+            issues.append(i)
+        if f:
+            fixed.append(f)
 
-        if is_missing:
-            issues.append(f"❌ Missing: {file_path}")
-            if fix and template:
-                full_path.parent.mkdir(parents=True, exist_ok=True)
-                full_path.write_text(template, encoding="utf-8")
-                fixed.append(f"🔧 Regenerated {file_path}")
-        elif is_empty:
-            warnings.append(f"⚠️  {file_path} is empty")
-            if fix and template:
-                full_path.write_text(template, encoding="utf-8")
-                fixed.append(f"🔧 Restored content to {file_path}")
-        else:
-            passed.append(f"✅ {file_path} exists")
-
-    # Check IDE configuration files (can be regenerated)
+    # 3. Check IDE Configuration Files (Optional but fixable)
     ide_files: dict[str, str] = {
-        ".cursorrules": AntigravityResources.CURSOR_RULES.format(tech_stack="linux"),
-        ".windsurfrules": AntigravityResources.WINDSURF_RULES.format(tech_stack="linux"),
+        AntigravityResources.CURSOR_RULES_FILE: AntigravityResources.CURSOR_RULES.format(tech_stack="linux"),
+        AntigravityResources.WINDSURF_RULES_FILE: AntigravityResources.WINDSURF_RULES.format(tech_stack="linux"),
     }
-
     for file_path, template in ide_files.items():
-        full_path = base_dir / file_path
-        is_missing = not full_path.exists()
-        is_empty = full_path.exists() and full_path.stat().st_size == 0
+        p, w, i, f = _doctor_check_file(base_dir, file_path, template, fix, optional=True)
+        if p:
+            passed.append(p)
+        if w:
+            warnings.append(w)
+        if i:
+            issues.append(i)
+        if f:
+            fixed.append(f)
 
-        if is_missing:
-            warnings.append(f"⚠️  Optional: {file_path} not found")
-            if fix:
-                full_path.write_text(template, encoding="utf-8")
-                fixed.append(f"🔧 Generated {file_path}")
-        elif is_empty:
-            warnings.append(f"⚠️  {file_path} is empty")
-            if fix:
-                full_path.write_text(template, encoding="utf-8")
-                fixed.append(f"🔧 Restored content to {file_path}")
-        else:
-            passed.append(f"✅ {file_path} exists")
-
+    # 4. Check Optional Files (No templates provided here for regeneration in original logic, but we can verify existence)
     optional_files = [
         AntigravityResources.GITIGNORE_FILE,
         AntigravityResources.README_FILE,
@@ -1654,13 +1827,16 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
         AntigravityResources.CODE_OF_CONDUCT_FILE,
         AntigravityResources.LICENSE_FILE,
     ]
-
     for file_path in optional_files:
-        full_path = base_dir / file_path
-        if full_path.exists():
-            passed.append(f"✅ {file_path} exists")
-        else:
-            warnings.append(f"⚠️  Optional: {file_path} not found")
+        p, w, i, f = _doctor_check_file(base_dir, file_path, None, fix, optional=True)
+        if p:
+            passed.append(p)
+        if w:
+            warnings.append(w)
+        if i:
+            issues.append(i)
+        if f:
+            fixed.append(f)
 
     print(AntigravityResources.SEPARATOR)
     print(f"Summary: {len(passed)} passed, {len(warnings)} warnings, {len(issues)} issues")
@@ -1752,6 +1928,105 @@ def run_interactive_mode() -> None:
     generate_project(project_name, manual_keywords, brain_dump_path, license_type=license_choice)
 
 
+def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse.Namespace) -> None:
+    """Helper to print dry run details."""
+    print("\n🔍 DRY RUN MODE - No files will be created")
+    print("=" * 60)
+    print(f"📦 Project Name: {project_name}")
+    print(f"⚙️  Tech Stack: {', '.join(keywords)}")
+    print(f"🧠 Brain Dump: {args.brain_dump or 'None'}")
+    print(f"🛡️  Safe Mode: {args.safe}")
+    print(f"📁 Templates: {args.templates or 'Default (Built-in)'}")
+    print(f"📜 License: {args.license}")
+    print("=" * 60)
+
+    print("\n📁 Directories that would be created:")
+    dirs = [
+        "src",
+        "tests",
+        "docs/imported",
+        "context/raw",
+        ".idx",
+        ".devcontainer",
+        AntigravityResources.VSCODE_DIR,
+        ".github/ISSUE_TEMPLATE",
+        ".agent/rules",
+        ".agent/workflows",
+        ".agent/skills/git_automation",
+        ".agent/skills/secrets_manager",
+        ".agent/memory",
+    ]
+    for d in dirs:
+        print(f"    📂 {project_name}/{d}/")
+
+    print("\n📄 Core Files that would be created:")
+    core_files = [
+        ".gitignore",
+        "README.md",
+        "LICENSE",
+        "CHANGELOG.md",
+        "CONTRIBUTING.md",
+        "AUDIT.md",
+        "SECURITY.md",
+        "CODE_OF_CONDUCT.md",
+        AntigravityResources.BOOTSTRAP_FILE,
+        ".env.example",
+    ]
+    for f in core_files:
+        print(f"    📄 {project_name}/{f}")
+
+    print("\n🤖 AI IDE Configuration Files:")
+    ide_files = [
+        (AntigravityResources.CURSOR_RULES_FILE, f"Tech Stack: {', '.join(keywords)}"),
+        (AntigravityResources.WINDSURF_RULES_FILE, f"Tech Stack: {', '.join(keywords)}"),
+        (".github/copilot-instructions.md", f"Tech Stack: {', '.join(keywords)}"),
+    ]
+    for f, desc in ide_files:
+        print(f"    🤖 {project_name}/{f} ({desc})")
+
+    print(f"\n🛠️  VS Code Configuration ({AntigravityResources.VSCODE_DIR}/):")
+    vscode_files = [
+        "settings.json",
+        "launch.json",
+        "tasks.json",
+        "extensions.json",
+    ]
+    for f in vscode_files:
+        print(f"    🛠️  {project_name}/{AntigravityResources.VSCODE_DIR}/{f}")
+
+    print("\n📜 Agent Rules (.agent/rules/):")
+    for rule_file in AntigravityResources.AGENT_RULES:
+        print(f"    📜 {rule_file}")
+    print(f"    📜 01_tech_stack.md (Dynamic: {', '.join(keywords)})")
+
+    print("\n⚡ Agent Workflows (.agent/workflows/):")
+    for workflow_file in AntigravityResources.AGENT_WORKFLOWS:
+        print(f"    ⚡ {workflow_file}")
+
+    print("\n🛠️  Agent Skills (.agent/skills/):")
+    for skill_file in AntigravityResources.AGENT_SKILLS:
+        print(f"    🛠️  {skill_file}")
+
+    print("\n🧠 Agent Memory (.agent/memory/):")
+    print("    🧠 scratchpad.md")
+
+    print("\n📋 GitHub Templates (.github/):")
+    github_files = [
+        "ISSUE_TEMPLATE/bug_report.md",
+        "ISSUE_TEMPLATE/feature_request.md",
+        "ISSUE_TEMPLATE/question.md",
+        "ISSUE_TEMPLATE/config.yml",
+        "PULL_REQUEST_TEMPLATE.md",
+        "FUNDING.yml",
+    ]
+    for f in github_files:
+        print(f"    📋 {f}")
+
+    print("\n" + "=" * 60)
+    print("✅ Dry run complete. No changes made.")
+    print("   Run without --dry-run to create the project.")
+
+
 def run_cli_mode(args: argparse.Namespace) -> None:
     """Run in CLI mode with provided arguments."""
     print("=========================================================")
@@ -1774,90 +2049,7 @@ def run_cli_mode(args: argparse.Namespace) -> None:
         keywords.append("linux")
 
     if args.dry_run:
-        print("\n🔍 DRY RUN MODE - No files will be created")
-        print("=" * 60)
-        print(f"📦 Project Name: {project_name}")
-        print(f"⚙️  Tech Stack: {', '.join(keywords)}")
-        print(f"🧠 Brain Dump: {args.brain_dump or 'None'}")
-        print(f"🛡️  Safe Mode: {args.safe}")
-        print(f"📁 Templates: {args.templates or 'Default (Built-in)'}")
-        print(f"📜 License: {args.license}")
-        print("=" * 60)
-
-        print("\n📁 Directories that would be created:")
-        dirs = [
-            "src",
-            "tests",
-            "docs/imported",
-            "context/raw",
-            ".idx",
-            ".devcontainer",
-            ".github/ISSUE_TEMPLATE",
-            ".agent/rules",
-            ".agent/workflows",
-            ".agent/skills/git_automation",
-            ".agent/skills/secrets_manager",
-            ".agent/memory",
-        ]
-        for d in dirs:
-            print(f"    � {project_name}/{d}/")
-
-        print("\n📄 Core Files that would be created:")
-        core_files = [
-            ".gitignore",
-            "README.md",
-            "LICENSE",
-            "CHANGELOG.md",
-            "CONTRIBUTING.md",
-            "AUDIT.md",
-            "SECURITY.md",
-            "CODE_OF_CONDUCT.md",
-            "BOOTSTRAP_INSTRUCTIONS.md",
-            ".env.example",
-        ]
-        for f in core_files:
-            print(f"    📄 {project_name}/{f}")
-
-        print("\n🤖 AI IDE Configuration Files:")
-        ide_files = [
-            (".cursorrules", f"Tech Stack: {', '.join(keywords)}"),
-            (".windsurfrules", f"Tech Stack: {', '.join(keywords)}"),
-            (".github/copilot-instructions.md", f"Tech Stack: {', '.join(keywords)}"),
-        ]
-        for f, desc in ide_files:
-            print(f"    🤖 {project_name}/{f} ({desc})")
-
-        print("\n📜 Agent Rules (.agent/rules/):")
-        for rule_file in AntigravityResources.AGENT_RULES:
-            print(f"    📜 {rule_file}")
-        print(f"    📜 01_tech_stack.md (Dynamic: {', '.join(keywords)})")
-
-        print("\n⚡ Agent Workflows (.agent/workflows/):")
-        for workflow_file in AntigravityResources.AGENT_WORKFLOWS:
-            print(f"    ⚡ {workflow_file}")
-
-        print("\n🛠️  Agent Skills (.agent/skills/):")
-        for skill_file in AntigravityResources.AGENT_SKILLS:
-            print(f"    🛠️  {skill_file}")
-
-        print("\n🧠 Agent Memory (.agent/memory/):")
-        print("    🧠 scratchpad.md")
-
-        print("\n📋 GitHub Templates (.github/):")
-        github_files = [
-            "ISSUE_TEMPLATE/bug_report.md",
-            "ISSUE_TEMPLATE/feature_request.md",
-            "ISSUE_TEMPLATE/question.md",
-            "ISSUE_TEMPLATE/config.yml",
-            "PULL_REQUEST_TEMPLATE.md",
-            "FUNDING.yml",
-        ]
-        for f in github_files:
-            print(f"    📋 {f}")
-
-        print("\n" + "=" * 60)
-        print("✅ Dry run complete. No changes made.")
-        print("   Run without --dry-run to create the project.")
+        _print_dry_run_report(project_name, keywords, args)
         return
 
     generate_project(

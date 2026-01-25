@@ -1,7 +1,7 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-1.4.3-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-1.4.4-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
@@ -44,7 +44,11 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 ### 🌐 Universal & Dynamic
 
 * **Polyglot Support:** Supports Python, Node.js, TypeScript, Rust, Go, Java, PHP, Ruby, Docker, and SQL.
-* **Dynamic Configuration:** Automatically builds `.gitignore`, `.idx/dev.nix`, and `.env` templates based on your input keywords or imported specs.
+* **Universal IDE Support:**
+  * **VS Code:** Generates optimized `.vscode` configs (Settings, Extensions, Launch, Tasks).
+  * **Cursor & Windsurf:** Auto-generates AI-specific rules `.cursorrules` and `.windsurfrules`.
+  * **Google IDX:** Generates `.idx/dev.nix` environment configuration.
+* **Dynamic Configuration:** Automatically builds `.gitignore`, `.env` templates, and IDE settings based on your input keywords.
 
 ### 🤖 Full Agent Architecture
 
@@ -58,6 +62,7 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 
 * **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories.
 * **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
+* **Editor-Ready:** Pre-configured `.vscode/` settings for immediate productivity.
 * **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
 * **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
 * **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.

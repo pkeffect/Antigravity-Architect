@@ -4,15 +4,45 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.4.4] - 2026-01-25
+
+### Added
+
+- **VS Code Integration**: Auto-generates `.vscode/` directory with:
+  - `extensions.json` (detected tech stack recommendations)
+  - `settings.json` (formatter config, exclusions)
+  - `launch.json` and `tasks.json` placeholders
+- **Refactoring**: Reduced cognitive complexity in `doctor_project` and `run_cli_mode`
+- **Helper Functions**: Added `_doctor_check_dir` and `_doctor_check_file`
+
+### Changed
+
+- **Cleaner Code**: Removed duplicate string literals via `AntigravityResources` constants
+- **Linting**: Fixed nested `if` and redundant types to satisfy stricter linting rules
+
+## [1.4.3] - 2026-01-24
+
+### Added
+
+- **Doctor Regeneration**: `--doctor` with `--fix` now regenerates missing/empty required files
+- **Safe Brain Dumps**: Introduced `slugify_title` for safer assimilated filenames
+- **Verbose Dry Run**: Expanded `--dry-run` output to show every file generated
+
+### Changed
+
+- **Final Polish**: Designated as definitive single-file architecture
+
 ## [1.4.2] - 2026-01-24
 
 ### Changed
+
 - Version synchronization across all project files
 - Documentation consistency improvements
 
 ## [1.4.1] - 2026-01-24
 
 ### Added
+
 - **AI IDE Compatibility**: Auto-generates `.cursorrules` and `.windsurfrules` for maximum compatibility
   - Cursor IDE support with dedicated rules file and Composer mode guidance
   - Windsurf IDE support with Cascade AI-specific workflows and memory integration
@@ -30,11 +60,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Generic AI assistants via .agent/ structure
 
 ### Changed
+
 - **GitHub Templates**: AI instruction files now part of standard scaffolding
 - **Documentation**: Updated README with AI IDE compatibility matrix
 - **Test Coverage**: Added tests for .cursorrules and .windsurfrules generation
 
 ### Technical
+
 - All 62+ tests passing (100% regression-free)
 - Zero external dependencies added
 - Single-file portability preserved
@@ -43,6 +75,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.4.0] - 2026-01-24
 
 ### Added
+
 - **GitHub Templates**: Auto-generates `.github/` with professional templates
   - Issue templates: bug report, feature request, question
   - Pull request template with checklist
@@ -53,6 +86,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Creates git commit and tag automatically
 
 ### Changed
+
 - **Major Refactoring**: Transformed script into hybrid class-based architecture
   - Created `AntigravityResources` class for all templates, constants, and mappings
   - Created `AntigravityEngine` class for file system operations and validation
@@ -64,6 +98,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **CONTRIBUTING.md**: Expanded with full guidelines, architecture docs, and versioning info
 
 ### Technical
+
 - All 59 tests passing (100% regression-free)
 - Zero external dependencies added
 - Single-file portability preserved
@@ -72,6 +107,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.3.0] - 2026-01-24
 
 ### Added
+
 - **CLI Mode:** Full command-line interface with argparse.
   - `--name`, `--stack`, `--brain-dump`, `--safe` for scripted project creation.
   - `--dry-run` to preview actions without creating files.
@@ -88,6 +124,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Bug Fix:** Resolved `argparse` action type error.
 
 ### Changed
+
 - `generate_project()` now accepts `safe_mode` and `custom_templates` parameters.
 - Interactive mode preserved for backwards compatibility (run with no arguments).
 - Version number now embedded in script as `VERSION = "1.3.0"`.
@@ -95,6 +132,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.0.0] - 2026-01-24
 
 ### Added
+
 - **Core Script:** Single-file `antigravity_master_setup.py` with zero external dependencies.
 - **Knowledge Assimilation:** Intelligent parsing of "Brain Dumps" into Rules/Workflows/Docs.
 - **Agent Architecture:** Auto-generation of `.agent/` structure (Memory, Skills, Rules, Workflows).
@@ -102,7 +140,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Model Dispatch Protocol:** "Context Handoff" system for switching between Logic/Reasoning models.
 - **Safe Update Mode:** Non-destructive updates for existing projects.
 - **Community Standards:** Auto-generation of `CHANGELOG.md`, `CONTRIBUTING.md`, and `AUDIT.md`.
-- **Production Engineering:** 
+- **Production Engineering:**
   - CI/CD workflows (GitHub Actions).
   - Ruff linting and Black formatting.
   - Pytest test suite (59 tests, cross-platform).
