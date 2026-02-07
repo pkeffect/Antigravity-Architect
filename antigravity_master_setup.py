@@ -30,7 +30,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.5.0"
+VERSION = "1.5.1"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -699,7 +699,7 @@ description: Handle API keys.
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     }}
 }}"""
-    
+
     PROFESSIONAL_README_TEMPLATE = """# {project_name}
 
 [![Version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)]()
@@ -1418,7 +1418,7 @@ class AntigravityGenerator:
             gitea_dir = os.path.join(base_dir, AntigravityResources.GITEA_DIR)
             gitea_issue_dir = os.path.join(gitea_dir, "issue_template")
             create_folder(gitea_issue_dir)
-            
+
             # Gitea reuses GitHub-compatible markdown for templates
             write_file(
                 os.path.join(gitea_issue_dir, "bug_report.md"),
