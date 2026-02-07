@@ -30,7 +30,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.5.1"
+VERSION = "1.5.2"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -69,7 +69,6 @@ class AntigravityResources:
     BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
     VSCODE_DIR = ".vscode"
     GITEA_DIR = ".gitea"
-
 
     # Extension Constants
     EXT_ESLINT = "dbaeumer.vscode-eslint"
@@ -490,8 +489,6 @@ This project includes AI agent workflows in `.agent/workflows/`. Use these comma
 4. **Document Decisions**: Use comments to explain "why", not "what"
 5. **Follow the Stack**: Stick to {tech_stack} unless discussing alternatives
 """
-
-
 
     LICENSE_TEMPLATES: dict[str, str] = {
         "mit": """MIT License

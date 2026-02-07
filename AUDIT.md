@@ -1,7 +1,7 @@
 # 🔬 Antigravity Architect: Final Professional Audit
 
 **Audit Date:** February 7, 2026
-**Version:** 1.5.1
+**Version:** 1.5.2
 **Status:** 🟢 STABLE (PRODUCTION READY)
 **Auditor:** Antigravity AI Agent (Claude Sonnet 4)
 **Script:** `antigravity_master_setup.py` (1,800+ lines, ~63KB)
@@ -27,17 +27,18 @@
 
 ## Version History
 
-| Version | Date | Score | Key Changes |
-| :--- | :--- | :--- | :--- |
-| 1.0.0 | 2026-01-24 | 97/100 | Initial release. Single-file, zero-dependency. |
-| 1.3.0 | 2026-01-24 | 98/100 | CLI mode, Doctor mode, Template overrides, Dry-run, License selection. |
-| 1.4.0 | 2026-01-24 | 99/100 | **Hybrid class-based architecture.** 5 focused classes, improved maintainability. |
-| 1.4.1 | 2026-01-24 | 99/100 | **AI IDE Compatibility.** Auto-generates .cursorrules, .windsurfrules, and copilot-instructions.md. |
-| 1.4.2 | 2026-01-24 | 99/100 | **Version Sync.** Ensured version consistency across all project files. |
-| 1.4.3 | 2026-01-24 | 99/100 | **Final Polish.** Definitive single-file edition. Enhanced Doctor with file regeneration. |
-| 1.4.4 | 2026-01-25 | 99/100 | **Editor Integration.** Added dynamic .vscode/ generation based on tech stack. |
-| 1.5.0 | 2026-02-07 | 100/100 | **Gitea Integration.** Added local versioning support and completed 100/100 line-by-line audit. |
-| 1.5.1 | 2026-02-07 | 100/100 | **Lint & Polish.** Fixed formatting lints and enhanced dry-run reporting logic. |
+| Version | Date       | Score   | Key Changes                                                                                               |
+| :------ | :--------- | :------ | :--------------------------------------------------------------------------------------------------------- |
+| 1.0.0   | 2026-01-24 | 97/100  | Initial release. Single-file, zero-dependency.                                                            |
+| 1.3.0   | 2026-01-24 | 98/100  | CLI mode, Doctor mode, Template overrides, Dry-run, License selection.                                      |
+| 1.4.0   | 2026-01-24 | 99/100  | **Hybrid class-based architecture.** 5 focused classes, improved maintainability.                           |
+| 1.4.1   | 2026-01-24 | 99/100  | **AI IDE Compatibility.** Auto-generates .cursorrules, .windsurfrules, and copilot-instructions.md.        |
+| 1.4.2   | 2026-01-24 | 99/100  | **Version Sync.** Ensured version consistency across all project files.                                    |
+| 1.4.3   | 2026-01-24 | 99/100  | **Final Polish.** Definitive single-file edition. Enhanced Doctor with file regeneration.                   |
+| 1.4.4   | 2026-01-25 | 99/100  | **Editor Integration.** Added dynamic .vscode/ generation based on tech stack.                               |
+| 1.5.0   | 2026-02-07 | 100/100 | **Gitea Integration.** Added local versioning support and completed 100/100 line-by-line audit.             |
+| 1.5.1   | 2026-02-07 | 100/100 | **Lint & Polish.** Fixed formatting lints and enhanced dry-run reporting logic.                             |
+| 1.5.2   | 2026-02-07 | 100/100 | **Style Polish.** Applied `ruff format` for standardized code style.                                       |
 
 ---
 
