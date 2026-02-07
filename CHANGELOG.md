@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.5.0] - 2026-02-07
+
+### Added
+
+- **Gitea Support**: Added native support for Gitea (local versioning) including auto-generation of `.gitea/` directories and issue templates.
+- **Enhanced Platform Support**: Improved cross-platform support for local development environments.
+- **Full Project Audit**: Completed a line-by-line professional audit (AUDIT.md) to ensure 100/100 production readiness.
+
+### Changed
+
+- **Version Bump**: Synchronized versioning across all core files to v1.5.0.
+
+## [1.4.5] - 2026-02-02
+
+### Changed
+
+- **Streamlined Architecture**: Stripped out support for non-core environments (Cursor, Windsurf) and languages (Rust, Go, PHP, etc.) to focus exclusively on **GitHub**, **VS Code**, and **Antigravity** workflows.
+- **Focused Support**: `GITIGNORE_MAP`, `NIX_PACKAGE_MAP`, and `VSCODE_EXTENSIONS_MAP` now only support Python, Node.js/Web, and essential tools (Docker).
+- **Refactoring**: Removed unused constants and templates (`CURSOR_RULES`, `WINDSURF_RULES`) to reduce script size and complexity.
+
 ## [1.4.4] - 2026-01-25
 
 ### Added

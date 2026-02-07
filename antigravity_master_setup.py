@@ -30,7 +30,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.4.4"
+VERSION = "1.5.0"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -68,8 +68,8 @@ class AntigravityResources:
 
     BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
     VSCODE_DIR = ".vscode"
-    CURSOR_RULES_FILE = ".cursorrules"
-    WINDSURF_RULES_FILE = ".windsurfrules"
+    GITEA_DIR = ".gitea"
+
 
     # Extension Constants
     EXT_ESLINT = "dbaeumer.vscode-eslint"
@@ -99,33 +99,21 @@ antigravity_setup.log
     GITIGNORE_MAP: dict[str, str] = {
         "python": "\n# --- Python ---\n__pycache__/\n*.pyc\nvenv/\n.venv/\n.pytest_cache/\n.mypy_cache/\n.ruff_cache/\n*.egg-info/\n",
         "node": "\n# --- Node/JS ---\nnode_modules/\ndist/\nbuild/\ncoverage/\n.npm/\n.eslintcache\n.yarn-integrity\n",
-        "rust": "\n# --- Rust ---\n/target\nCargo.lock\n**/*.rs.bk\n",
-        "go": "\n# --- Go ---\n/bin/\n/pkg/\n/dist/\n",
-        "java": "\n# --- Java ---\n*.class\n*.jar\n*.war\nbuild/\n.gradle/\n",
-        "php": "\n# --- PHP ---\n/vendor/\n.phpunit.result.cache\n",
-        "ruby": "\n# --- Ruby ---\n/.bundle/\n/vendor/bundle/\n",
         "docker": "\n# --- Docker ---\n.docker/\n",
         "postgres": "",
         "react": "\n# --- React ---\nbuild/\n.env.local\n",
         "nextjs": "\n# --- NextJS ---\n.next/\nout/\n",
-        "django": "\n# --- Django ---\n*.log\nlocal_settings.py\ndb.sqlite3\nmedia/\nstaticfiles/\n",
-        "flask": "\n# --- Flask ---\ninstance/\n.webassets-cache\n",
         "macos": "\n# --- macOS ---\n.DS_Store\n.AppleDouble\n",
         "windows": "\n# --- Windows ---\nThumbs.db\nehthumbs.db\n*.exe\n*.dll\n",
         "linux": "\n# --- Linux ---\n*~\n.fuse_hidden*\n",
         "vscode": f"\n# --- VS Code ---\n{VSCODE_DIR}/\n",
-        "idea": "\n# ---JetBrains ---\n.idea/\n*.iml\n",
+        "gitea": f"\n# --- Gitea ---\n{GITEA_DIR}/\n",
     }
 
     # B. Nix Packages (For Google Project IDX / Cloud Environments)
     NIX_PACKAGE_MAP: dict[str, list[str]] = {
         "python": ["pkgs.python312", "pkgs.python312Packages.pip", "pkgs.ruff", "pkgs.python312Packages.virtualenv"],
         "node": ["pkgs.nodejs_20", "pkgs.nodePackages.nodemon", "pkgs.nodePackages.typescript"],
-        "rust": ["pkgs.cargo", "pkgs.rustc", "pkgs.rustfmt"],
-        "go": ["pkgs.go", "pkgs.gopls"],
-        "java": ["pkgs.jdk17", "pkgs.maven"],
-        "php": ["pkgs.php", "pkgs.php82Packages.composer"],
-        "ruby": ["pkgs.ruby"],
         "docker": ["pkgs.docker", "pkgs.docker-compose"],
         "sql": ["pkgs.sqlite", "pkgs.postgresql"],
     }
@@ -338,6 +326,48 @@ contact_links:
     about: Check the README for usage instructions
 """
 
+    GITHUB_CI_TEMPLATE = """name: CI
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with Ruff
+        run: |
+          pip install ruff
+          ruff check .
+      - name: Test with pytest
+        run: |
+          pip install pytest
+          pytest
+"""
+
+    GITEA_CI_TEMPLATE = """name: Gitea Action CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Build
+        run: echo "Building..."
+"""
+
     GITHUB_COPILOT_INSTRUCTIONS = """# GitHub Copilot Instructions
 
 ## Project Context
@@ -461,233 +491,7 @@ This project includes AI agent workflows in `.agent/workflows/`. Use these comma
 5. **Follow the Stack**: Stick to {tech_stack} unless discussing alternatives
 """
 
-    CURSOR_RULES = """# Cursor IDE Rules
 
-You are an expert AI coding assistant working in Cursor IDE with access to this **{tech_stack}** project.
-
-## Core Directives
-
-### Security & Safety
-- Never output API keys, tokens, or credentials in chat or code
-- Always use environment variables (`.env`) for sensitive data
-- Validate all user inputs before processing
-- Check for common vulnerabilities (SQL injection, XSS, CSRF)
-
-### Code Quality Standards
-- Follow the tech stack conventions for {tech_stack}
-- Use type hints/annotations where applicable
-- Write self-documenting code with clear variable names
-- Add comments only to explain "why", not "what"
-- Maintain consistent code style throughout the project
-
-### Git Workflow
-Use Conventional Commits format:
-- `feat:` - New features
-- `fix:` - Bug fixes
-- `docs:` - Documentation only
-- `refactor:` - Code restructuring
-- `test:` - Test additions/updates
-- `chore:` - Maintenance tasks
-
-Example: `feat: add user authentication system`
-
-### Development Workflow
-1. **Before Coding**: Check `.agent/rules/` for project-specific guidelines
-2. **Context Awareness**: Review `docs/imported/` and `context/raw/` for specifications
-3. **Testing First**: Write or update tests before implementing features (TDD)
-4. **Incremental Changes**: Make small, focused commits
-5. **Code Review**: Self-review changes before committing
-
-### Project Structure
-- Source code: `src/`
-- Tests: `tests/`
-- Documentation: `docs/`
-- Agent rules: `.agent/rules/`
-- Workflows: `.agent/workflows/`
-- Configuration: Root directory
-
-### AI Agent Workflows
-This project includes callable workflows in `.agent/workflows/`:
-- `/plan` - Generate implementation plan from requirements
-- `/bootstrap` - Create initial code scaffolding
-- `/review` - Security and quality audit
-- `/commit` - Generate conventional commit messages
-- `/save` - Update project memory/scratchpad
-
-### Key Files to Reference
-- [README.md](README.md) - Project overview
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [SECURITY.md](SECURITY.md) - Security policies
-- `.agent/rules/01_tech_stack.md` - Tech stack specifics
-- `.env.example` - Required environment variables
-
-### When to Ask for Clarification
-- Ambiguous requirements or edge cases
-- Security-sensitive operations
-- Breaking changes to public APIs
-- Architecture decisions affecting multiple components
-
-### Cursor-Specific Features
-- Use `Cmd/Ctrl+K` for inline edits
-- Use `Cmd/Ctrl+L` for chat with context
-- Reference files with `@filename` in chat
-- Use Composer mode for multi-file edits
-
-## Tech Stack: {tech_stack}
-
-Adhere to best practices and conventions specific to this technology stack.
-"""
-
-    WINDSURF_RULES = """# Windsurf IDE Rules (Cascade AI)
-
-You are Cascade, the AI coding agent in Windsurf IDE, working on a **{tech_stack}** project.
-
-## Identity & Capabilities
-- You are a senior software engineer with expertise in {tech_stack}
-- You have agentic capabilities: planning, reasoning, multi-step execution
-- You can read, write, and refactor code across multiple files
-- You understand project architecture and dependencies
-
-## Core Principles
-
-### 1. Security-First Development
-```
-✅ DO:
-- Store secrets in `.env` files (never commit)
-- Use environment variables via `os.getenv()` or similar
-- Validate and sanitize all user inputs
-- Follow OWASP security best practices
-
-❌ DON'T:
-- Print or log sensitive credentials
-- Hardcode API keys or passwords
-- Trust user input without validation
-- Ignore security warnings
-```
-
-### 2. Code Quality Standards
-- **Readability**: Clear variable/function names over brevity
-- **Type Safety**: Use type hints (Python), TypeScript, or equivalent
-- **Error Handling**: Graceful degradation with proper error messages
-- **Testing**: Write tests alongside features (TDD preferred)
-- **Documentation**: Update docs when changing public APIs
-
-### 3. Git Conventions
-All commits must follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-<type>: <description>
-
-Types:
-- feat: New feature
-- fix: Bug fix
-- docs: Documentation only
-- refactor: Code restructure without behavior change
-- test: Adding or updating tests
-- chore: Tooling, dependencies, config
-
-Examples:
-feat: add JWT authentication middleware
-fix: resolve race condition in data processor
-docs: update API endpoint documentation
-```
-
-### 4. Cascade Workflow Integration
-
-#### Before Starting Work
-1. Review `.agent/rules/` for project-specific guidelines
-2. Check `docs/imported/` for requirements and specifications
-3. Read `context/raw/` for original design documents
-4. Examine `.agent/workflows/` for standard procedures
-
-#### During Development
-- Make incremental changes with clear reasoning
-- Run tests after each significant change
-- Keep the user informed of progress and blockers
-- Ask for clarification on ambiguous requirements
-
-#### After Completion
-- Self-review code for quality and security
-- Update relevant documentation
-- Suggest next steps or improvements
-- Update `.agent/memory/scratchpad.md` with decisions made
-
-## Project Structure
-```
-src/          # Source code
-tests/        # Test suites
-docs/         # Documentation
-.agent/       # AI agent configuration
-  rules/      # Always-active directives
-  workflows/  # Callable procedures
-  skills/     # Tool definitions
-  memory/     # Session persistence
-context/raw/  # Original specifications
-```
-
-## Agent Workflows (Slash Commands)
-Invoke these for common tasks:
-
-- `/plan` → Generate detailed implementation plan
-- `/bootstrap` → Scaffold code structure for feature
-- `/review` → Security and quality audit
-- `/commit` → Create conventional commit message
-- `/save` → Persist session context and decisions
-
-## Technology Stack
-**Active Stack**: {tech_stack}
-
-### Stack-Specific Guidelines
-Refer to `.agent/rules/01_tech_stack.md` for:
-- Framework versions and conventions
-- Preferred libraries and tools
-- File organization patterns
-- Build and deployment processes
-
-## Environment Configuration
-Required environment variables are documented in `.env.example`:
-- Copy to `.env` for local development
-- Never commit `.env` to version control
-- Use secret management for production
-
-## Key Reference Files
-| File | Purpose |
-|------|---------|
-| [README.md](README.md) | Project overview & setup |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Development guidelines |
-| [SECURITY.md](SECURITY.md) | Security policies |
-| [CHANGELOG.md](CHANGELOG.md) | Version history |
-| `.agent/rules/00_identity.md` | Agent persona & goals |
-
-## Memory & Context
-- **Session Memory**: `.agent/memory/scratchpad.md`
-- **Long-term Context**: `context/raw/` directory
-- **Imported Knowledge**: `docs/imported/` directory
-
-Update scratchpad with:
-- Architectural decisions and rationale
-- Unresolved questions or blockers
-- Next steps and TODOs
-- Lessons learned during development
-
-## Windsurf-Specific Features
-- **Cascade Flow**: Multi-step agentic reasoning
-- **Context Awareness**: Automatic codebase understanding
-- **Multi-file Editing**: Coordinated changes across files
-- **Memory Persistence**: Long-term project context
-
-## When to Escalate
-Ask the user before:
-- Making breaking changes to public APIs
-- Modifying core architecture
-- Adding new major dependencies
-- Implementing security-sensitive features
-- Deleting or renaming existing functionality
-
----
-
-**Remember**: You are Cascade, an intelligent coding agent. Think step-by-step, reason about trade-offs, and always prioritize code quality and security.
-"""
 
     LICENSE_TEMPLATES: dict[str, str] = {
         "mit": """MIT License
@@ -794,6 +598,18 @@ trigger: /save
 1. Summarize recent actions.
 2. Update `.agent/memory/scratchpad.md`.
 """,
+        "help.md": """---
+trigger: /help
+---
+# Agent Help
+Available Commands:
+- `/plan`: Generate tasks from specs.
+- `/bootstrap`: Create project skeleton.
+- `/review`: Audit code quality/security.
+- `/commit`: Smart commit message generator.
+- `/save`: Update project memory.
+- `/help`: Show this guide.
+""",
     }
 
     AGENT_SKILLS: dict[str, str] = {
@@ -826,16 +642,8 @@ description: Handle API keys.
         "node": [EXT_ESLINT, EXT_PRETTIER],
         "javascript": [EXT_ESLINT, EXT_PRETTIER],
         "typescript": [EXT_ESLINT, EXT_PRETTIER],
-        "rust": ["rust-lang.rust-analyzer", "vadimcn.vscode-lldb"],
-        "go": ["golang.go"],
-        "java": ["vscjava.vscode-java-pack"],
-        "php": ["bmewburn.vscode-intelephense-client"],
-        "ruby": ["shopify.ruby-lsp"],
         "docker": ["ms-azuretools.vscode-docker"],
         "react": ["dsznajder.es7-react-js-snippets"],
-        "vue": ["vue.volar"],
-        "angular": ["angular.ng-template"],
-        "terraform": ["hashicorp.terraform"],
         "general": [
             "donjayamanne.githistory",
             "eamodio.gitlens",
@@ -871,6 +679,9 @@ description: Handle API keys.
     }},
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "{default_formatter}",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "files.trimTrailingWhitespace": true,
     "editor.rulers": [
         80,
         120
@@ -888,6 +699,38 @@ description: Handle API keys.
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     }}
 }}"""
+    
+    PROFESSIONAL_README_TEMPLATE = """# {project_name}
+
+[![Version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)]()
+[![Stack](https://img.shields.io/badge/stack-{tech_stack}-blue.svg)]()
+
+## 🚀 Overview
+{project_name} is an AI-first project bootstrapped with **Antigravity Architect**.
+
+## ✨ Features
+- **Agent Optimized**: Built-in rules and workflows for AI agents.
+- **Multi-Platform**: Support for GitHub, Gitea, VS Code, and Project IDX.
+- **Production Ready**: Includes CI/CD boilerplates and community standards.
+
+## 🛠️ Tech Stack
+- **Primary**: {tech_stack}
+
+## 🤖 AI Agent Guide
+To start working with an AI agent in this repo:
+1. Open the project in your IDE.
+2. Read `BOOTSTRAP_INSTRUCTIONS.md`.
+3. Use `/help` to see available agent commands.
+
+## 📂 Project Structure
+- `.agent/`: AI Agent rules, memory, and workflows.
+- `src/`: Core source code.
+- `docs/`: Project documentation.
+- `context/`: Raw specifications and brain dumps.
+
+## 📄 License
+This project is licensed under the MIT License.
+"""
 
     VSCODE_LAUNCH_TEMPLATE = """{{
     // Use IntelliSense to learn about possible attributes.
@@ -1439,6 +1282,9 @@ class AntigravityGenerator:
             AntigravityResources.VSCODE_DIR,
             AntigravityResources.IDX_DIR,
             AntigravityResources.DEVCONTAINER_DIR,
+            AntigravityResources.GITEA_DIR,
+            f"{AntigravityResources.GITEA_DIR}/workflows",
+            ".github/workflows",
             f"{AGENT_DIR}/rules",
             f"{AGENT_DIR}/workflows",
             f"{AGENT_DIR}/skills",
@@ -1477,7 +1323,9 @@ class AntigravityGenerator:
         )
         write_file(
             os.path.join(base_dir, AntigravityResources.README_FILE),
-            f"# {project_name}\n\nStack: {', '.join(final_stack)}",
+            AntigravityResources.PROFESSIONAL_README_TEMPLATE.format(
+                project_name=project_name, tech_stack=", ".join(final_stack)
+            ),
             exist_ok=True,
         )
         write_file(
@@ -1559,18 +1407,34 @@ class AntigravityGenerator:
             AntigravityResources.GITHUB_COPILOT_INSTRUCTIONS.format(tech_stack=", ".join(final_stack)),
             exist_ok=safe_mode,
         )
+        write_file(
+            os.path.join(github_dir, "workflows", "ci.yml"),
+            AntigravityResources.GITHUB_CI_TEMPLATE,
+            exist_ok=safe_mode,
+        )
 
-        # Generate Cursor and Windsurf Rules (AI IDE Compatibility)
-        write_file(
-            os.path.join(base_dir, AntigravityResources.CURSOR_RULES_FILE),
-            AntigravityResources.CURSOR_RULES.format(tech_stack=", ".join(final_stack)),
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(base_dir, AntigravityResources.WINDSURF_RULES_FILE),
-            AntigravityResources.WINDSURF_RULES.format(tech_stack=", ".join(final_stack)),
-            exist_ok=safe_mode,
-        )
+        # Generate Gitea Templates (Local Versioning Support)
+        if "gitea" in final_stack:
+            gitea_dir = os.path.join(base_dir, AntigravityResources.GITEA_DIR)
+            gitea_issue_dir = os.path.join(gitea_dir, "issue_template")
+            create_folder(gitea_issue_dir)
+            
+            # Gitea reuses GitHub-compatible markdown for templates
+            write_file(
+                os.path.join(gitea_issue_dir, "bug_report.md"),
+                AntigravityResources.GITHUB_BUG_REPORT,
+                exist_ok=safe_mode,
+            )
+            write_file(
+                os.path.join(gitea_issue_dir, "feature_request.md"),
+                AntigravityResources.GITHUB_FEATURE_REQUEST,
+                exist_ok=safe_mode,
+            )
+            write_file(
+                os.path.join(gitea_dir, "workflows", "ci.yml"),
+                AntigravityResources.GITEA_CI_TEMPLATE,
+                exist_ok=safe_mode,
+            )
 
         # Generate VS Code Configuration
         vscode_files = build_vscode_config(final_stack)
@@ -1801,10 +1665,10 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
             fixed.append(f)
 
     # 3. Check IDE Configuration Files (Optional but fixable)
-    ide_files: dict[str, str] = {
-        AntigravityResources.CURSOR_RULES_FILE: AntigravityResources.CURSOR_RULES.format(tech_stack="linux"),
-        AntigravityResources.WINDSURF_RULES_FILE: AntigravityResources.WINDSURF_RULES.format(tech_stack="linux"),
-    }
+    # Removed Cursor/Windsurf specific files as they are no longer maintained or relevant.
+    # The original logic for these files was to check and optionally fix them.
+    # Since they are removed, this section now effectively does nothing unless new IDE files are added.
+    ide_files: dict[str, str] = {}
     for file_path, template in ide_files.items():
         p, w, i, f = _doctor_check_file(base_dir, file_path, template, fix, optional=True)
         if p:
@@ -1977,31 +1841,22 @@ def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse
 
     print("\n🤖 AI IDE Configuration Files:")
     ide_files = [
-        (AntigravityResources.CURSOR_RULES_FILE, f"Tech Stack: {', '.join(keywords)}"),
-        (AntigravityResources.WINDSURF_RULES_FILE, f"Tech Stack: {', '.join(keywords)}"),
         (".github/copilot-instructions.md", f"Tech Stack: {', '.join(keywords)}"),
     ]
     for f, desc in ide_files:
         print(f"    🤖 {project_name}/{f} ({desc})")
 
-    print(f"\n🛠️  VS Code Configuration ({AntigravityResources.VSCODE_DIR}/):")
-    vscode_files = [
-        "settings.json",
-        "launch.json",
-        "tasks.json",
-        "extensions.json",
-    ]
-    for f in vscode_files:
-        print(f"    🛠️  {project_name}/{AntigravityResources.VSCODE_DIR}/{f}")
-
-    print("\n📜 Agent Rules (.agent/rules/):")
+    print("\n📜 Agent Rules & Workflows:")
     for rule_file in AntigravityResources.AGENT_RULES:
-        print(f"    📜 {rule_file}")
-    print(f"    📜 01_tech_stack.md (Dynamic: {', '.join(keywords)})")
-
-    print("\n⚡ Agent Workflows (.agent/workflows/):")
+        print(f"    📜 .agent/rules/{rule_file}")
+    print(f"    📜 .agent/rules/01_tech_stack.md (Dynamic: {', '.join(keywords)})")
     for workflow_file in AntigravityResources.AGENT_WORKFLOWS:
-        print(f"    ⚡ {workflow_file}")
+        print(f"    ⚡ .agent/workflows/{workflow_file}")
+
+    print("\n📋 Project Standards & CI/CD:")
+    print("    📋 .github/workflows/ci.yml")
+    if "gitea" in keywords:
+        print(f"    📋 {AntigravityResources.GITEA_DIR}/workflows/ci.yml")
 
     print("\n🛠️  Agent Skills (.agent/skills/):")
     for skill_file in AntigravityResources.AGENT_SKILLS:
@@ -2021,6 +1876,15 @@ def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse
     ]
     for f in github_files:
         print(f"    📋 {f}")
+
+    if "gitea" in keywords:
+        print(f"\n📋 Gitea Templates ({AntigravityResources.GITEA_DIR}/):")
+        gitea_files = [
+            "issue_template/bug_report.md",
+            "issue_template/feature_request.md",
+        ]
+        for f in gitea_files:
+            print(f"    📋 {f}")
 
     print("\n" + "=" * 60)
     print("✅ Dry run complete. No changes made.")

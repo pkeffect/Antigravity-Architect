@@ -1,7 +1,7 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-1.4.4-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-1.5.0-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
@@ -20,15 +20,13 @@
 
 <!-- AI IDE Compatibility -->
 [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-compatible-success.svg?logo=github)](https://github.com/features/copilot)
-[![Cursor IDE](https://img.shields.io/badge/Cursor%20IDE-compatible-success.svg)](https://cursor.com)
-[![Windsurf](https://img.shields.io/badge/Windsurf%20Cascade-compatible-success.svg)](https://windsurf.com)
 [![Google IDX](https://img.shields.io/badge/Google%20IDX-compatible-success.svg)](https://idx.dev)
 
 <!-- Architecture & Design -->
 [![Architecture](https://img.shields.io/badge/architecture-agent--first-purple.svg)](https://github.com/pkeffect/antigravity-architect)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-zero%20external-success.svg)](https://github.com/pkeffect/antigravity-architect)
 
-**Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It generates projects optimized for **GitHub Copilot**, **Cursor IDE**, **Windsurf (Cascade AI)**, **Google IDX**, and any AI coding assistant.
+**Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It generates projects optimized for **GitHub Copilot**, **Google IDX**, and the **Antigravity** platform.
 
 Unlike standard scaffolding tools (like `create-react-app`) that just build code, this script builds a **Brain** for your AI. It constructs a "Self-Describing Repository" that teaches the Agent how to behave, what rules to follow, and automatically assimilates your existing documentation into the Agent's memory.
 
@@ -41,12 +39,11 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 * **The Brain Dump:** Drag and drop a massive text file (specs, notes, legacy code snippets). The script parses it, splits it by logical headers, and **automatically classifies** the information into Rules, Workflows, or Documentation.
 * **Raw Context Preservation:** Saves the original dump to `context/raw/` so the Agent can reference the "source of truth."
 
-### 🌐 Universal & Dynamic
+### 🌐 Streamlined & Dynamic
 
-* **Polyglot Support:** Supports Python, Node.js, TypeScript, Rust, Go, Java, PHP, Ruby, Docker, and SQL.
+* **Polyglot Support:** Focused support for **Python** and **Node.js/TypeScript** ecosystems.
 * **Universal IDE Support:**
   * **VS Code:** Generates optimized `.vscode` configs (Settings, Extensions, Launch, Tasks).
-  * **Cursor & Windsurf:** Auto-generates AI-specific rules `.cursorrules` and `.windsurfrules`.
   * **Google IDX:** Generates `.idx/dev.nix` environment configuration.
 * **Dynamic Configuration:** Automatically builds `.gitignore`, `.env` templates, and IDE settings based on your input keywords.
 
@@ -82,25 +79,16 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 * **100% Backward Compatible:** All existing functions preserved via module-level aliases
 * **Improved Maintainability:** 800+ lines reorganized for better code organization and scalability
 
-### 🤖 Universal AI IDE Compatibility (v1.4.1)
+### 🤖 AI IDE Compatibility
 
 * **GitHub Copilot Support:** Generates `.github/copilot-instructions.md` with project-aware guidance
   * Works in VS Code, Visual Studio, JetBrains IDEs
   * Includes development workflows, security protocols, and commit conventions
   * Dynamically adapts to detected tech stack
-* **Cursor IDE Integration:** Creates `.cursorrules` for AI Composer
-  * Optimized for Cursor's inline edits and multi-file Composer mode
-  * Includes `@file` reference patterns and keyboard shortcuts
-  * Tech stack-specific best practices and conventions
-* **Windsurf (Cascade AI) Support:** Generates `.windsurfrules` for agentic coding
-  * Tailored for Cascade's multi-step reasoning and planning
-  * Memory persistence and context management guidelines
-  * Workflow integration with `.agent/` structure
 * **Google IDX / Gemini CLI:** Native support via `.idx/dev.nix` and `.agent/` architecture
 * **Universal Fallback:** `.agent/` directory structure works with ANY AI coding assistant
   * Rules, workflows, skills, and memory accessible to all AI tools
   * Semantic file organization for optimal RAG (Retrieval Augmented Generation)
-  * Human-readable markdown format for maximum compatibility
 
 ---
 
@@ -242,8 +230,7 @@ my-project/
 │   └── dev.nix              # NixOS package definitions
 ├── .devcontainer/           # 🐳 UNIVERSAL CONTAINER CONFIG
 │   └── devcontainer.json    # VS Code / Codespaces config
-├── .cursorrules             # 🖱️ CURSOR IDE RULES
-├── .windsurfrules           # 🌬️ WINDSURF IDE RULES
+
 ├── context/
 │   └── raw/                 # 📥 DUMP ZONE (Original raw inputs)
 ├── docs/
@@ -266,10 +253,10 @@ The script parses your input string (or your Brain Dump file) for these keywords
 
 | Category | Keywords (Case Insensitive) |
 | :--- | :--- |
-| **Languages** | `python`, `node`, `javascript`, `typescript`, `rust`, `go`, `java`, `php`, `ruby` |
-| **Frameworks** | `react`, `nextjs`, `vue`, `angular`, `django`, `flask`, `laravel`, `fastapi` |
+| **Languages** | `python`, `node`, `javascript`, `typescript` |
+| **Frameworks** | `react`, `nextjs` |
 | **Infrastructure** | `docker`, `sql`, `postgres` |
-| **OS / Tools** | `macos`, `windows`, `linux`, `vscode`, `idea` (JetBrains) |
+| **OS / Tools** | `macos`, `windows`, `linux`, `vscode`, `gitea` |
 
 ---
 
