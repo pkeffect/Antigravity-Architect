@@ -1,7 +1,7 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-1.5.2-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-1.5.3-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
@@ -21,6 +21,7 @@
 <!-- AI IDE Compatibility -->
 [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-compatible-success.svg?logo=github)](https://github.com/features/copilot)
 [![Google IDX](https://img.shields.io/badge/Google%20IDX-compatible-success.svg)](https://idx.dev)
+[![Gitea](https://img.shields.io/badge/Gitea-compatible-success.svg?logo=gitea)](https://gitea.io)
 
 <!-- Architecture & Design -->
 [![Architecture](https://img.shields.io/badge/architecture-agent--first-purple.svg)](https://github.com/pkeffect/antigravity-architect)
@@ -89,6 +90,14 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 * **Universal Fallback:** `.agent/` directory structure works with ANY AI coding assistant
   * Rules, workflows, skills, and memory accessible to all AI tools
   * Semantic file organization for optimal RAG (Retrieval Augmented Generation)
+
+### 🍵 Gitea Integration
+
+We provide **First-Class Citizen** support for Gitea instances:
+
+* **Local Versioning:** Generates `.gitea/` directory structure parallel to `.github/`.
+* **CI/CD Pipelines:** Includes a native `.gitea/workflows/ci.yml` allowing you to run actions locally or on your self-hosted instance.
+* **Issue Templates:** Automatically adapts GitHub-standard issue templates to work within Gitea's `issue_template/` directory.
 
 ---
 
@@ -230,6 +239,13 @@ my-project/
 │   └── dev.nix              # NixOS package definitions
 ├── .devcontainer/           # 🐳 UNIVERSAL CONTAINER CONFIG
 │   └── devcontainer.json    # VS Code / Codespaces config
+├── .gitea/                  # 🍵 GITEA CONFIG (Local Versioning)
+│   ├── workflows/           # CI Pipelines
+│   └── issue_template/      # Issue Forms
+├── .github/                 # 🐙 GITHUB CONFIG
+│   ├── workflows/           # Actions Pipelines
+│   ├── ISSUE_TEMPLATE/      # Issue Forms
+│   └── copilot-instructions.md # AI Instructions
 
 ├── context/
 │   └── raw/                 # 📥 DUMP ZONE (Original raw inputs)

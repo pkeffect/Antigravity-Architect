@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.5.4] - 2026-02-07
+
+### Documentation
+
+- **Gitea Focus**: Added a dedicated "Gitea Support" section to `README.md`.
+- **Template Update**: Updated `PROFESSIONAL_README_TEMPLATE` to highlight Gitea capabilities.
+- **Badge**: Added Gitea badge to `README.md`.
+
+## [1.5.3] - 2026-02-07
+
+### Documentation
+
+- Updated `README.md` "Generated Architecture" to include `.gitea/` and `.github/` structures.
+- Updated `PROFESSIONAL_README_TEMPLATE` to reference platform configuration directories.
+
 ## [1.5.2] - 2026-02-07
 
 ### Fixed

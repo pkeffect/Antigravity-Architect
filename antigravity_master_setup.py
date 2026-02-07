@@ -30,7 +30,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.5.2"
+VERSION = "1.5.4"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -707,7 +707,7 @@ description: Handle API keys.
 
 ## ✨ Features
 - **Agent Optimized**: Built-in rules and workflows for AI agents.
-- **Multi-Platform**: Support for GitHub, Gitea, VS Code, and Project IDX.
+- **Multi-Platform**: Native support for **GitHub**, **Gitea**, **VS Code**, and **Project IDX**.
 - **Production Ready**: Includes CI/CD boilerplates and community standards.
 
 ## 🛠️ Tech Stack
@@ -721,6 +721,7 @@ To start working with an AI agent in this repo:
 
 ## 📂 Project Structure
 - `.agent/`: AI Agent rules, memory, and workflows.
+- `.github/` & `.gitea/`: Platform-specific CI/CD and templates.
 - `src/`: Core source code.
 - `docs/`: Project documentation.
 - `context/`: Raw specifications and brain dumps.
