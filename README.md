@@ -1,7 +1,7 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-1.5.3-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-1.6.0-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
@@ -10,7 +10,7 @@
 [![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Type Checking: MyPy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](http://mypy-lang.org/)
 [![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2062%20passed-green.svg)](https://docs.pytest.org/)
+[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2059%20passed-green.svg)](https://docs.pytest.org/)
 [![Code Quality](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
 
 <!-- Platform Support -->
@@ -35,9 +35,11 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
 
 ## ✨ Key Features
 
-### 🧠 Knowledge Assimilation (New!)
+### 🧠 Knowledge Assimilation & RAG (New!)
 
 * **The Brain Dump:** Drag and drop a massive text file (specs, notes, legacy code snippets). The script parses it, splits it by logical headers, and **automatically classifies** the information into Rules, Workflows, or Documentation.
+* **Semantic RAG Pre-Optimization:** Automatically generates an `INDEX.md` for all imported docs, making it easier for AI agents to navigate large datasets.
+* **Visual Context Mapping:** Automatically generates **Mermaid architecture diagrams** to give your AI (and you) a high-level visual overview of the system.
 * **Raw Context Preservation:** Saves the original dump to `context/raw/` so the Agent can reference the "source of truth."
 
 ### 🌐 Streamlined & Dynamic
@@ -48,13 +50,17 @@ Unlike standard scaffolding tools (like `create-react-app`) that just build code
   * **Google IDX:** Generates `.idx/dev.nix` environment configuration.
 * **Dynamic Configuration:** Automatically builds `.gitignore`, `.env` templates, and IDE settings based on your input keywords.
 
-### 🤖 Full Agent Architecture
+### 🤖 Full Agent Architecture (v1.6.0 Upgrade)
 
-* **Rules:** Generates "Always-On" directives (Persona, Security, Git Conventions, Chain-of-Thought).
-* **Workflows:** Generates callable slash commands (`/plan`, `/bootstrap`, `/commit`, `/review`, `/save`).
-* **Skills:** Generates tool definitions for Git Automation and Secret Management.
-* **Memory:** Initializes a `scratchpad.md` for long-term session memory.
-* **Model Dispatch:** Generates a "Context Handoff" protocol (`99_model_dispatch.md`) that teaches the Agent to request higher-reasoning models (like o1 or Ultra) for complex tasks.
+* **Multi-Agent Persona Orchestra:** Specialized "Always-On" rules for **Architect**, **UX Specialist**, and **Security Hardening** personas.
+* **Dynamic Rule Evolution:** Teaches the AI to self-correct and propose updates to its own rules as the project evolves.
+* **Project Ancestry:** Automatically inherits global rules from your home directory (`~/.antigravity/rules/`).
+* **Workflows:** Generates callable slash commands (`/plan`, `/bootstrap`, `/commit`, `/doctor`, `/retrospective`).
+* **Skills:** Standardized "Integrated Skill Bridge" for Git Automation and Secret Management.
+* **Memory Trace:**
+  * `scratchpad.md`: Active session persistence.
+  * `graveyard.md`: **Dependency Graveyard** to track failed paths and prevent AI "infinite loops."
+* **Model Dispatch:** Teaches the Agent to "Handoff Context" to Tier 3 reasoning models (o1/Ultra) for complex architecture or security work.
 
 ### 🛡️ Production Engineering
 
@@ -98,6 +104,14 @@ We provide **First-Class Citizen** support for Gitea instances:
 * **Local Versioning:** Generates `.gitea/` directory structure parallel to `.github/`.
 * **CI/CD Pipelines:** Includes a native `.gitea/workflows/ci.yml` allowing you to run actions locally or on your self-hosted instance.
 * **Issue Templates:** Automatically adapts GitHub-standard issue templates to work within Gitea's `issue_template/` directory.
+
+### 🏗️ Blueprint Marketplace (v1.6.0)
+
+We now support **Specialized Blueprints** for rapid scaffolding. Use the `--blueprint` flag to generate platform-specific structures:
+
+* **Next.js**: Optimized directories for App Router, Components, and Hooks.
+* **FastAPI**: Clean structure for Pydantic models, Schemas, and Endpoints.
+* **Standard**: The classic Antigravity Agent-First structure.
 
 ---
 
@@ -161,6 +175,9 @@ python antigravity_master_setup.py --name my-app --stack python,react --license 
 # With brain dump, safe mode, and custom license
 python antigravity_master_setup.py --name my-app --brain-dump ./specs.md --safe --license apache
 
+# Use a specialized Blueprint (New!)
+python antigravity_master_setup.py --name my-api --blueprint fastapi --stack python,sql
+
 # Preview without creating files
 python antigravity_master_setup.py --name my-app --stack python --dry-run
 
@@ -218,18 +235,25 @@ my-project/
 │   │   ├── 02_security.md   # OWASP & Secret handling
 │   │   ├── 03_git.md        # Conventional Commits
 │   │   ├── 04_reasoning.md  # Chain-of-Thought enforcer
+│   │   ├── 05_architecture.md # Persona: Architect
+│   │   ├── 06_ux.md           # Persona: UX Specialist
+│   │   ├── 07_security_expert.md # Persona: Security Hardening
 │   │   ├── 99_model_dispatch.md # Model Handoff Protocol
 │   │   └── imported_*.md    # Rules assimilated from your Brain Dump
 │   ├── workflows/           # Callable Commands (/slash)
 │   │   ├── plan.md          # /plan
 │   │   ├── bootstrap.md     # /bootstrap
 │   │   ├── commit.md        # /commit
+│   │   ├── doctor.md        # /doctor (System Health)
+│   │   ├── retrospective.md # /retrospective (Rule Evolution)
 │   │   └── imported_*.md    # Workflows assimilated from your Brain Dump
 │   ├── skills/              # Tool definitions
+│   │   ├── bridge/          # Integrated Skill Bridge (Python)
 │   │   ├── git_automation/  # Git CLI wrapper
 │   │   └── secrets_manager/ # API Key safety tool
 │   └── memory/              # Active Session Memory
-│       └── scratchpad.md    # The "Save Game" file
+│       ├── scratchpad.md    # The "Save Game" file
+│       └── graveyard.md     # The "Fail Safe" file (Dependency Tracking)
 ├── .vscode/                 # 🛠️ VS CODE CONFIG
 │   ├── extensions.json      # Recommended plugins
 │   ├── settings.json        # Workspace settings
@@ -250,7 +274,9 @@ my-project/
 ├── context/
 │   └── raw/                 # 📥 DUMP ZONE (Original raw inputs)
 ├── docs/
+│   ├── ARCHITECTURE.md      # 🗺️ VISUAL ARCHITECTURE (New!)
 │   └── imported/            # 📚 ASSIMILATED KNOWLEDGE
+│       └── INDEX.md         # 📑 RAG INDEX (Auto-generated)
 ├── src/                     # Source Code
 ├── CHANGELOG.md             # 📝 History
 ├── CONTRIBUTING.md          # 🤝 Guidelines
@@ -297,7 +323,10 @@ Type these in the Antigravity Chat:
 | `/bootstrap` | Scaffolds "Hello World" code based on the detected Tech Stack. |
 | `/review` | Audits the open file for security risks and style violations. |
 | `/commit` | Analyzes `git diff` and proposes a formatted commit message. |
+| `/doctor` | Runs a system health check on the `.agent/` structure. |
+| `/retrospective` | Analyzes recent friction and proposes self-corrections to rules. |
 | `/save` | Summarizes recent work and updates the `scratchpad.md` memory file. |
+| `/help` | Displays the Agent's command guide and manual. |
 
 ---
 

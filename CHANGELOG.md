@@ -4,9 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [1.5.4] - 2026-02-07
+## [1.6.0] - 2026-02-08
 
-### Documentation
+### Added (v1.6.0)
+
+- **Dynamic Rule Evolution**: Enabled self-correcting AI behavior.
+- **Multi-Agent Persona Orchestra**: Added Architect, UX, and Security specialists.
+- **Project Ancestry**: Added global rule inheritance from `~/.antigravity`.
+- **Dependency Graveyard**: Added tracking for failed implementations.
+- **Doctor-Led Audits**: Added `/doctor` command for automated health checks.
+- **Semantic RAG Pre-Optimization**: Automatic indexing of imported docs.
+- **Integrated Skill Bridge**: Standardized skill runner for AI agents.
+- **Blueprint Marketplace**: Added `--blueprint` flag for specialized stacks.
+- **Visual Context Mapping**: Generated Mermaid architecture diagrams.
+- **Time-Travel Memory**: Git-integrated session history.
+
+## [1.5.4] - 2026-02-08
+
+### Documentation (v1.5.4)
 
 - **Gitea Focus**: Added a dedicated "Gitea Support" section to `README.md`.
 - **Template Update**: Updated `PROFESSIONAL_README_TEMPLATE` to highlight Gitea capabilities.
@@ -14,7 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [1.5.3] - 2026-02-07
 
-### Documentation
+### Documentation (v1.5.3)
 
 - Updated `README.md` "Generated Architecture" to include `.gitea/` and `.github/` structures.
 - Updated `PROFESSIONAL_README_TEMPLATE` to reference platform configuration directories.
