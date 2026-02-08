@@ -201,7 +201,6 @@ Track rejected technologies, failed implementations, or deprecated patterns here
 - **Logic X**: Replaced by **Logic Y** due to edge case failure in production.
 """
 
-
     SECURITY_TEMPLATE = """# Security Policy
 
 ## Supported Versions
@@ -579,7 +578,6 @@ IF a request exceeds your current Tier:
 """,
     }
 
-
     AGENT_WORKFLOWS: dict[str, str] = {
         "plan.md": """---
 trigger: /plan
@@ -709,7 +707,6 @@ def run_skill(command):
     return subprocess.run(command, shell=True, capture_output=True, text=True)
 """,
     }
-
 
     DEVCONTAINER_JSON = """{
   "name": "Antigravity Universal",
@@ -1429,42 +1426,116 @@ class AntigravityGenerator:
                 write_file(dest_path, rf.read(), exist_ok=safe_mode)
 
         # Generate configuration files
-        write_file(os.path.join(base_dir, AntigravityResources.GITIGNORE_FILE), build_gitignore(final_stack), exist_ok=True)
-        write_file(os.path.join(base_dir, AntigravityResources.IDX_DIR, AntigravityResources.NIX_FILE), build_nix_config(final_stack), exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, AntigravityResources.DEVCONTAINER_DIR, AntigravityResources.DEVCONTAINER_FILE), AntigravityResources.DEVCONTAINER_JSON, exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, AntigravityResources.README_FILE), AntigravityResources.PROFESSIONAL_README_TEMPLATE.format(project_name=project_name, tech_stack=", ".join(final_stack)), exist_ok=True)
-        write_file(os.path.join(base_dir, AntigravityResources.ENV_EXAMPLE_FILE), "API_KEY=\nDB_URL=", exist_ok=safe_mode)
+        write_file(
+            os.path.join(base_dir, AntigravityResources.GITIGNORE_FILE), build_gitignore(final_stack), exist_ok=True
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.IDX_DIR, AntigravityResources.NIX_FILE),
+            build_nix_config(final_stack),
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.DEVCONTAINER_DIR, AntigravityResources.DEVCONTAINER_FILE),
+            AntigravityResources.DEVCONTAINER_JSON,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.README_FILE),
+            AntigravityResources.PROFESSIONAL_README_TEMPLATE.format(
+                project_name=project_name, tech_stack=", ".join(final_stack)
+            ),
+            exist_ok=True,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.ENV_EXAMPLE_FILE), "API_KEY=\nDB_URL=", exist_ok=safe_mode
+        )
 
         # Generate specialized files (v1.6.0)
-        write_file(os.path.join(base_dir, AGENT_DIR, "memory", "graveyard.md"), AntigravityResources.GRAVEYARD_TEMPLATE, exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, AGENT_DIR, "skills", "bridge", "bridge.py"), AntigravityResources.AGENT_SKILLS["bridge/bridge.py"], exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, "docs", "ARCHITECTURE.md"), AntigravityResources.MERMAID_PROJECT_MAP.format(project_name=project_name), exist_ok=safe_mode)
+        write_file(
+            os.path.join(base_dir, AGENT_DIR, "memory", "graveyard.md"),
+            AntigravityResources.GRAVEYARD_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AGENT_DIR, "skills", "bridge", "bridge.py"),
+            AntigravityResources.AGENT_SKILLS["bridge/bridge.py"],
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, "docs", "ARCHITECTURE.md"),
+            AntigravityResources.MERMAID_PROJECT_MAP.format(project_name=project_name),
+            exist_ok=safe_mode,
+        )
 
         # Generate License
-        license_content = AntigravityResources.LICENSE_TEMPLATES.get(license_type, AntigravityResources.LICENSE_TEMPLATES["mit"])
+        license_content = AntigravityResources.LICENSE_TEMPLATES.get(
+            license_type, AntigravityResources.LICENSE_TEMPLATES["mit"]
+        )
         if license_type == "mit":
             license_content = license_content.format(year=datetime.now().year, author="pkeffect")
         write_file(os.path.join(base_dir, AntigravityResources.LICENSE_FILE), license_content, exist_ok=safe_mode)
 
         # Community Standards
-        write_file(os.path.join(base_dir, AntigravityResources.CHANGELOG_FILE), AntigravityResources.CHANGELOG_TEMPLATE, exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, AntigravityResources.CONTRIBUTING_FILE), AntigravityResources.CONTRIBUTING_TEMPLATE, exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, AntigravityResources.AUDIT_FILE), AntigravityResources.AUDIT_TEMPLATE, exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, AntigravityResources.SECURITY_FILE), AntigravityResources.SECURITY_TEMPLATE, exist_ok=safe_mode)
-        write_file(os.path.join(base_dir, AntigravityResources.CODE_OF_CONDUCT_FILE), AntigravityResources.CODE_OF_CONDUCT_TEMPLATE, exist_ok=safe_mode)
+        write_file(
+            os.path.join(base_dir, AntigravityResources.CHANGELOG_FILE),
+            AntigravityResources.CHANGELOG_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.CONTRIBUTING_FILE),
+            AntigravityResources.CONTRIBUTING_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.AUDIT_FILE),
+            AntigravityResources.AUDIT_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.SECURITY_FILE),
+            AntigravityResources.SECURITY_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.CODE_OF_CONDUCT_FILE),
+            AntigravityResources.CODE_OF_CONDUCT_TEMPLATE,
+            exist_ok=safe_mode,
+        )
 
         # GitHub Templates
         github_dir = os.path.join(base_dir, ".github")
         issue_template_dir = os.path.join(github_dir, "ISSUE_TEMPLATE")
         create_folder(issue_template_dir)
-        write_file(os.path.join(issue_template_dir, "bug_report.md"), AntigravityResources.GITHUB_BUG_REPORT, exist_ok=safe_mode)
-        write_file(os.path.join(issue_template_dir, "feature_request.md"), AntigravityResources.GITHUB_FEATURE_REQUEST, exist_ok=safe_mode)
-        write_file(os.path.join(issue_template_dir, "question.md"), AntigravityResources.GITHUB_QUESTION, exist_ok=safe_mode)
-        write_file(os.path.join(issue_template_dir, "config.yml"), AntigravityResources.GITHUB_ISSUE_CONFIG, exist_ok=safe_mode)
-        write_file(os.path.join(github_dir, "PULL_REQUEST_TEMPLATE.md"), AntigravityResources.GITHUB_PR_TEMPLATE, exist_ok=safe_mode)
+        write_file(
+            os.path.join(issue_template_dir, "bug_report.md"),
+            AntigravityResources.GITHUB_BUG_REPORT,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(issue_template_dir, "feature_request.md"),
+            AntigravityResources.GITHUB_FEATURE_REQUEST,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(issue_template_dir, "question.md"), AntigravityResources.GITHUB_QUESTION, exist_ok=safe_mode
+        )
+        write_file(
+            os.path.join(issue_template_dir, "config.yml"), AntigravityResources.GITHUB_ISSUE_CONFIG, exist_ok=safe_mode
+        )
+        write_file(
+            os.path.join(github_dir, "PULL_REQUEST_TEMPLATE.md"),
+            AntigravityResources.GITHUB_PR_TEMPLATE,
+            exist_ok=safe_mode,
+        )
         write_file(os.path.join(github_dir, "FUNDING.yml"), AntigravityResources.GITHUB_FUNDING, exist_ok=safe_mode)
-        write_file(os.path.join(github_dir, "copilot-instructions.md"), AntigravityResources.GITHUB_COPILOT_INSTRUCTIONS.format(tech_stack=", ".join(final_stack)), exist_ok=safe_mode)
-        write_file(os.path.join(github_dir, "workflows", "ci.yml"), AntigravityResources.GITHUB_CI_TEMPLATE, exist_ok=safe_mode)
+        write_file(
+            os.path.join(github_dir, "copilot-instructions.md"),
+            AntigravityResources.GITHUB_COPILOT_INSTRUCTIONS.format(tech_stack=", ".join(final_stack)),
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(github_dir, "workflows", "ci.yml"), AntigravityResources.GITHUB_CI_TEMPLATE, exist_ok=safe_mode
+        )
 
         # VS Code Configuration
         vscode_files = build_vscode_config(final_stack)
@@ -1478,14 +1549,30 @@ class AntigravityGenerator:
         if blueprint_data:
             for rule in blueprint_data.get("rules", []):
                 if rule in AntigravityResources.AGENT_RULES:
-                    write_file(os.path.join(base_dir, AGENT_DIR, "rules", rule), AntigravityResources.AGENT_RULES[rule], exist_ok=False)
+                    write_file(
+                        os.path.join(base_dir, AGENT_DIR, "rules", rule),
+                        AntigravityResources.AGENT_RULES[rule],
+                        exist_ok=False,
+                    )
 
         # 4. Semantic RAG Index
-        write_file(os.path.join(base_dir, "docs", "imported", "INDEX.md"), AntigravityBuilder.build_docs_index(os.path.join(base_dir, "docs", "imported")), exist_ok=True)
+        write_file(
+            os.path.join(base_dir, "docs", "imported", "INDEX.md"),
+            AntigravityBuilder.build_docs_index(os.path.join(base_dir, "docs", "imported")),
+            exist_ok=True,
+        )
 
         # Memory and bootstrap
-        write_file(os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"), build_scratchpad(final_stack, bool(brain_dump_path)), exist_ok=True)
-        write_file(os.path.join(base_dir, AntigravityResources.BOOTSTRAP_FILE), """# Agent Start Guide\n1. **Context:** Read `.agent/memory/scratchpad.md`.\n2. **Knowledge:** Check `docs/imported/INDEX.md` for assimilated rules.\n3. **Action:** Run `/bootstrap` to generate the application skeleton.\n""", exist_ok=safe_mode)
+        write_file(
+            os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"),
+            build_scratchpad(final_stack, bool(brain_dump_path)),
+            exist_ok=True,
+        )
+        write_file(
+            os.path.join(base_dir, AntigravityResources.BOOTSTRAP_FILE),
+            """# Agent Start Guide\n1. **Context:** Read `.agent/memory/scratchpad.md`.\n2. **Knowledge:** Check `docs/imported/INDEX.md` for assimilated rules.\n3. **Action:** Run `/bootstrap` to generate the application skeleton.\n""",
+            exist_ok=safe_mode,
+        )
 
         # 5. Time-Travel: Git Initialization hook
         git_dir = os.path.join(base_dir, ".git")
@@ -1502,7 +1589,6 @@ class AntigravityGenerator:
         print(f"\n✅ Project '{project_name}' ready (v1.6.0)!")
         print(f"📂 Location: {os.path.abspath(base_dir)}\n")
         return True
-
 
 
 # Maintain backward compatibility with module-level functions
@@ -1562,7 +1648,6 @@ Examples:
         choices=["audio", "medical", "performance"],
         help="Apply a specialized project blueprint",
     )
-
 
     return parser
 
