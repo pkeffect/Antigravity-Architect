@@ -225,6 +225,7 @@ context/
 docs/
 BOOTSTRAP_INSTRUCTIONS.md
 BRANCH_PROTECTION.md
+TASK.md
 antigravity_setup.log
 .env.example
 
