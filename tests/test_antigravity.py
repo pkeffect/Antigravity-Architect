@@ -583,8 +583,6 @@ class TestIntegration:
             assert os.path.exists(os.path.join(project_dir, ".github", "FUNDING.yml"))
             assert os.path.exists(os.path.join(project_dir, ".github", "copilot-instructions.md"))
 
-
-
             # Check directories exist
             assert os.path.isdir(os.path.join(project_dir, "src"))
             assert os.path.isdir(os.path.join(project_dir, "tests"))

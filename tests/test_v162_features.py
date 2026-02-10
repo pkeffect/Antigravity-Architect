@@ -15,11 +15,13 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import antigravity_master_setup as ag
 
+
 @pytest.fixture
 def temp_dir():
     """Create a temporary directory for test files."""
     with tempfile.TemporaryDirectory() as tmpdir:
         yield tmpdir
+
 
 class TestV162Features:
     """Tests for features introduced in v1.6.2."""
@@ -29,11 +31,11 @@ class TestV162Features:
         # Create sibling directories with .git to be recognized
         os.makedirs(os.path.join(temp_dir, "sibling-1", ".git"))
         os.makedirs(os.path.join(temp_dir, "sibling-2", ".agent"))
-        
+
         # Create current project dir
         project_dir = os.path.join(temp_dir, "current-project")
         os.makedirs(project_dir)
-        
+
         # Original directory
         original_cwd = os.getcwd()
         try:
@@ -41,7 +43,7 @@ class TestV162Features:
             os.chdir(temp_dir)
             builder = ag.AntigravityBuilder()
             links_content = builder.build_links("current-project")
-            
+
             assert "sibling-1" in links_content
             assert "sibling-2" in links_content
             assert "Git Repository" in links_content
@@ -54,9 +56,9 @@ class TestV162Features:
         assimilator = ag.AntigravityAssimilator()
         keywords = ["python", "docker", "react"]
         raw_text = "This project uses FastAPI for the backend and React for the frontend."
-        
+
         deep_dive = assimilator.build_tech_deep_dive(keywords, raw_text)
-        
+
         assert "Python" in deep_dive
         assert "Docker" in deep_dive
         assert "React" in deep_dive
@@ -65,32 +67,32 @@ class TestV162Features:
     def test_doctor_validation_fail(self, temp_dir):
         """Should identify missing agent files and return False."""
         # Create a project dir but it's empty
-        
+
         # Run doctor
         result = ag.doctor_project(temp_dir)
-        
+
         # Should have found many missing files and returned False
         assert result is False
 
     def test_generate_agent_files_v162(self, temp_dir):
         """Should create Sentinel and Evolution files."""
         ag.generate_agent_files(temp_dir, ["python"])
-        
+
         rules_dir = os.path.join(temp_dir, ".agent", "rules")
         workflows_dir = os.path.join(temp_dir, ".agent", "workflows")
         memory_dir = os.path.join(temp_dir, ".agent", "memory")
         scripts_dir = os.path.join(temp_dir, "scripts")
-        
+
         # Check new rules
         assert os.path.exists(os.path.join(rules_dir, "08_boundaries.md"))
         assert os.path.exists(os.path.join(rules_dir, "10_evolution.md"))
-        
+
         # Check new workflows
         assert os.path.exists(os.path.join(workflows_dir, "evolve.md"))
-        
+
         # Check new memory
         assert os.path.exists(os.path.join(memory_dir, "evolution.md"))
-        
+
         # Check sentinel script
         assert os.path.exists(os.path.join(scripts_dir, "sentinel.py"))
 
@@ -98,9 +100,9 @@ class TestV162Features:
         """Should detect technologies using aliases (e.g. sveltekit -> node)."""
         assimilator = ag.AntigravityAssimilator()
         text = "This is a sveltekit application with fastapi endpoint."
-        
+
         keywords = assimilator.detect_tech_stack(text)
-        
+
         assert "node" in keywords  # sveltekit -> node
         assert "python" in keywords  # fastapi -> python
 
@@ -133,6 +135,7 @@ class TestV162Features:
         assimilator = ag.AntigravityAssimilator()
         deep_dive = assimilator.build_tech_deep_dive([], "Just some text.")
         assert "Standard project structure" in deep_dive
+
 
 if __name__ == "__main__":
     pytest.main([__file__])

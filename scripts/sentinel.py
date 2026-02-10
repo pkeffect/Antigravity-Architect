@@ -9,12 +9,8 @@ import logging
 # This script monitors critical files for unauthorized changes and triggers
 # automated security audits via the /doctor command.
 
-CRITICAL_FILES = [
-    ".env",
-    ".agent/rules/02_security.md",
-    "antigravity_master_setup.py",
-    "scripts/sentinel.py"
-]
+CRITICAL_FILES = [".env", ".agent/rules/02_security.md", "antigravity_master_setup.py", "scripts/sentinel.py"]
+
 
 def run_audit():
     logging.info("🕵️ Sentinel: Triggering Security Audit...")
@@ -24,9 +20,7 @@ def run_audit():
         script_path = "antigravity_master_setup.py"
         if os.path.exists(script_path):
             result = subprocess.run(
-                [sys.executable, script_path, "--doctor", ".", "--fix"],
-                capture_output=True,
-                text=True
+                [sys.executable, script_path, "--doctor", ".", "--fix"], capture_output=True, text=True
             )
             print(result.stdout)
             if result.returncode == 0:
@@ -37,6 +31,7 @@ def run_audit():
             logging.error("❌ Sentinel: Could not find antigravity_master_setup.py")
     except Exception as e:
         logging.error(f"❌ Sentinel: Audit exception: {e}")
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(message)s")

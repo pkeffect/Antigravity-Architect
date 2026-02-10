@@ -1,11 +1,17 @@
-# Enforce LF for all python files
-*.py text eol=lf
-*.md text eol=lf
-*.json text eol=lf
-*.toml text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
+# Handle line endings automatically for files detected as text
+# and perform LF normalization on checkin.
+* text=auto
 
-# Binary files
+# Force LF for all Python files to match Ruff config
+*.py text eol=lf
+
+# Force LF for markdown files
+*.md text eol=lf
+
+# Explicitly declare non-text files
 *.png binary
 *.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary

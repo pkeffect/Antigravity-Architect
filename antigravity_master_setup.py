@@ -69,6 +69,11 @@ class AntigravityResources:
     BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
     VSCODE_DIR = ".vscode"
     GITEA_DIR = ".gitea"
+    RULE_ARCHITECTURE = "05_architecture.md"
+    RULE_SECURITY_EXPERT = "07_security_expert.md"
+    RULE_IDENTITY = "00_identity.md"
+    RULE_TECH_STACK = "01_tech_stack.md"
+    RULE_SECURITY = "02_security.md"
 
     # Extension Constants
     EXT_ESLINT = "dbaeumer.vscode-eslint"
@@ -267,7 +272,7 @@ This file tracks sister repositories within the same workspace to allow for cros
 The AI Agent is authorized to read rules and tech stacks from these directories to maintain architectural synchronization across the workspace.
 """
 
-    SENTINEL_HOOK_TEMPLATE = """#!/usr/bin/env python3
+    SENTINEL_PY = """#!/usr/bin/env python3
 # Antigravity Sentinel: Proactive Security Auditor
 import os
 import subprocess
@@ -627,7 +632,7 @@ You are a Senior Polyglot Software Engineer and Product Architect.
 3. **Check:** Verify against `docs/` constraints.
 4. **Execute:** Write code.
 """,
-        "05_architecture.md": """# Architecture Expert Persona
+        RULE_ARCHITECTURE: """# Architecture Expert Persona
 Focus on SoC (Separation of Concerns), DRY (Don't Repeat Yourself), and SOLID principles.
 Always prioritize modularity and testability in system design.
 """,
@@ -635,7 +640,7 @@ Always prioritize modularity and testability in system design.
 Focus on user flow, accessibility (a11y), and intuitive interface design.
 Ensure that all interactive elements have clear feedback and state representation.
 """,
-        "07_security_expert.md": """# Security Hardening Persona
+        RULE_SECURITY_EXPERT: """# Security Hardening Persona
 Conduct deep audits for OWASP Top 10 vulnerabilities.
 Enforce strict validation, sanitization, and least-privilege principles.
 """,
@@ -764,17 +769,17 @@ trigger: /doctor
         "audio": {
             "dirs": ["src/audio", "src/dsp", "resources/samples"],
             "stack": ["python", "numpy", "scipy", "librosa"],
-            "rules": ["05_architecture.md"],
+            "rules": [RULE_ARCHITECTURE],
         },
         "medical": {
             "dirs": ["src/encryption", "src/hipaa", "docs/compliance"],
             "stack": ["python", "cryptography", "postgres"],
-            "rules": ["02_security.md", "07_security_expert.md"],
+            "rules": [RULE_SECURITY, RULE_SECURITY_EXPERT],
         },
         "performance": {
             "dirs": ["src/benchmarks", "src/opt"],
             "stack": ["python", "rust"],
-            "rules": ["05_architecture.md"],
+            "rules": [RULE_ARCHITECTURE],
         },
     }
 
@@ -1541,7 +1546,7 @@ class AntigravityGenerator:
             write_file(path, content, exist_ok=safe_mode)
 
         # Generate dynamic tech stack rule
-        tech_stack_path = os.path.join(base_dir, AGENT_DIR, "rules", "01_tech_stack.md")
+        tech_stack_path = os.path.join(base_dir, AGENT_DIR, "rules", AntigravityResources.RULE_TECH_STACK)
         write_file(tech_stack_path, build_tech_stack_rule(keywords), exist_ok=safe_mode)
 
         # Generate workflows
@@ -1554,7 +1559,10 @@ class AntigravityGenerator:
             path = os.path.join(base_dir, AGENT_DIR, "skills", filename)
             write_file(path, content, exist_ok=safe_mode)
 
-        # Generate Memory
+        # v1.6.2 Consolidated Memory Generation
+        scratchpad_path = os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md")
+        write_file(scratchpad_path, build_scratchpad(keywords, False), exist_ok=safe_mode)
+
         write_file(
             os.path.join(base_dir, AGENT_DIR, "memory", "graveyard.md"),
             AntigravityResources.GRAVEYARD_TEMPLATE,
@@ -1566,12 +1574,48 @@ class AntigravityGenerator:
             exist_ok=safe_mode,
         )
 
-        # Generate Scripts
+        # v1.6.2 Sentinel Protection Script
         write_file(
-            os.path.join(base_dir, "scripts", "sentinel.py"),
-            AntigravityResources.SENTINEL_HOOK_TEMPLATE,
-            exist_ok=safe_mode,
+            os.path.join(base_dir, "scripts", "sentinel.py"), AntigravityResources.SENTINEL_PY, exist_ok=safe_mode
         )
+
+    @staticmethod
+    def generate_community_standards(base_dir: str, safe_mode: bool = False) -> None:
+        """Generates standard legal and community files."""
+        files = {
+            AntigravityResources.CHANGELOG_FILE: AntigravityResources.CHANGELOG_TEMPLATE,
+            AntigravityResources.CONTRIBUTING_FILE: AntigravityResources.CONTRIBUTING_TEMPLATE,
+            AntigravityResources.AUDIT_FILE: AntigravityResources.AUDIT_TEMPLATE,
+            AntigravityResources.SECURITY_FILE: AntigravityResources.SECURITY_TEMPLATE,
+            AntigravityResources.CODE_OF_CONDUCT_FILE: AntigravityResources.CODE_OF_CONDUCT_TEMPLATE,
+        }
+        for filename, content in files.items():
+            write_file(os.path.join(base_dir, filename), content, exist_ok=safe_mode)
+
+    @staticmethod
+    def generate_github_templates(base_dir: str, final_stack: list[str], safe_mode: bool = False) -> None:
+        """Generates GitHub-specific templates and workflows."""
+        github_dir = os.path.join(base_dir, ".github")
+        workflow_dir = os.path.join(github_dir, "workflows")
+        create_folder(workflow_dir)
+
+        issue_template_dir = os.path.join(github_dir, "ISSUE_TEMPLATE")
+        create_folder(issue_template_dir)
+
+        templates = {
+            os.path.join(issue_template_dir, "bug_report.md"): AntigravityResources.GITHUB_BUG_REPORT,
+            os.path.join(issue_template_dir, "feature_request.md"): AntigravityResources.GITHUB_FEATURE_REQUEST,
+            os.path.join(issue_template_dir, "question.md"): AntigravityResources.GITHUB_QUESTION,
+            os.path.join(issue_template_dir, "config.yml"): AntigravityResources.GITHUB_ISSUE_CONFIG,
+            os.path.join(github_dir, "PULL_REQUEST_TEMPLATE.md"): AntigravityResources.GITHUB_PR_TEMPLATE,
+            os.path.join(github_dir, "FUNDING.yml"): AntigravityResources.GITHUB_FUNDING,
+            os.path.join(
+                github_dir, "copilot-instructions.md"
+            ): AntigravityResources.GITHUB_COPILOT_INSTRUCTIONS.format(tech_stack=", ".join(final_stack)),
+            os.path.join(workflow_dir, "ci.yml"): AntigravityResources.GITHUB_CI_TEMPLATE,
+        }
+        for path, content in templates.items():
+            write_file(path, content, exist_ok=safe_mode)
 
     @staticmethod
     def generate_project(
@@ -1721,66 +1765,10 @@ class AntigravityGenerator:
         write_file(os.path.join(base_dir, AntigravityResources.LICENSE_FILE), license_content, exist_ok=safe_mode)
 
         # Community Standards
-        write_file(
-            os.path.join(base_dir, AntigravityResources.CHANGELOG_FILE),
-            AntigravityResources.CHANGELOG_TEMPLATE,
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(base_dir, AntigravityResources.CONTRIBUTING_FILE),
-            AntigravityResources.CONTRIBUTING_TEMPLATE,
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(base_dir, AntigravityResources.AUDIT_FILE),
-            AntigravityResources.AUDIT_TEMPLATE,
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(base_dir, AntigravityResources.SECURITY_FILE),
-            AntigravityResources.SECURITY_TEMPLATE,
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(base_dir, AntigravityResources.CODE_OF_CONDUCT_FILE),
-            AntigravityResources.CODE_OF_CONDUCT_TEMPLATE,
-            exist_ok=safe_mode,
-        )
+        AntigravityGenerator.generate_community_standards(base_dir, safe_mode=safe_mode)
 
         # GitHub Templates
-        github_dir = os.path.join(base_dir, ".github")
-        issue_template_dir = os.path.join(github_dir, "ISSUE_TEMPLATE")
-        create_folder(issue_template_dir)
-        write_file(
-            os.path.join(issue_template_dir, "bug_report.md"),
-            AntigravityResources.GITHUB_BUG_REPORT,
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(issue_template_dir, "feature_request.md"),
-            AntigravityResources.GITHUB_FEATURE_REQUEST,
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(issue_template_dir, "question.md"), AntigravityResources.GITHUB_QUESTION, exist_ok=safe_mode
-        )
-        write_file(
-            os.path.join(issue_template_dir, "config.yml"), AntigravityResources.GITHUB_ISSUE_CONFIG, exist_ok=safe_mode
-        )
-        write_file(
-            os.path.join(github_dir, "PULL_REQUEST_TEMPLATE.md"),
-            AntigravityResources.GITHUB_PR_TEMPLATE,
-            exist_ok=safe_mode,
-        )
-        write_file(os.path.join(github_dir, "FUNDING.yml"), AntigravityResources.GITHUB_FUNDING, exist_ok=safe_mode)
-        write_file(
-            os.path.join(github_dir, "copilot-instructions.md"),
-            AntigravityResources.GITHUB_COPILOT_INSTRUCTIONS.format(tech_stack=", ".join(final_stack)),
-            exist_ok=safe_mode,
-        )
-        write_file(
-            os.path.join(github_dir, "workflows", "ci.yml"), AntigravityResources.GITHUB_CI_TEMPLATE, exist_ok=safe_mode
-        )
+        AntigravityGenerator.generate_github_templates(base_dir, final_stack, safe_mode=safe_mode)
 
         # VS Code Configuration
         vscode_files = build_vscode_config(final_stack)
@@ -1807,15 +1795,10 @@ class AntigravityGenerator:
             exist_ok=True,
         )
 
-        # Memory and bootstrap
-        write_file(
-            os.path.join(base_dir, AGENT_DIR, "memory", "scratchpad.md"),
-            build_scratchpad(final_stack, bool(brain_dump_path)),
-            exist_ok=True,
-        )
+        # Bootstrap Guide
         write_file(
             os.path.join(base_dir, AntigravityResources.BOOTSTRAP_FILE),
-            """# Agent Start Guide\n1. **Context:** Read `.agent/memory/scratchpad.md`.\n2. **Knowledge:** Check `docs/imported/INDEX.md` for assimilated rules.\n3. **Action:** Run `/bootstrap` to generate the application skeleton.\n""",
+            """# Agent Start Guide\n\n1. **Context:** Read `.agent/memory/scratchpad.md`.\n2. **Knowledge:** Check `docs/imported/INDEX.md` for assimilated rules.\n3. **Action:** Run `/bootstrap` to generate the application skeleton.\n""",
             exist_ok=safe_mode,
         )
 
@@ -2015,7 +1998,7 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
     required_files_templates: dict[str, tuple[str, str]] = {
         ".agent/rules/00_identity.md": (
             "Agent identity rule",
-            AntigravityResources.AGENT_RULES.get("00_identity.md", ""),
+            AntigravityResources.AGENT_RULES.get(AntigravityResources.RULE_IDENTITY, ""),
         ),
         ".agent/rules/01_tech_stack.md": (
             "Tech stack rule",
