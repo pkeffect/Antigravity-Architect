@@ -1,5 +1,25 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
+> [!CAUTION]
+> **! DISCLAIMER !**
+>
+> This project and its code were created using artificial intelligence (AI) tools. If you have any concerns about the content or accuracy of this project, I recommend exploring alternative resources.
+>
+> The development process for this project involves several key steps:
+>
+> * We begin by working within OpenWebUI with local models.
+> * Next, we create a new project base using Antigravity-Architect script.
+> * The OpenWebUI project is then integrated into the Agentic Framework.
+> * Most of the code is written using Gemini models.
+>
+> If significant issues or problems arise that cannot be resolved by Gemini, I will switch to a Claude model for assistance. Once those issues are addressed, we'll return to working with Gemini.
+>
+> Upon completion of the project, an audit is done with Gemini. Next, a thorough audit is conducted using a Claude model. If any remaining issues need attention, I may employ Claude again to resolve them. The results of this audit are then compared with the previous review by Gemini and any necessary adjustments made before finalizing the project.
+>
+> For future development and major releases, we will repeat this process to ensure continued quality and accuracy.
+>
+> Please let me know if you have any further questions or concerns!
+
 <!-- Project & Build Status -->
 [![Version](https://img.shields.io/badge/version-1.6.2-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
@@ -159,21 +179,49 @@ The heart of every generated project is the machine-readable `.agent/` directory
 ```text
 my-project/
 ├── .agent/                  # 🤖 THE AGENT BRAIN (Rules, Workflows, Memory)
+│   ├── rules/               # Hard directives (Identity, Tech Stack, etc.)
+│   ├── workflows/           # Slash commands (/plan, /bootstrap, /commit)
+│   ├── skills/              # Tool definitions & bridge.py
+│   └── memory/              # scratchpad.md, graveyard.md, evolution.md
 ├── .vscode/                 # 🛠️ PREMIUM IDE EXPERIENCE
+│   ├── settings.json        # Tailored editor behavior
+│   ├── extensions.json      # Recommended toolset
+│   └── launch.json          # Debug configurations
 ├── .idx/                    # ☁️ GOOGLE PROJECT IDX CONFIG
+│   └── dev.nix              # Nix environment definition
 ├── .devcontainer/           # 🐳 UNIVERSAL DOCKER ENVIRONMENT
+│   └── devcontainer.json    # Container specification
 ├── .github/                 # 🐙 GITHUB EXCELLENCE (Workflows, Templates)
+│   ├── ISSUE_TEMPLATE/      # Bug reports, feature requests, etc.
+│   ├── workflows/           # GitHub Actions CI/CD (ci.yml)
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── copilot-instructions.md # Custom context for GitHub Copilot
 ├── .gitea/                  # 🍵 GITEA FIRST-CLASS SUPPORT
+│   └── workflows/           # Gitea Actions templates
 ├── context/
+│   ├── links.md             # 🌉 Multi-repo context bridge
 │   └── raw/                 # 📥 SOURCE OF TRUTH (Original specs)
 ├── docs/
 │   ├── TECH_STACK.md        # 🧞 ARCHITECTURAL MANIFEST
-│   └── ARCHITECTURE.md      # 🗺️ MERMAID DIAGRAMS
+│   ├── ARCHITECTURE.md      # 🗺️ MERMAID DIAGRAMS
+│   └── imported/            # 📚 ASSIMILATED KNOWLEDGE (INDEX.md)
 ├── scripts/
 │   └── sentinel.py          # 🛡️ SECURITY WATCHDOG
-├── src/                     # Code entry points
-├── tests/                   # Professional test suite
-└── BOOTSTRAP_INSTRUCTIONS.md # The AI Genesis Prompt
+├── src/                     # 🏗️ Application Source Code
+│   └── .gitkeep
+├── tests/                   # 🧪 Automated Test Suite
+│   └── .gitkeep
+├── .env.example             # Environment variable templates
+├── .gitignore               # Tech-stack aware exclusions
+├── .gitattributes           # Line-ending normalization (LF)
+├── AUDIT.md                 # Security & Quality audit logs
+├── BOOTSTRAP_INSTRUCTIONS.md # The AI Genesis Prompt
+├── CHANGELOG.md             # Project version history
+├── CODE_OF_CONDUCT.md       # Community standards
+├── CONTRIBUTING.md          # Developer guidelines
+├── LICENSE                  # Legal information (MIT/Apache/GPL)
+├── README.md                # Professional project overview
+└── SECURITY.md              # Security and vulnerability policies
 ```
 
 ---
