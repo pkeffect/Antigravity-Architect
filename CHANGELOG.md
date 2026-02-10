@@ -8,12 +8,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- **Sentinel Mode (Self-Protection)**: Introduced proactive security auditing for critical files.
-- **Autonomous Evolution**: Added background refactoring framework and Rule 10 for tech debt reduction.
-- **Documentation Genie**: Automated deep-dive `TECH_STACK.md` generation during assimilation.
-- **Intelligent Tech Aliases**: Enhanced semantic detection for fractional tech stacks (Svelte, FastAPI, etc.).
-- **Multi-Repo Context Bridge**: Automated sibling repository discovery and cross-repo intelligence.
-- **VS Code Primacy**: Added premium editor settings, snippets, and hardened configurations.
+- **LF Line-Ending Enforcement**: Added `.gitattributes` to guarantee consistent formatting between Windows and Linux CI environments.
+- **Local Quality Enforcement (Pre-commit)**: Added `.pre-commit-config.yaml` to automate Ruff formatting, linting, and safety checks locally.
+- **AI Development Transparency**: Added prominent `[!CAUTION]` disclaimer to `README.md` detailing the Gemini/Claude hybrid development and audit workflow.
+- **Comprehensive Project Maps**: Expanded `README.md` to show the full 45+ item directory tree of the generated Living Repository.
+- **Integrated Knowledge Links**: Added direct hyperlinks to [Open WebUI](https://github.com/open-webui/open-webui) and [Antigravity Architect](https://github.com/pkeffect/antigravity-architect) in all core documentation.
+- **Hardened Commit Workflow**: Mandated `ruff format .` and `pytest` in the `/commit` workflow to prevent CI drift and regression.
+- **Sentinel Mode (Self-Protection)**: Introduced proactive security auditing for critical files via `scripts/sentinel.py`.
+- **Autonomous Evolution**: Added background refactoring framework (Rule 10) for systematic tech debt reduction.
+- **Documentation Genie**: Automated deep-dive `TECH_STACK.md` generation during project configuration.
+- **Multi-Repo Context Bridge**: Automated sibling repository discovery and architectural synchronization.
+
+### Fixed
+
+- **CI Formatting Drift**: Resolved recurring `ruff format --check` failures by standardizing on `LF` line endings project-wide.
+- **Naming Inconsistency**: Resolved `AttributeError` for `SENTINEL_PY` constant reference mismatch.
+- **Generator Integrity**: Fixed duplicated bootstrap file writing logic in `generate_project`.
+- **Markdown Standards Compliance**: Fixed 40+ linting errors (MD022, MD030, MD031, MD032, MD040) in `README.md` and workflows.
+- **Cognitive Complexity**: Significantly reduced script complexity by refactoring monolithic generation logic into modular static methods.
+
+### Changed
+
+- **Code Refactor**: Replaced brittle literal string filenames for agent rules with robust class constants (`RULE_ARCHITECTURE`, `RULE_SECURITY`, etc.).
+- **Tech Stack Mandate**: Updated Rule 01 to strictly mandate `ruff format` and `mypy` as pre-commit requirements.
+- **Test Suite Growth**: Expanded verification suite to 68+ passing tests with 100% regression-free status.
 
 ## [1.6.0] - 2026-02-08
 
