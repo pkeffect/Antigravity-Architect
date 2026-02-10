@@ -111,7 +111,18 @@ antigravity_setup.log
 
     # Alias Mapping for Intelligent Tech Detection
     TECH_ALIASES: dict[str, list[str]] = {
-        "python": ["django", "flask", "fastapi", "numpy", "pandas", "pytorch", "tensorflow", "scipy", "pytest", "poetry"],
+        "python": [
+            "django",
+            "flask",
+            "fastapi",
+            "numpy",
+            "pandas",
+            "pytorch",
+            "tensorflow",
+            "scipy",
+            "pytest",
+            "poetry",
+        ],
         "node": [
             "javascript",
             "typescript",
@@ -737,8 +748,7 @@ Available Commands:
 - `/evolve`: Background refactoring and tech-debt reduction.
 - `/doctor`: Run automated health audit.
 - `/help`: Show this guide.
-"""
-,
+""",
         "doctor.md": """---
 trigger: /doctor
 ---

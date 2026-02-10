@@ -5,396 +5,184 @@
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
+[![Test Coverage](https://img.shields.io/badge/coverage-70%25-brightgreen.svg)](AUDIT.md)
+[![Audit Score](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
 
 <!-- Code Quality -->
 [![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Type Checking: MyPy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](http://mypy-lang.org/)
 [![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2059%20passed-green.svg)](https://docs.pytest.org/)
-[![Code Quality](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
+[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2068%20passed-green.svg)](https://docs.pytest.org/)
 
-**Antigravity Architect** is the definitive "Agent-First" project engine. It doesn't just scaffold code; it constructs a **Living Repository** that protects, evolves, and describes itself to AI Agents.
-
----
-
-## 💎 Premium Capabilities (v1.6.2)
-
-### 🛡️ Sentinel: Self-Protecting Repositories
-
-* **The Guardian**: Automatically generates `scripts/sentinel.py` to monitor security-critical files.
-* **Proactive Audits**: Triggers automated `/doctor` health checks whenever `.env`, rules, or core configurations are tampered with.
-* **Integrity Enforcement**: Ensures your repository remains compliant with its own security standards across every commit.
-
-### 🧬 Autonomous Evolution: Background Refactoring
-
-* **Continuous Improvement**: Introduces a dedicated `evolution.md` log for tracking long-term technical debt reduction.
-* **Incrementalism**: Rule 10 enforces safe, atomic refactoring steps that agents can execute in the background.
-* **Legacy-to-Modern Pipeline**: Seamlessly bridge old code patterns to your current architectural rules without manual intervention.
-
-### 🧠 The Documentation Genie
-
-* **Semantic Indexing**: During the "Assimilation" phase, the Architect now generates a deep-dive `docs/TECH_STACK.md` report.
-* **Context Optimization**: Summarizes tech debt, architectural observations, and specialized requirements to reduce the agent's context usage while maximizing insight.
-* **Visual Logic**: Native Mermaid support for generating architecture diagrams that evolve with your project.
-
-### 🌉 Multi-Repo Context Bridge
-
-* **Cross-Repo Intelligence**: Automatically discovers sister projects in your workspace and links them via `context/links.md`.
-* **Rule Synchronization**: Instructs agents to maintain consistency by reading rules and interfaces from linked repositories.
-
-### 🤖 VS Code Primacy
-
-* **Integrated Snippets**: Instant access to Antigravity slash commands via a custom `/` trigger dropdown.
-* **Premium Environment**: Hardened settings for semantic highlighting, inline suggestions, and terminal optimization.
+**Antigravity Architect** is the definitive "Agent-First" project engine. It is a single-file, zero-dependency powerhouse that constructs **Living Repositories** designed to protect, evolve, and describe themselves to AI Agents (Gemini, Claude, GPT).
 
 ---
 
-## ✨ Core Features
+## 🌟 The Vision: "The Living Development Environment"
 
-### 🧠 Knowledge Assimilation & RAG
-* **The Brain Dump:** Import massive specifications; the script automatically classifies them into Rules, Workflows, or Documentation.
-* **Intelligent Tech Aliases**: Semantic detection of fractional tech stacks (e.g., detecting SvelteKit, FastAPI, or Poetry correctly).
-* **Raw Context Preservation:** Saves the original dump to `context/raw/` for "Source of Truth" auditing.
-
-### 🤖 Multi-Agent Persona Orchestra
-* **Specialized Rules**: Pre-configured directives for **Architect**, **UX Specialist**, and **Security Hardening** personas.
-* **Model Dispatch**: Built-in protocol for hand-off to Tier 3 reasoning models (o1/Ultra) for complex tasks.
-* **Ancestry**: Automatically inherits global organization rules from `~/.antigravity/rules/`.
-
-### 🍵 Gitea & GitHub First-Class Support
-* **Parallel Integration**: Generates both `.github/` and `.gitea/` structures for hybrid workflows.
-* **Local Actions**: Support for Gitea Actions and local issue templates.
-
-### 🏗️ Blueprint Marketplace
-* **Specialized Scaffolding**: `--blueprint` flag for optimized **Next.js**, **FastAPI**, or **Standard** project structures.
-
-### 🛡️ Production Engineering
-
-* **The "Git Ghost":** Automatically places `.gitkeep` files in empty directories.
-* **Cloud-Ready:** Generates `.idx/dev.nix` and `.devcontainer/devcontainer.json`.
-* **Editor-Ready:** Pre-configured `.vscode/` settings for immediate productivity.
-* **CI/CD Integrated:** Includes GitHub Actions for linting, type-checking, and automatic testing.
-* **Safety First:** Includes input sanitization, error logging, and non-destructive overwrite protection.
-* **Privacy by Default:** Automatically adds `.agent/` and `context/` to `.gitignore` to prevent leaking your custom agent brain or raw project notes to public repositories.
-* **Safe Update Mode:** Automatically detects existing projects and offers to **Update** (safely inject missing agent files) or **Overwrite** (replace everything).
-* **Community Standards:** Automatically generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md` to professionalize your repository from Day 1.
-* **GitHub Templates:** Generates `.github/` with issue templates (bug report, feature request, question), PR template, FUNDING.yml, and **copilot-instructions.md** for AI agent guidance.
-* **License Management:** Select from standard licenses (MIT, Apache, GPL) via CLI flag or interactive prompt.
-
-### 🏗️ Modern Architecture (v1.4.0)
-
-* **Hybrid Class-Based Design:** Refactored into 5 focused classes while maintaining single-file portability
-  * `AntigravityResources` - Centralized templates, constants, and mappings
-  * `AntigravityEngine` - File system operations and validation utilities
-  * `AntigravityBuilder` - Dynamic configuration generators
-  * `AntigravityAssimilator` - Intelligent brain dump parsing
-  * `AntigravityGenerator` - High-level project generation orchestration
-* **100% Backward Compatible:** All existing functions preserved via module-level aliases
-* **Improved Maintainability:** 800+ lines reorganized for better code organization and scalability
-
-### 🤖 AI IDE Compatibility
-
-* **GitHub Copilot Support:** Generates `.github/copilot-instructions.md` with project-aware guidance
-  * Works in VS Code, Visual Studio, JetBrains IDEs
-  * Includes development workflows, security protocols, and commit conventions
-  * Dynamically adapts to detected tech stack
-* **Google IDX / Gemini CLI:** Native support via `.idx/dev.nix` and `.agent/` architecture
-* **Universal Fallback:** `.agent/` directory structure works with ANY AI coding assistant
-  * Rules, workflows, skills, and memory accessible to all AI tools
-  * Semantic file organization for optimal RAG (Retrieval Augmented Generation)
-
-### 🍵 Gitea Integration
-
-We provide **First-Class Citizen** support for Gitea instances:
-
-* **Local Versioning:** Generates `.gitea/` directory structure parallel to `.github/`.
-* **CI/CD Pipelines:** Includes a native `.gitea/workflows/ci.yml` allowing you to run actions locally or on your self-hosted instance.
-* **Issue Templates:** Automatically adapts GitHub-standard issue templates to work within Gitea's `issue_template/` directory.
-
-### 🏗️ Blueprint Marketplace (v1.6.0)
-
-We now support **Specialized Blueprints** for rapid scaffolding. Use the `--blueprint` flag to generate platform-specific structures:
-
-* **Next.js**: Optimized directories for App Router, Components, and Hooks.
-* **FastAPI**: Clean structure for Pydantic models, Schemas, and Endpoints.
-* **Standard**: The classic Antigravity Agent-First structure.
+Modern software isn't just written by humans anymore. Antigravity Architect aims to move beyond static scaffolding and create repositories that "breathe"—sharing context across sibling projects, self-correcting through automated audits, and evolving alongside the AI agents that inhabit them.
 
 ---
 
-## 🛠️ Development
+## 🚀 Quick Start
 
-This project includes a professional development environment with a robust test suite.
+Generate a professional, agent-ready repository in seconds.
 
-### Requirements
-
-* Python 3.10+
-* `pip install -e .[dev]`
-
-### Running Tests
-
-We use **pytest** for testing (62+ passing tests) across **Windows**, **macOS**, and **Ubuntu**.
-We support **Python 3.10** through **3.14-dev**.
-
+### 1. Interactive Mode (Zero Config)
 ```bash
-# Run all tests
-pytest tests/
-
-# Run with coverage report
-pytest tests/ --cov=antigravity_master_setup
-```
-
-### Code Quality
-
-We enforce strict quality standards using **Ruff** and **MyPy**.
-
-```bash
-# Linting & Formatting
-ruff check antigravity_master_setup.py
-ruff format antigravity_master_setup.py
-
-# Type Checking
-mypy antigravity_master_setup.py --ignore-missing-imports
-```
-
----
-
-## 🚀 Usage
-
-### Interactive Mode (Default)
-
-No external dependencies required. Just run it with Python 3.
-
-```bash
+# No dependencies required - just Python 3.10+
 python antigravity_master_setup.py
 ```
 
-The script will ask for an optional "Brain Dump" file, or you can manually input your stack.
-
-### CLI Mode (v1.3+)
-
-For automation and scripting, use command-line arguments:
-
+### 2. CLI Power User (One-Liner)
 ```bash
-# Basic project creation
-python antigravity_master_setup.py --name my-app --stack python,react --license mit
-
-# With brain dump, safe mode, and custom license
-python antigravity_master_setup.py --name my-app --brain-dump ./specs.md --safe --license apache
-
-# Use a specialized Blueprint (New!)
-python antigravity_master_setup.py --name my-api --blueprint fastapi --stack python,sql
-
-# Preview without creating files
-python antigravity_master_setup.py --name my-app --stack python --dry-run
-
-# Use custom templates
-python antigravity_master_setup.py --name my-app --templates ~/.antigravity/templates/
+python antigravity_master_setup.py --name my-project --stack python,react,docker --blueprint fastapi --license mit
 ```
 
-### Doctor Mode (v1.3+)
-
-Validate an existing project's `.agent/` structure:
-
-```bash
-# Check project health
-python antigravity_master_setup.py --doctor ./my-project
-
-# Auto-fix missing directories
-python antigravity_master_setup.py --doctor ./my-project --fix
-```
-
-### Other Commands
-
-```bash
-# Show version
-python antigravity_master_setup.py --version
-
-# List all supported tech stack keywords
-python antigravity_master_setup.py --list-keywords
-
-# Show help
-python antigravity_master_setup.py --help
-```
-
-### Initialize the Agent
-
-Once the folder is created:
-
-1. Open the folder in **Google Antigravity** (or Project IDX / VS Code).
-2. Open the **Chat Interface**.
-3. Type the following command to kickstart the AI:
-
+### 3. Initialize the Agent
+Open the generated folder in your favorite AI-ready IDE (Project IDX, Cursor, or VS Code with Gemini Code Assist) and type:
 > "Read BOOTSTRAP_INSTRUCTIONS.md and start."
 
 ---
 
-## 📂 Generated Architecture
+## 💎 The Living Repository Ecosystem
 
-The script creates a specialized folder structure designed for **RAG (Retrieval Augmented Generation)**.
+Antigravity Architect isn't just a boilerplate generator; it builds an infrastructure that supports the entire development lifecycle.
+
+### 🛡️ Sentinel Mode (Self-Protection)
+The Architect generates `scripts/sentinel.py`, a background guardian that monitors security-critical files (like `.env`, rules, and core configs). Any unauthorized modification triggers an immediate `/doctor` audit, ensuring your repository remains hardened.
+
+### 🧬 Autonomous Evolution
+Repositories generated by the Architect include an `evolution.md` ledger. This allows AI agents to track and execute background refactoring tasks incrementally, bringing legacy code into compliance with modern architectural rules without human supervision.
+
+### 🧠 Brain Dump Assimilation
+Import massive, unstructured specifications. The **Assimilator** intelligently parses your input, classifying content into Rules, Workflows, or Documentation. It even detects tech stack aliases (e.g., recognizing SvelteKit as a Node environment).
+
+### 🧞 The Documentation Genie
+During generation, the Architect creates a deep-dive `docs/TECH_STACK.md`. This isn't a simple list; it's an architectural manifest that tracks technical debt, contextual observations (API surfaces, security needs), and agent interaction maps.
+
+### 🌉 Multi-Repo Context Bridge
+Working on a microservice or multi-repo architecture? The Architect automatically discovers sibling projects in your workspace, creating a `context/links.md` bridge that allows your AI agent to maintain architectural consistency across the entire ecosystem.
+
+---
+
+## 🏗️ Core Features
+
+### 🤖 Multi-Agent Persona Orchestra
+Pre-configured directives for specialized AI roles:
+*   **Architect Persona**: Focuses on SoC, SOLID, and DRY principles.
+*   **UX Specialist**: Enforces accessibility (a11y) and intuitive design.
+*   **Security Hardening**: Conducts deep audits for OWASP Top 10 vulnerabilities.
+*   **Model Dispatch Protocol**: Automatically detects when a task requires Tier 3 reasoning (Opus/Ultra) and prompts for a handoff.
+
+### 🏗️ Blueprint Marketplace
+Use the `--blueprint` flag for optimized, platform-specific structures:
+*   **Next.js**: Modern App Router and component architecture.
+*   **FastAPI**: Hardened models, endpoints, and Pydantic validation.
+*   **Audio/DSP**: Specialized math/science directories (numpy/scipy).
+*   **Standard**: The classic universal Agent-First structure.
+
+### ☁️ Cross-Platform Cloud Configs
+Native support for modern development environments:
+*   **Google Project IDX**: Generates `.idx/dev.nix`.
+*   **VS Code / GitHub Codespaces**: Generates `.devcontainer/devcontainer.json`.
+*   **Gitea**: First-class support with `.gitea/` workflows and issue templates.
+
+### 🛡️ Production Engineering Standards
+*   **The "Git Ghost"**: Ensures empty directories are tracked via `.gitkeep`.
+*   **Professional Docs**: Auto-generates `CHANGELOG.md`, `CONTRIBUTING.md`, `AUDIT.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md`.
+*   **Safe Update Mode**: Offers to **Update** (safely inject agent files) or **Overwrite** existing projects.
+*   **Privacy by Default**: Automatically hides `.agent/` and `context/` from Git to protect your "Agent Brain".
+
+---
+
+## 💻 CLI & Interactive Usage
+
+### Advanced CLI Commands
+```bash
+# Preview without creating files
+python antigravity_master_setup.py --name my-app --stack python --dry-run
+
+# Run automated health audit and repair
+python antigravity_master_setup.py --doctor ./my-project --fix
+
+# Use custom organization templates
+python antigravity_master_setup.py --name my-app --templates ~/.antigravity/templates/
+
+# List all supported keywords
+python antigravity_master_setup.py --list-keywords
+```
+
+### Supported Keywords
+The Architect parses these to build dynamic `.gitignore`, `dev.nix`, and VS Code configs.
+*   **Languages**: `python`, `node`, `javascript`, `typescript`
+*   **Frameworks**: `react`, `nextjs`, `svelte`, `fastapi`, `django`
+*   **Infrastructure**: `docker`, `sql`, `postgres`, `kubernetes`
+*   **OS/Tools**: `macos`, `windows`, `linux`, `vscode`, `gitea`
+
+---
+
+## 🤖 The Agent Protocol (`.agent/`)
+
+The heart of every generated project is the machine-readable `.agent/` directory:
+
+| Component | Description |
+| :--- | :--- |
+| **rules/** | Hard directives injected into the AI's System Prompt. |
+| **workflows/** | Slash commands (e.g., `/plan`, `/bootstrap`, `/review`) for standard tasks. |
+| **skills/** | Tool definitions and standardized execution wrappers. |
+| **memory/** | Session persistence via `scratchpad.md` (active work) and `graveyard.md` (rejected paths). |
+
+---
+
+## 📂 Standard Directory Structure
 
 ```text
 my-project/
-├── .agent/                  # 🤖 THE AGENT BRAIN
-│   ├── rules/               # Directives injected into System Prompt
-│   │   ├── 00_identity.md   # Persona & Goals
-│   │   ├── 01_tech_stack.md # Dynamic stack definitions
-│   │   ├── 02_security.md   # OWASP & Secret handling
-│   │   ├── 03_git.md        # Conventional Commits
-│   │   ├── 04_reasoning.md  # Chain-of-Thought enforcer
-│   │   ├── 05_architecture.md # Persona: Architect
-│   │   ├── 06_ux.md           # Persona: UX Specialist
-│   │   ├── 07_security_expert.md # Persona: Security Hardening
-│   │   ├── 99_model_dispatch.md # Model Handoff Protocol
-│   │   └── imported_*.md    # Rules assimilated from your Brain Dump
-│   ├── workflows/           # Callable Commands (/slash)
-│   │   ├── plan.md          # /plan
-│   │   ├── bootstrap.md     # /bootstrap
-│   │   ├── commit.md        # /commit
-│   │   ├── doctor.md        # /doctor (System Health)
-│   │   ├── retrospective.md # /retrospective (Rule Evolution)
-│   │   └── imported_*.md    # Workflows assimilated from your Brain Dump
-│   ├── skills/              # Tool definitions
-│   │   ├── bridge/          # Integrated Skill Bridge (Python)
-│   │   ├── git_automation/  # Git CLI wrapper
-│   │   └── secrets_manager/ # API Key safety tool
-│   └── memory/              # Active Session Memory
-│       ├── scratchpad.md    # The "Save Game" file
-│       └── graveyard.md     # The "Fail Safe" file (Dependency Tracking)
-├── .vscode/                 # 🛠️ VS CODE CONFIG
-│   ├── extensions.json      # Recommended plugins
-│   ├── settings.json        # Workspace settings
-│   ├── launch.json          # Debug configurations
-│   └── tasks.json           # Build tasks
-├── .idx/                    # ☁️ GOOGLE IDX CONFIG
-│   └── dev.nix              # NixOS package definitions
-├── .devcontainer/           # 🐳 UNIVERSAL CONTAINER CONFIG
-│   └── devcontainer.json    # VS Code / Codespaces config
-├── .gitea/                  # 🍵 GITEA CONFIG (Local Versioning)
-│   ├── workflows/           # CI Pipelines
-│   └── issue_template/      # Issue Forms
-├── .github/                 # 🐙 GITHUB CONFIG
-│   ├── workflows/           # Actions Pipelines
-│   ├── ISSUE_TEMPLATE/      # Issue Forms
-│   └── copilot-instructions.md # AI Instructions
-
+├── .agent/                  # 🤖 THE AGENT BRAIN (Rules, Workflows, Memory)
+├── .vscode/                 # 🛠️ PREMIUM IDE EXPERIENCE
+├── .idx/                    # ☁️ GOOGLE PROJECT IDX CONFIG
+├── .devcontainer/           # 🐳 UNIVERSAL DOCKER ENVIRONMENT
+├── .github/                 # 🐙 GITHUB EXCELLENCE (Workflows, Templates)
+├── .gitea/                  # 🍵 GITEA FIRST-CLASS SUPPORT
 ├── context/
-│   └── raw/                 # 📥 DUMP ZONE (Original raw inputs)
+│   └── raw/                 # 📥 SOURCE OF TRUTH (Original specs)
 ├── docs/
-│   ├── ARCHITECTURE.md      # 🗺️ VISUAL ARCHITECTURE (New!)
-│   └── imported/            # 📚 ASSIMILATED KNOWLEDGE
-│       └── INDEX.md         # 📑 RAG INDEX (Auto-generated)
-├── src/                     # Source Code
-├── CHANGELOG.md             # 📝 History
-├── CONTRIBUTING.md          # 🤝 Guidelines
-├── AUDIT.md                 # 🛡️ Security Log
-├── SECURITY.md              # 🔒 Security Policy
-├── CODE_OF_CONDUCT.md       # 🤝 Ethics & Rules
-├── LICENSE                  # 📄 Legal
-└── BOOTSTRAP_INSTRUCTIONS.md # The "Genie" Prompt
+│   ├── TECH_STACK.md        # 🧞 ARCHITECTURAL MANIFEST
+│   └── ARCHITECTURE.md      # 🗺️ MERMAID DIAGRAMS
+├── scripts/
+│   └── sentinel.py          # 🛡️ SECURITY WATCHDOG
+├── src/                     # Code entry points
+├── tests/                   # Professional test suite
+└── BOOTSTRAP_INSTRUCTIONS.md # The AI Genesis Prompt
 ```
 
 ---
 
-## 🛠 Supported Keywords
+## 🧪 Development & Quality
 
-The script parses your input string (or your Brain Dump file) for these keywords to dynamically build `.gitignore` and Cloud Environment packages.
+Antigravity Architect is built with 100% type safety and 68+ passing tests.
 
-| Category | Keywords (Case Insensitive) |
-| :--- | :--- |
-| **Languages** | `python`, `node`, `javascript`, `typescript` |
-| **Frameworks** | `react`, `nextjs` |
-| **Infrastructure** | `docker`, `sql`, `postgres` |
-| **OS / Tools** | `macos`, `windows`, `linux`, `vscode`, `gitea` |
+```bash
+# Install development environment
+pip install -e .[dev]
 
----
+# Run full test suite
+pytest tests/
 
-## 🤖 Agent Capabilities
-
-Once generated, your AI agent possesses the following capabilities out of the box:
-
-### 🧠 Rules (Always Active)
-
-* **Security Guard:** Will refuse to print secrets/API keys to chat.
-* **Chain of Thought:** Forced to explain logic *before* writing code.
-* **Git Standards:** Enforces **Conventional Commits** (e.g., `feat: added login`).
-* **Context Awareness:** Automatically checks `docs/imported/` before making decisions.
-
-### ⚡ Workflows (Slash Commands)
-
-Type these in the Antigravity Chat:
-
-| Command | Action |
-| :--- | :--- |
-| `/plan` | Reads `docs/` and `context/`, then generates a checklist in `scratchpad.md`. |
-| `/bootstrap` | Scaffolds "Hello World" code based on the detected Tech Stack. |
-| `/review` | Audits the open file for security risks and style violations. |
-| `/commit` | Analyzes `git diff` and proposes a formatted commit message. |
-| `/doctor` | Runs a system health check on the `.agent/` structure. |
-| `/retrospective` | Analyzes recent friction and proposes self-corrections to rules. |
-| `/save` | Summarizes recent work and updates the `scratchpad.md` memory file. |
-| `/help` | Displays the Agent's command guide and manual. |
-
----
-
-## ☁️ Environment Details
-
-### For Google Project IDX / Antigravity
-
-The script generates `.idx/dev.nix`.
-
-* If you selected `python`, the environment boots with Python 3.12, Pip, and Ruff installed.
-* If you selected `node`, it boots with Node 20 and NPM.
-* **Result:** You do not need to manually install system tools; the container builds itself.
-
-### For VS Code / GitHub Codespaces
-
-The script generates `.devcontainer/devcontainer.json`.
-
-* Uses the standard Microsoft Ubuntu base image.
-* Pre-installs the `google.gemini-code-assist` extension if running in a supported container.
-
----
-
-## ❓ Troubleshooting
-
-**Q: The script crashes when typing the project name.**
-
-* **A:** The script sanitizes inputs (removing special characters). Ensure you have write permissions in the folder where you are running the script. Check `antigravity_setup.log` for details.
-
-**Q: The Agent isn't following the rules.**
-
-* **A:** Ensure you are using a model capable of System Instruction injection (Gemini 1.5 Pro / Ultra recommended). Check that the `.agent` folder is in the root of your workspace.
-
-**Q: Git isn't tracking my `src` folder.**
-
-* **A:** The script automatically adds `.gitkeep` files to empty folders. If you deleted them manually, Git will ignore the empty folder.
-
-**Q: How does the "Assimilator" work?**
-
-* **A:** It scans your text file for Markdown headers (e.g., `## Coding Style`). It then scans the content for keywords like "Always", "Workflow", or "CLI". Based on the score, it sorts that section into the `.agent/rules`, `.agent/workflows`, or `.agent/skills` folder automatically.
+# Run static quality analysis
+ruff check . && mypy .
+```
 
 ---
 
 ## 🤝 Contributing
 
-We use a **standard feature branch workflow**:
+We prioritize features that **reduce AI friction** and **increase developer speed**. Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-* **All PRs should target the `main` branch**
-* Ensure all tests pass and linting is clean before submitting
-* See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
-
-Quick start:
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b feat/your-feature
-# Make changes, commit, push
-# Open PR to main branch (CI will run automatically)
-```
+### *“We aren't just building projects; we're building the habitats where the next generation of software will be born.”*
 
 ---
 
 ## 📜 License
-
-This script is open-source. Feel free to modify the `00_identity.md` rule to change your Agent's personality!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
