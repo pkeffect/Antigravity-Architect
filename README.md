@@ -1,15 +1,15 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
 > [!CAUTION]
-> **! DISCLAIMER !**
+> **DISCLAIMER**
 >
 > This project and its code were created using artificial intelligence (AI) tools. If you have any concerns about the content or accuracy of this project, I recommend exploring alternative resources.
 >
 > The development process for this project involves several key steps:
 >
-> * We begin by working within OpenWebUI with local models.
-> * Next, we create a new project base using Antigravity-Architect script.
-> * The OpenWebUI project is then integrated into the Agentic Framework.
+> * We begin by working within [Open WebUI](https://github.com/open-webui/open-webui) with local models.
+> * Next, we create a new project base using [Antigravity-Architect](https://github.com/pkeffect/antigravity-architect) script.
+> * The [Open WebUI](https://github.com/open-webui/open-webui) project is then integrated into the Agentic Framework.
 > * Most of the code is written using Gemini models.
 >
 > If significant issues or problems arise that cannot be resolved by Gemini, I will switch to a Claude model for assistance. Once those issues are addressed, we'll return to working with Gemini.
@@ -34,13 +34,13 @@
 [![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2068%20passed-green.svg)](https://docs.pytest.org/)
 
-**Antigravity Architect** is the definitive "Agent-First" project engine. It is a single-file, zero-dependency powerhouse that constructs **Living Repositories** designed to protect, evolve, and describe themselves to AI Agents (Gemini, Claude, GPT).
+**[Antigravity Architect](https://github.com/pkeffect/antigravity-architect)** is the definitive "Agent-First" project engine. It is a single-file, zero-dependency powerhouse that constructs **Living Repositories** designed to protect, evolve, and describe themselves to AI Agents (Gemini, Claude, GPT).
 
 ---
 
 ## 🌟 The Vision: "The Living Development Environment"
 
-Modern software isn't just written by humans anymore. Antigravity Architect aims to move beyond static scaffolding and create repositories that "breathe"—sharing context across sibling projects, self-correcting through automated audits, and evolving alongside the AI agents that inhabit them.
+Modern software isn't just written by humans anymore. [Antigravity Architect](https://github.com/pkeffect/antigravity-architect) aims to move beyond static scaffolding and create repositories that "breathe"—sharing context across sibling projects, self-correcting through automated audits, and evolving alongside the AI agents that inhabit them.
 
 ---
 
@@ -71,7 +71,7 @@ Open the generated folder in your favorite AI-ready IDE (Project IDX, Cursor, or
 
 ## 💎 The Living Repository Ecosystem
 
-Antigravity Architect isn't just a boilerplate generator; it builds an infrastructure that supports the entire development lifecycle.
+[Antigravity Architect](https://github.com/pkeffect/antigravity-architect) isn't just a boilerplate generator; it builds an infrastructure that supports the entire development lifecycle.
 
 ### 🛡️ Sentinel Mode (Self-Protection)
 
@@ -228,7 +228,7 @@ my-project/
 
 ## 🧪 Development & Quality
 
-Antigravity Architect is built with 100% type safety and 68+ passing tests.
+[Antigravity Architect](https://github.com/pkeffect/antigravity-architect) is built with 100% type safety and 68+ passing tests.
 
 ```bash
 # Install development environment
