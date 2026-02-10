@@ -1,0 +1,9 @@
+{{
+    "Antigravity Agent Commands": {{
+        "prefix": "/",
+        "body": [
+            "/{1|plan,sync,save,review,commit,doctor,help|}"
+        ],
+        "description": "Quick access to Antigravity Agent commands"
+    }}
+}}

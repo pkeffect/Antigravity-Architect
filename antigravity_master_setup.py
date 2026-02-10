@@ -30,7 +30,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.6.0"
+VERSION = "1.6.2"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -107,6 +107,28 @@ antigravity_setup.log
         "linux": "\n# --- Linux ---\n*~\n.fuse_hidden*\n",
         "vscode": f"\n# --- VS Code ---\n{VSCODE_DIR}/\n",
         "gitea": f"\n# --- Gitea ---\n{GITEA_DIR}/\n",
+    }
+
+    # Alias Mapping for Intelligent Tech Detection
+    TECH_ALIASES: dict[str, list[str]] = {
+        "python": ["django", "flask", "fastapi", "numpy", "pandas", "pytorch", "tensorflow", "scipy", "pytest", "poetry"],
+        "node": [
+            "javascript",
+            "typescript",
+            "react",
+            "vue",
+            "svelte",
+            "sveltekit",
+            "nextjs",
+            "express",
+            "nest",
+            "npm",
+            "yarn",
+            "pnpm",
+        ],
+        "docker": ["container", "dockerfile", "docker-compose", "kubernetes", "k8s"],
+        "sql": ["postgres", "postgresql", "sqlite", "mysql", "mariadb", "oracle", "db2"],
+        "cloud": ["aws", "azure", "gcp", "google cloud", "lambda", "s3", "ec2"],
     }
 
     # B. Nix Packages (For Google Project IDX / Cloud Environments)
@@ -222,6 +244,50 @@ Please report security vulnerabilities by opening a private issue or contacting 
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+"""
+
+    LINKS_TEMPLATE = """# 🌉 Multi-Repo Context Bridge
+This file tracks sister repositories within the same workspace to allow for cross-repo intelligence.
+
+## 📁 Sibling Repositories
+{sibling_repos}
+
+## 📜 Usage
+The AI Agent is authorized to read rules and tech stacks from these directories to maintain architectural synchronization across the workspace.
+"""
+
+    SENTINEL_HOOK_TEMPLATE = """#!/usr/bin/env python3
+# Antigravity Sentinel: Proactive Security Auditor
+import os
+import subprocess
+import sys
+
+CRITICAL_FILES = [".env", ".agent/rules/", "antigravity_master_setup.py", "SECURITY.md"]
+
+def run_audit():
+    print("🛡️ Sentinel: Security-critical change detected. Running /doctor audit...")
+    result = subprocess.run(["python", "antigravity_master_setup.py", "--doctor", ".", "--fix"], capture_output=True, text=True)
+    print(result.stdout)
+    if result.returncode != 0:
+        print("❌ Sentinel: Audit failed. Check security constraints.")
+        # sys.exit(1) # Uncomment to block commits if audit fails
+
+if __name__ == "__main__":
+    run_audit()
+"""
+
+    EVOLUTION_TEMPLATE = """# 🧬 Evolution Log: Autonomous Refactoring
+Track background refactoring tasks and legacy code migrations here.
+
+## 📋 Active Tasks
+| Task ID | Component | Status | Target Rule |
+| :--- | :--- | :--- | :--- |
+| EVO-001 | Example Module | Pending | Rule 05 |
+
+## 📜 Methodology
+1. **Register:** Create a task in this log.
+2. **Execute:** Run `/evolve` to apply changes incrementally.
+3. **Verify:** Run `/review` to ensure no regressions.
 """
 
     # GitHub Templates - Issue Templates, PR Template, FUNDING
@@ -532,7 +598,8 @@ furnished to do so, subject to the following conditions:
 You are a Senior Polyglot Software Engineer and Product Architect.
 - **Safety:** Never delete data without asking. Never leak secrets.
 - **Context:** Always check `docs/imported` and `context/raw` before coding.
-- **Self-Correction:** You are authorized to propose updates to your own rules in `.agent/rules/` if you identify recurring friction or improved patterns.
+- **Dynamic Optimization:** You are expected to keep `docs/TECH_STACK.md` and `.agent/memory/scratchpad.md` updated as the project evolves.
+- **Self-Correction:** You are authorized to propose updates to your own rules in `.agent/rules/` if you identify architectural drift or improved patterns.
 """,
         "02_security.md": """# Security Protocols
 1. **Secrets:** Never output API keys. Use `.env`.
@@ -560,6 +627,24 @@ Ensure that all interactive elements have clear feedback and state representatio
         "07_security_expert.md": """# Security Hardening Persona
 Conduct deep audits for OWASP Top 10 vulnerabilities.
 Enforce strict validation, sanitization, and least-privilege principles.
+""",
+        "08_boundaries.md": """# Workspace Boundary Enforcement
+1. **Absolute Path Restriction:** You are strictly forbidden from reading, writing, or executing anything outside of the current project root directory.
+2. **Command Safety:** Before running any command, verify it does not attempt to access `../` or absolute system paths like `/etc/` or `C:\\Windows\\`.
+3. **Environment Isolation:** Do not attempt to modify system-level configurations, install non-project global dependencies, or access files in other workspaces unless explicitly authorized.
+4. **Data Integrity:** Never delete files or move them outside the project boundaries.
+""",
+        "09_cross_repo.md": """# Multi-Repo Context Bridge
+1. **Sister Repositories:** Refer to `context/links.md` for a list of related repositories in the same scratch space.
+2. **Knowledge Sharing:** You are authorized to read `.agent/rules/` and `docs/TECH_STACK.md` from linked repositories to ensure architectural consistency.
+3. **Dependency Mapping:** If a linked repository is a dependency (e.g., a shared library), prioritize its interface definitions over assumptions.
+4. **No Mutation:** You may READ from sister repos, but never WRITE to them unless explicitly instructed to perform a cross-repo refactor.
+""",
+        "10_evolution.md": """# Autonomous Evolution Protocols
+1. **Task Registration:** Before starting a background refactor, register the "Evolution Task" in `.agent/memory/evolution.md`.
+2. **Incrementalism:** Never refactor an entire module at once. Apply changes in atomic steps (one function or class at a time).
+3. **Regression Testing:** After every evolution step, you MUST run existing tests. If tests fail, ROLL BACK immediately.
+4. **Rule Alignment:** The primary goal of evolution is to bring legacy code into compliance with the latest `.agent/rules/`.
 """,
         "99_model_dispatch.md": """# Model Dispatch Protocol
 ## Concept
@@ -620,6 +705,24 @@ trigger: /save
 1. Summarize recent actions.
 2. Update `.agent/memory/scratchpad.md`.
 """,
+        "sync.md": """---
+trigger: /sync
+---
+# Semantic Sync Workflow
+1. Scan `src/` and `docs/` for recent changes.
+2. Cross-reference with `docs/TECH_STACK.md` and `.agent/rules/`.
+3. If inconsistencies are found, update the documentation or propose rule changes.
+4. Update `.agent/memory/scratchpad.md` with the latest project heartbeat.
+""",
+        "evolve.md": """---
+trigger: /evolve
+---
+# Autonomous Evolution Workflow
+1. Read `.agent/memory/evolution.md` for active tasks.
+2. Select the highest priority 'Pending' task.
+3. Apply refactoring according to Rule 10.
+4. Verify with tests and update task status to 'Completed'.
+""",
         "help.md": """---
 trigger: /help
 ---
@@ -630,9 +733,12 @@ Available Commands:
 - `/review`: Audit code quality/security.
 - `/commit`: Smart commit message generator.
 - `/save`: Update project memory.
+- `/sync`: Harmonize docs, rules, code, and memory.
+- `/evolve`: Background refactoring and tech-debt reduction.
 - `/doctor`: Run automated health audit.
 - `/help`: Show this guide.
-""",
+"""
+,
         "doctor.md": """---
 trigger: /doctor
 ---
@@ -770,11 +876,22 @@ def run_skill(command):
             "source.organizeImports": "explicit"
         }}
     }},
-    "[javascript]": {{
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }},
-    "[typescript]": {{
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.semanticHighlighting.enabled": true,
+    "editor.inlineSuggest.enabled": true,
+    "terminal.integrated.fontSize": 14,
+    "workbench.colorCustomizations": {{
+        "statusBar.background": "#1e1e1e",
+        "statusBar.foreground": "#ffffff"
+    }}
+}}"""
+
+    VSCODE_SNIPPETS_TEMPLATE = """{{
+    "Antigravity Agent Commands": {{
+        "prefix": "/",
+        "body": [
+            "/{1|plan,sync,save,review,commit,doctor,help|}"
+        ],
+        "description": "Quick access to Antigravity Agent commands"
     }}
 }}"""
 
@@ -793,6 +910,7 @@ def run_skill(command):
 
 ## 🛠️ Tech Stack
 - **Primary**: {tech_stack}
+- **Architecture Details**: See `docs/TECH_STACK.md` for deep-dive details.
 
 ## 🤖 AI Agent Guide
 To start working with an AI agent in this repo:
@@ -804,7 +922,7 @@ To start working with an AI agent in this repo:
 - `.agent/`: AI Agent rules, memory, and workflows.
 - `.github/` & `.gitea/`: Platform-specific CI/CD and templates.
 - `src/`: Core source code.
-- `docs/`: Project documentation.
+- `docs/`: Project documentation and `TECH_STACK.md`.
 - `context/`: Raw specifications and brain dumps.
 
 ## 📄 License
@@ -854,6 +972,7 @@ class AntigravityEngine:
         else:
             log_path = os.path.join(tempfile.gettempdir(), "antigravity_setup.log")
 
+        # Use force=True to allow re-configuring logging (Python 3.8+)
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s [%(levelname)s] %(message)s",
@@ -861,6 +980,7 @@ class AntigravityEngine:
                 logging.FileHandler(log_path, mode="w", encoding="utf-8"),
                 logging.StreamHandler(sys.stdout),
             ],
+            force=True,
         )
 
     @staticmethod
@@ -1087,9 +1207,10 @@ class AntigravityBuilder:
 Keywords Detected: {", ".join(keywords)}
 
 ## Directives
-1. **Inference:** Assume standard frameworks for these keywords (e.g., React implies standard hooks/components).
-2. **Tooling:** Use the standard CLI tools (pip, npm, cargo, go mod).
-3. **Files:** Look for `pyproject.toml`, `package.json`, or similar to confirm versions.
+1. **Source of Truth:** Always refer to `docs/TECH_STACK.md` for architectural deep-dives.
+2. **Inference:** Assume standard frameworks for these keywords (e.g., React implies standard hooks/components).
+3. **Tooling:** Use the standard CLI tools (pip, npm, cargo, go mod).
+4. **Files:** Look for `pyproject.toml`, `package.json`, or similar to confirm versions.
 """
 
     @staticmethod
@@ -1150,6 +1271,7 @@ Keywords Detected: {", ".join(keywords)}
         )
         files["launch.json"] = AntigravityResources.VSCODE_LAUNCH_TEMPLATE.format(configurations="")
         files["tasks.json"] = AntigravityResources.VSCODE_TASKS_TEMPLATE.format(tasks="")
+        files["antigravity.code-snippets"] = AntigravityResources.VSCODE_SNIPPETS_TEMPLATE
 
         return files
 
@@ -1176,6 +1298,26 @@ Keywords Detected: {", ".join(keywords)}
         """Builds a Mermaid diagram of the project structure."""
         return AntigravityResources.MERMAID_PROJECT_MAP.format(project_name=project_name)
 
+    @staticmethod
+    def build_links(project_name: str) -> str:
+        """Scan parent directory for other projects and build context/links.md."""
+        parent_dir = Path(os.getcwd())
+        siblings = []
+
+        try:
+            for item in parent_dir.iterdir():
+                if item.is_dir() and item.name != project_name:
+                    # Check if it's an Antigravity project
+                    if (item / ".agent").exists():
+                        siblings.append(f"- **{item.name}** (linked: `../{item.name}`) - *Antigravity Project*")
+                    elif (item / ".git").exists():
+                        siblings.append(f"- **{item.name}** (linked: `../{item.name}`) - *Git Repository*")
+        except Exception as e:
+            logging.debug(f"Error scanning for siblings: {e}")
+
+        sibling_str = "\n".join(siblings) if siblings else "_No sibling repositories detected in this scratch space._"
+        return AntigravityResources.LINKS_TEMPLATE.format(sibling_repos=sibling_str)
+
 
 # Maintain backward compatibility with module-level functions
 build_gitignore = AntigravityBuilder.build_gitignore
@@ -1199,6 +1341,77 @@ class AntigravityAssimilator:
     .agent/ directories based on detected content type.
     All methods are static as they don't require instance state.
     """
+
+    @staticmethod
+    def detect_tech_stack(text: str) -> list[str]:
+        """
+        Intelligently detects technology keywords using primary keys and aliases.
+        """
+        detected = set()
+        text_lower = text.lower()
+
+        # Check primary keywords from mappings
+        primary_sources = set(AntigravityResources.GITIGNORE_MAP.keys()) | set(
+            AntigravityResources.NIX_PACKAGE_MAP.keys()
+        )
+
+        for k in primary_sources:
+            if re.search(r"\b" + re.escape(k) + r"\b", text_lower):
+                detected.add(k)
+
+        # Check aliases for deeper detection
+        for primary, aliases in AntigravityResources.TECH_ALIASES.items():
+            for alias in aliases:
+                if re.search(r"\b" + re.escape(alias) + r"\b", text_lower):
+                    detected.add(primary)
+                    break
+
+        return list(detected)
+
+    @staticmethod
+    def build_tech_deep_dive(keywords: list[str], full_text: str) -> str:
+        """
+        Generates a deep-dive TECH_STACK.md based on detected keywords and text analysis.
+        """
+        content = "# 🛠️ Technical Stack Deep-Dive\n\n"
+        content += "## 🚀 Primary Technologies\n"
+        for k in sorted(keywords):
+            content += f"- **{k.title()}**\n"
+
+        content += "\n## 🔍 Contextual Observations\n"
+        text_lower = full_text.lower()
+
+        observations = []
+        if "architecture" in text_lower:
+            observations.append("Structural architectural specifications detected.")
+        if "security" in text_lower or "auth" in text_lower:
+            observations.append("Security-sensitive components or requirements identified.")
+        if "database" in text_lower or "sql" in text_lower:
+            observations.append("Data persistence layers identified.")
+        if "api" in text_lower or "endpoint" in text_lower:
+            observations.append("API surfaces or integrations identified.")
+
+        if observations:
+            for obs in observations:
+                content += f"- {obs}\n"
+        else:
+            content += "- Standard project structure with generic tech stack.\n"
+
+        content += "\n## ⚠️ Technical Debt & Tracking\n"
+        debt_keywords = ["todo", "fixme", "refactor", "deprecated", "legacy", "optimization needed"]
+        debts = [k for k in debt_keywords if k in text_lower]
+
+        if debts:
+            content += "Potential technical debt or optimization areas identified:\n"
+            for d in debts:
+                content += f"- {d.title()}\n"
+        else:
+            content += "No immediate technical debt keywords identified in source documents.\n"
+
+        content += "\n## 🤖 Agent Interaction Map\n"
+        content += "Agents should prioritize rules in `.agent/rules/` and use `TECH_STACK.md` as the primary architectural reference.\n"
+
+        return content
 
     @staticmethod
     def identify_category(text: str) -> str:
@@ -1243,7 +1456,7 @@ class AntigravityAssimilator:
         # Type narrowing: after validation, filepath is confirmed to be str
         assert filepath is not None
 
-        print(f"\n🧠 Assimilating knowledge from: {filepath}...")
+        logging.info(f"🧠 Assimilating knowledge from: {filepath}...")
 
         try:
             with open(filepath, encoding="utf-8", errors="replace") as f:
@@ -1257,12 +1470,15 @@ class AntigravityAssimilator:
         write_file(raw_dest, full_text, exist_ok=True)
 
         # 2. Extract Tech Stack Keywords
-        detected_keywords: set[str] = set()
-        for k in AntigravityResources.GITIGNORE_MAP:
-            if re.search(r"\b" + re.escape(k) + r"\b", full_text.lower()):
-                detected_keywords.add(k)
+        detected_keywords = AntigravityAssimilator.detect_tech_stack(full_text)
+        logging.info(f"🔍 Detected Tech Stack from Source: {', '.join(detected_keywords)}")
 
-        # 3. Split & Distribute
+        # 3. Generate TECH_STACK.md (The Documentation Genie)
+        tech_stack_path = os.path.join(base_dir, "docs", "TECH_STACK.md")
+        tech_stack_content = AntigravityAssimilator.build_tech_deep_dive(detected_keywords, full_text)
+        write_file(tech_stack_path, tech_stack_content, exist_ok=True)
+
+        # 4. Split & Distribute
         sections = re.split(r"(^#+\s+.*$)", full_text, flags=re.MULTILINE)
 
         for i in range(1, len(sections), 2):
@@ -1280,8 +1496,8 @@ class AntigravityAssimilator:
             formatted = f"<!-- Auto-Assimilated Source -->\n\n{header}\n\n{content}"
             append_file(dest, formatted)
 
-        print("🧠 Assimilation Complete.")
-        return list(detected_keywords)
+        logging.info("🧠 Assimilation Complete.")
+        return detected_keywords
 
 
 # Maintain backward compatibility with module-level functions
@@ -1328,6 +1544,25 @@ class AntigravityGenerator:
             path = os.path.join(base_dir, AGENT_DIR, "skills", filename)
             write_file(path, content, exist_ok=safe_mode)
 
+        # Generate Memory
+        write_file(
+            os.path.join(base_dir, AGENT_DIR, "memory", "graveyard.md"),
+            AntigravityResources.GRAVEYARD_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, AGENT_DIR, "memory", "evolution.md"),
+            AntigravityResources.EVOLUTION_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+
+        # Generate Scripts
+        write_file(
+            os.path.join(base_dir, "scripts", "sentinel.py"),
+            AntigravityResources.SENTINEL_HOOK_TEMPLATE,
+            exist_ok=safe_mode,
+        )
+
     @staticmethod
     def generate_project(
         project_name: str,
@@ -1361,7 +1596,7 @@ class AntigravityGenerator:
         elif safe_mode is None:
             safe_mode = False
 
-        print(f"\n🚀 Constructing '{project_name}' (v1.6.0)...")
+        logging.info(f"🚀 Constructing '{project_name}' (v1.6.1)...")
 
         # Setup logging in target directory
         setup_logging(base_dir)
@@ -1369,14 +1604,14 @@ class AntigravityGenerator:
         # 1. Blueprint Application (Ancestry Override)
         blueprint_data = AntigravityResources.BLUEPRINTS.get(blueprint, {}) if blueprint else {}
         if blueprint_data:
-            print(f"💎 Applying Blueprint: {blueprint}")
+            logging.info(f"💎 Applying Blueprint: {blueprint}")
             keywords.extend(blueprint_data.get("stack", []))
 
         # 2. Global Memory Check (Ancestry)
         global_agent_rules = Path.home() / ".antigravity" / "rules"
         inherited_rules = []
         if global_agent_rules.exists():
-            print("🌐 Inheriting Global Rules from ~/.antigravity")
+            logging.info("🌐 Inheriting Global Rules from ~/.antigravity")
             inherited_rules = [f.name for f in global_agent_rules.glob("*.md")]
 
         # Create directory structure
@@ -1398,6 +1633,7 @@ class AntigravityGenerator:
             f"{AGENT_DIR}/skills/git_automation",
             f"{AGENT_DIR}/skills/secrets_manager",
             f"{AGENT_DIR}/skills/bridge",
+            "scripts",
         ]
 
         # Add blueprint specific directories
@@ -1416,7 +1652,7 @@ class AntigravityGenerator:
         final_stack = list(set(keywords + detected_stack))
         if not final_stack:
             final_stack = ["linux"]
-        print(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
+        logging.info(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
 
         # 3. Inheritance: Copy global rules
         for rule_file in inherited_rules:
@@ -1450,12 +1686,6 @@ class AntigravityGenerator:
             os.path.join(base_dir, AntigravityResources.ENV_EXAMPLE_FILE), "API_KEY=\nDB_URL=", exist_ok=safe_mode
         )
 
-        # Generate specialized files (v1.6.0)
-        write_file(
-            os.path.join(base_dir, AGENT_DIR, "memory", "graveyard.md"),
-            AntigravityResources.GRAVEYARD_TEMPLATE,
-            exist_ok=safe_mode,
-        )
         write_file(
             os.path.join(base_dir, AGENT_DIR, "skills", "bridge", "bridge.py"),
             AntigravityResources.AGENT_SKILLS["bridge/bridge.py"],
@@ -1464,6 +1694,11 @@ class AntigravityGenerator:
         write_file(
             os.path.join(base_dir, "docs", "ARCHITECTURE.md"),
             AntigravityResources.MERMAID_PROJECT_MAP.format(project_name=project_name),
+            exist_ok=safe_mode,
+        )
+        write_file(
+            os.path.join(base_dir, "context", "links.md"),
+            AntigravityBuilder.build_links(project_name),
             exist_ok=safe_mode,
         )
 
@@ -2060,10 +2295,10 @@ def run_cli_mode(args: argparse.Namespace) -> None:
     )
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     """Main entry point for the Antigravity Architect."""
     parser = build_cli_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.list_keywords:
         list_keywords()

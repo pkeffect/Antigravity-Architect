@@ -1,7 +1,7 @@
 # 🏗️ Antigravity Architect (Master Edition)
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-1.6.0-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-1.6.2-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
@@ -13,54 +13,60 @@
 [![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2059%20passed-green.svg)](https://docs.pytest.org/)
 [![Code Quality](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
 
-<!-- Platform Support -->
-[![Windows Tests](https://img.shields.io/badge/Windows-passing-success.svg?logo=windows)](https://github.com/pkeffect/antigravity-architect/actions)
-[![macOS Tests](https://img.shields.io/badge/macOS-passing-success.svg?logo=apple)](https://github.com/pkeffect/antigravity-architect/actions)
-[![Ubuntu Tests](https://img.shields.io/badge/Ubuntu-passing-success.svg?logo=ubuntu)](https://github.com/pkeffect/antigravity-architect/actions)
-
-<!-- AI IDE Compatibility -->
-[![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-compatible-success.svg?logo=github)](https://github.com/features/copilot)
-[![Google IDX](https://img.shields.io/badge/Google%20IDX-compatible-success.svg)](https://idx.dev)
-[![Gitea](https://img.shields.io/badge/Gitea-compatible-success.svg?logo=gitea)](https://gitea.io)
-
-<!-- Architecture & Design -->
-[![Architecture](https://img.shields.io/badge/architecture-agent--first-purple.svg)](https://github.com/pkeffect/antigravity-architect)
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-zero%20external-success.svg)](https://github.com/pkeffect/antigravity-architect)
-
-**Antigravity Architect** is the ultimate "Agent-First" bootstrapping tool for modern AI development environments. It generates projects optimized for **GitHub Copilot**, **Google IDX**, and the **Antigravity** platform.
-
-Unlike standard scaffolding tools (like `create-react-app`) that just build code, this script builds a **Brain** for your AI. It constructs a "Self-Describing Repository" that teaches the Agent how to behave, what rules to follow, and automatically assimilates your existing documentation into the Agent's memory.
+**Antigravity Architect** is the definitive "Agent-First" project engine. It doesn't just scaffold code; it constructs a **Living Repository** that protects, evolves, and describes itself to AI Agents.
 
 ---
 
-## ✨ Key Features
+## 💎 Premium Capabilities (v1.6.2)
 
-### 🧠 Knowledge Assimilation & RAG (New!)
+### 🛡️ Sentinel: Self-Protecting Repositories
 
-* **The Brain Dump:** Drag and drop a massive text file (specs, notes, legacy code snippets). The script parses it, splits it by logical headers, and **automatically classifies** the information into Rules, Workflows, or Documentation.
-* **Semantic RAG Pre-Optimization:** Automatically generates an `INDEX.md` for all imported docs, making it easier for AI agents to navigate large datasets.
-* **Visual Context Mapping:** Automatically generates **Mermaid architecture diagrams** to give your AI (and you) a high-level visual overview of the system.
-* **Raw Context Preservation:** Saves the original dump to `context/raw/` so the Agent can reference the "source of truth."
+* **The Guardian**: Automatically generates `scripts/sentinel.py` to monitor security-critical files.
+* **Proactive Audits**: Triggers automated `/doctor` health checks whenever `.env`, rules, or core configurations are tampered with.
+* **Integrity Enforcement**: Ensures your repository remains compliant with its own security standards across every commit.
 
-### 🌐 Streamlined & Dynamic
+### 🧬 Autonomous Evolution: Background Refactoring
 
-* **Polyglot Support:** Focused support for **Python** and **Node.js/TypeScript** ecosystems.
-* **Universal IDE Support:**
-  * **VS Code:** Generates optimized `.vscode` configs (Settings, Extensions, Launch, Tasks).
-  * **Google IDX:** Generates `.idx/dev.nix` environment configuration.
-* **Dynamic Configuration:** Automatically builds `.gitignore`, `.env` templates, and IDE settings based on your input keywords.
+* **Continuous Improvement**: Introduces a dedicated `evolution.md` log for tracking long-term technical debt reduction.
+* **Incrementalism**: Rule 10 enforces safe, atomic refactoring steps that agents can execute in the background.
+* **Legacy-to-Modern Pipeline**: Seamlessly bridge old code patterns to your current architectural rules without manual intervention.
 
-### 🤖 Full Agent Architecture (v1.6.0 Upgrade)
+### 🧠 The Documentation Genie
 
-* **Multi-Agent Persona Orchestra:** Specialized "Always-On" rules for **Architect**, **UX Specialist**, and **Security Hardening** personas.
-* **Dynamic Rule Evolution:** Teaches the AI to self-correct and propose updates to its own rules as the project evolves.
-* **Project Ancestry:** Automatically inherits global rules from your home directory (`~/.antigravity/rules/`).
-* **Workflows:** Generates callable slash commands (`/plan`, `/bootstrap`, `/commit`, `/doctor`, `/retrospective`).
-* **Skills:** Standardized "Integrated Skill Bridge" for Git Automation and Secret Management.
-* **Memory Trace:**
-  * `scratchpad.md`: Active session persistence.
-  * `graveyard.md`: **Dependency Graveyard** to track failed paths and prevent AI "infinite loops."
-* **Model Dispatch:** Teaches the Agent to "Handoff Context" to Tier 3 reasoning models (o1/Ultra) for complex architecture or security work.
+* **Semantic Indexing**: During the "Assimilation" phase, the Architect now generates a deep-dive `docs/TECH_STACK.md` report.
+* **Context Optimization**: Summarizes tech debt, architectural observations, and specialized requirements to reduce the agent's context usage while maximizing insight.
+* **Visual Logic**: Native Mermaid support for generating architecture diagrams that evolve with your project.
+
+### 🌉 Multi-Repo Context Bridge
+
+* **Cross-Repo Intelligence**: Automatically discovers sister projects in your workspace and links them via `context/links.md`.
+* **Rule Synchronization**: Instructs agents to maintain consistency by reading rules and interfaces from linked repositories.
+
+### 🤖 VS Code Primacy
+
+* **Integrated Snippets**: Instant access to Antigravity slash commands via a custom `/` trigger dropdown.
+* **Premium Environment**: Hardened settings for semantic highlighting, inline suggestions, and terminal optimization.
+
+---
+
+## ✨ Core Features
+
+### 🧠 Knowledge Assimilation & RAG
+* **The Brain Dump:** Import massive specifications; the script automatically classifies them into Rules, Workflows, or Documentation.
+* **Intelligent Tech Aliases**: Semantic detection of fractional tech stacks (e.g., detecting SvelteKit, FastAPI, or Poetry correctly).
+* **Raw Context Preservation:** Saves the original dump to `context/raw/` for "Source of Truth" auditing.
+
+### 🤖 Multi-Agent Persona Orchestra
+* **Specialized Rules**: Pre-configured directives for **Architect**, **UX Specialist**, and **Security Hardening** personas.
+* **Model Dispatch**: Built-in protocol for hand-off to Tier 3 reasoning models (o1/Ultra) for complex tasks.
+* **Ancestry**: Automatically inherits global organization rules from `~/.antigravity/rules/`.
+
+### 🍵 Gitea & GitHub First-Class Support
+* **Parallel Integration**: Generates both `.github/` and `.gitea/` structures for hybrid workflows.
+* **Local Actions**: Support for Gitea Actions and local issue templates.
+
+### 🏗️ Blueprint Marketplace
+* **Specialized Scaffolding**: `--blueprint` flag for optimized **Next.js**, **FastAPI**, or **Standard** project structures.
 
 ### 🛡️ Production Engineering
 

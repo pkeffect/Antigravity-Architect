@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.6.2] - 2026-02-10
+
+### Added
+
+- **Sentinel Mode (Self-Protection)**: Introduced proactive security auditing for critical files.
+- **Autonomous Evolution**: Added background refactoring framework and Rule 10 for tech debt reduction.
+- **Documentation Genie**: Automated deep-dive `TECH_STACK.md` generation during assimilation.
+- **Intelligent Tech Aliases**: Enhanced semantic detection for fractional tech stacks (Svelte, FastAPI, etc.).
+- **Multi-Repo Context Bridge**: Automated sibling repository discovery and cross-repo intelligence.
+- **VS Code Primacy**: Added premium editor settings, snippets, and hardened configurations.
+
 ## [1.6.0] - 2026-02-08
 
 ### Added (v1.6.0)

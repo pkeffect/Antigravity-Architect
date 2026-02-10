@@ -2,21 +2,21 @@
 
 ## Project Overview
 
-**Antigravity Architect** is an "Agent-First" bootstrapping tool that generates self-describing repositories for AI-assisted development. It's a **single-file Python script** (1,400+ lines) with **zero external dependencies** designed for portability and universal deployment.
+**Antigravity Architect** is an "Agent-First" bootstrapping tool that generates self-describing repositories for AI-assisted development. It's a **single-file Python script** (2,300+ lines) with **zero external dependencies** designed for portability and universal deployment.
 
 **Key Constraint:** All logic MUST remain in `antigravity_master_setup.py`. Never suggest extracting modules or adding external dependencies.
 
-## Architecture (v1.4.0)
+## Architecture (v1.6.2)
 
 The codebase uses a **hybrid class-based design** with 5 focused classes while maintaining single-file portability:
 
 | Class | Responsibility | Key Methods |
 |-------|---------------|-------------|
-| `AntigravityResources` | Static templates, constants, mappings | Template strings, classification rules, NIX packages |
-| `AntigravityEngine` | File system operations, validation | `write_file()`, `sanitize_name()`, `validate_file_path()` |
-| `AntigravityBuilder` | Dynamic config generators | `build_gitignore()`, `build_nix_config()`, `build_readme()` |
-| `AntigravityAssimilator` | Brain dump parser & classifier | `assimilate_brain_dump()`, `classify_section()` |
-| `AntigravityGenerator` | Orchestration & project generation | `generate_project()`, `generate_agent_rules()` |
+| `AntigravityResources` | Static templates, constants, mappings | Template strings, classification rules, NIX packages, TECH_ALIASES |
+| `AntigravityEngine` | File system operations, validation | `write_file()`, `sanitize_name()`, `validate_file_path()`, `setup_logging(force=True)` |
+| `AntigravityBuilder` | Dynamic config generators | `build_gitignore()`, `build_nix_config()`, `build_links()`, `build_readme()` |
+| `AntigravityAssimilator` | Brain dump parser & classifier | `detect_tech_stack()`, `build_tech_deep_dive()`, `identify_category()` |
+| `AntigravityGenerator` | Orchestration & project generation | `generate_project()`, `generate_agent_files()` |
 
 **Backward Compatibility:** All original module-level functions are preserved as thin wrappers calling class methods. Never break existing function signatures.
 

@@ -562,7 +562,9 @@ class TestIntegration:
 
             with patch("builtins.input", return_value="n"):
                 # First call should succeed (no existing dir)
-                result = ag.generate_project("test-project", ["python"])
+                # Mock setup_logging to avoid file locking on Windows during cleanup
+                with patch("antigravity_master_setup.setup_logging"):
+                    result = ag.generate_project("test-project", ["python"])
 
             assert result is True
             project_dir = os.path.join(temp_dir, "test-project")
