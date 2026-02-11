@@ -1,10 +1,10 @@
-import os
-import sys
-import subprocess
 import logging
+import os
+import subprocess
+import sys
 
 # ==============================================================================
-# 🛡️ Antigravity Sentinel (v1.6.2)
+# 🛡️ Antigravity Sentinel (v1.7.0)
 # ==============================================================================
 # This script monitors critical files for unauthorized changes and triggers
 # automated security audits via the /doctor command.

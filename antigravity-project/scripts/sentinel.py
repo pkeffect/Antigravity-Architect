@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # Antigravity Sentinel: Proactive Security Auditor
-import os
 import subprocess
-import sys
 
 CRITICAL_FILES = [".env", ".agent/rules/", "antigravity_master_setup.py", "SECURITY.md"]
 

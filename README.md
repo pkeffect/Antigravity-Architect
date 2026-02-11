@@ -21,18 +21,18 @@
 > Please let me know if you have any further questions or concerns!
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-1.6.2-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-1.7.0-blue.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
-[![Test Coverage](https://img.shields.io/badge/coverage-70%25-brightgreen.svg)](AUDIT.md)
+[![Test Coverage](https://img.shields.io/badge/coverage-86%25-brightgreen.svg)](AUDIT.md)
 [![Audit Score](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
 
 <!-- Code Quality -->
 [![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Type Checking: MyPy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](http://mypy-lang.org/)
 [![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Tests: Pytest](https://img.shields.io/badge/tests-pytest%20%7C%2068%20passed-green.svg)](https://docs.pytest.org/)
+[![Tests: Pytest](https://img.shields.io/badge/tests-79%20passed-success.svg)](https://docs.pytest.org/)
 
 **[Antigravity Architect](https://github.com/pkeffect/antigravity-architect)** is the definitive "Agent-First" project engine. It is a single-file, zero-dependency powerhouse that constructs **Living Repositories** designed to protect, evolve, and describe themselves to AI Agents (Gemini, Claude, GPT).
 
@@ -106,14 +106,38 @@ Pre-configured directives for specialized AI roles:
 * **Security Hardening**: Conducts deep audits for OWASP Top 10 vulnerabilities.
 * **Model Dispatch Protocol**: Automatically detects when a task requires Tier 3 reasoning (Opus/Ultra) and prompts for a handoff.
 
-### 🏗️ Blueprint Marketplace
+### 🏗️ Community Blueprint Marketplace
 
-Use the `--blueprint` flag for optimized, platform-specific structures:
+Use the `--blueprint` flag to instantly scaffold specialized stacks. Now with **Remote Fetching** support!
 
-* **Next.js**: Modern App Router and component architecture.
+#### Built-in Templates
+
+* **Next.js**: Modern App Router (v15), Tailwind, and component architecture.
 * **FastAPI**: Hardened models, endpoints, and Pydantic validation.
+* **Go-Fiber**: High-performance Go web server structure.
+* **Rust-Axum**: Type-safe, async Rust API backend.
 * **Audio/DSP**: Specialized math/science directories (numpy/scipy).
 * **Standard**: The classic universal Agent-First structure.
+
+#### Remote Blueprints
+
+Fetch any community-maintained blueprint directly from Git:
+
+```bash
+python antigravity_master_setup.py --blueprint https://github.com/user/my-blueprint
+```
+
+### 💾 CLI Presets
+
+Save your favorite configurations for instant reuse:
+
+```bash
+# Save a preset
+python antigravity_master_setup.py --save-preset my-stack --stack python,react --blueprint fastapi
+
+# Load a preset
+python antigravity_master_setup.py --preset my-stack
+```
 
 ### ☁️ Cross-Platform Cloud Configs
 

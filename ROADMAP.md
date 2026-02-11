@@ -25,13 +25,22 @@ Antigravity Architect aims to be the definitive standard for **Agent-First** inf
   - Incremental background refactoring ledger (`.agent/memory/evolution.md`).
   - Rule-governed transformation of legacy patterns to modern standards.
 
+### ✅ Completed (v1.7.0 "The Community Marketplace")
+
+*Focus: Ecosystem expansion and developer experience.*
+
+- [x] **Community Blueprint Marketplace**:
+  - Expanded the `--blueprint` flag with built-in stacks (Next.js 15, FastAPI, Go-Fiber, Rust-Axum).
+  - Support for custom external blueprint URLs (e.g., `--blueprint https://github.com/org/blueprint`).
+  - Added `--list-blueprints` for easier discovery.
+- [x] **Core Refactoring & Optimization**:
+  - Reduced cognitive complexity of project generation logic.
+  - Standardized error handling and linting compliance.
+
 ### 🚀 Phase 1: Ecosystem Expansion (v1.7 - v1.8)
 
 *Focus: Breadth of support and developer experience.*
 
-- [ ] **Community Blueprint Marketplace**:
-  - Expand the `--blueprint` flag with 20+ community-standard stacks (Next.js 15, FastAPI, Go-Fiber, Rust-Axum).
-  - Support for custom external blueprint URLs (e.g., `--blueprint https://github.com/org/blueprint`).
 - [ ] **Docker-Compose Orchestration**:
   - Auto-generation of multi-container `docker-compose.yml` based on detected infrastructure keywords (Postgres, Redis, RabbitMQ).
 - [ ] **Enhanced Skill Bridge**:

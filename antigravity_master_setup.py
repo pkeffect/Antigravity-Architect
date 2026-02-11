@@ -25,12 +25,14 @@ import json
 import logging
 import os
 import re
+import shutil
+import subprocess
 import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.6.2"
+VERSION = "1.7.0"
 
 # ==============================================================================
 # 1. KNOWLEDGE BASE & CONFIGURATION
@@ -49,6 +51,8 @@ class AntigravityResources:
     # Core Constants
     VERSION = VERSION
     AGENT_DIR = ".agent"
+    ANTIGRAVITY_DIR_NAME = ".antigravity"
+    PRESETS_DIR = Path.home() / ANTIGRAVITY_DIR_NAME / "presets"
 
     # Filename Constants
     GITIGNORE_FILE = ".gitignore"
@@ -65,6 +69,7 @@ class AntigravityResources:
     SECURITY_FILE = "SECURITY.md"
     CODE_OF_CONDUCT_FILE = "CODE_OF_CONDUCT.md"
     BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
+    AGENT_MANIFEST = "manifest.json"
 
     BOOTSTRAP_FILE = "BOOTSTRAP_INSTRUCTIONS.md"
     VSCODE_DIR = ".vscode"
@@ -204,7 +209,48 @@ antigravity_setup.log
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
 - Initial release
+
+### Changed
+-
+
+### Deprecated
+-
+
+### Removed
+-
+
+### Fixed
+-
+
+### Security
+-
+"""
+
+    AGENT_MANIFEST_TEMPLATE = """{{
+  "protocol": "2.0.0",
+  "project": "{project_name}",
+  "capabilities": {{
+    "reasoning_tier": "3",
+    "mcp_support": true
+  }},
+  "structure": {{
+    "rules": ".agent/rules/",
+    "workflows": ".agent/workflows/",
+    "skills": ".agent/skills/",
+    "memory": ".agent/memory/"
+  }},
+  "ruleset": {{
+    "layered": true,
+    "priority": [
+      "00_identity.md",
+      "01_tech_stack.md",
+      "02_security.md",
+      "08_boundaries.md"
+    ]
+  }}
+}}
 """
 
     CONTRIBUTING_TEMPLATE = """# Contributing to the Project
@@ -273,7 +319,7 @@ The AI Agent is authorized to read rules and tech stacks from these directories 
 """
 
     SENTINEL_PY = """#!/usr/bin/env python3
-# Antigravity Sentinel: Proactive Security Auditor
+# 🛡️ Antigravity Sentinel (v1.7.0)
 import os
 import subprocess
 import sys
@@ -610,59 +656,114 @@ furnished to do so, subject to the following conditions:
     }
 
     AGENT_RULES: dict[str, str] = {
-        "00_identity.md": """# System Identity
+        "00_identity.md": """---
+layer: 0
+type: identity
+priority: mandatory
+---
+# System Identity
 You are a Senior Polyglot Software Engineer and Product Architect.
 - **Safety:** Never delete data without asking. Never leak secrets.
 - **Context:** Always check `docs/imported` and `context/raw` before coding.
 - **Dynamic Optimization:** You are expected to keep `docs/TECH_STACK.md` and `.agent/memory/scratchpad.md` updated as the project evolves.
 - **Self-Correction:** You are authorized to propose updates to your own rules in `.agent/rules/` if you identify architectural drift or improved patterns.
 """,
-        "02_security.md": """# Security Protocols
+        "02_security.md": """---
+layer: 0
+type: protocol
+priority: mandatory
+---
+# Security Protocols
 1. **Secrets:** Never output API keys. Use `.env`.
 2. **Inputs:** Validate all inputs.
 3. **Dependencies:** Warn if using deprecated libraries.
 """,
-        "03_git.md": """# Git Conventions
+        "03_git.md": """---
+layer: 1
+type: workflow
+priority: standard
+---
+# Git Conventions
 - Use Conventional Commits (`feat:`, `fix:`, `docs:`).
 - Never commit to main without testing.
 """,
-        "04_reasoning.md": """# Reasoning Protocol
+        "04_reasoning.md": """---
+layer: 1
+type: cognition
+priority: mandatory
+---
+# Reasoning Protocol
 1. **Pause:** Analyze the request.
 2. **Plan:** Break it down step-by-step.
 3. **Check:** Verify against `docs/` constraints.
 4. **Execute:** Write code.
 """,
-        RULE_ARCHITECTURE: """# Architecture Expert Persona
+        RULE_ARCHITECTURE: """---
+layer: 2
+type: persona
+priority: expert
+---
+# Architecture Expert Persona
 Focus on SoC (Separation of Concerns), DRY (Don't Repeat Yourself), and SOLID principles.
 Always prioritize modularity and testability in system design.
 """,
-        "06_ux.md": """# UX Specialist Persona
+        "06_ux.md": """---
+layer: 2
+type: persona
+priority: expert
+---
+# UX Specialist Persona
 Focus on user flow, accessibility (a11y), and intuitive interface design.
 Ensure that all interactive elements have clear feedback and state representation.
 """,
-        RULE_SECURITY_EXPERT: """# Security Hardening Persona
+        RULE_SECURITY_EXPERT: """---
+layer: 2
+type: persona
+priority: expert
+---
+# Security Hardening Persona
 Conduct deep audits for OWASP Top 10 vulnerabilities.
 Enforce strict validation, sanitization, and least-privilege principles.
 """,
-        "08_boundaries.md": """# Workspace Boundary Enforcement
+        "08_boundaries.md": """---
+layer: 0
+type: safety
+priority: mandatory
+---
+# Workspace Boundary Enforcement
 1. **Absolute Path Restriction:** You are strictly forbidden from reading, writing, or executing anything outside of the current project root directory.
 2. **Command Safety:** Before running any command, verify it does not attempt to access `../` or absolute system paths like `/etc/` or `C:\\Windows\\`.
 3. **Environment Isolation:** Do not attempt to modify system-level configurations, install non-project global dependencies, or access files in other workspaces unless explicitly authorized.
 4. **Data Integrity:** Never delete files or move them outside the project boundaries.
 """,
-        "09_cross_repo.md": """# Multi-Repo Context Bridge
+        "09_cross_repo.md": """---
+layer: 1
+type: context
+priority: standard
+---
+# Multi-Repo Context Bridge
 1. **Sister Repositories:** Refer to `context/links.md` for a list of related repositories in the same scratch space.
 2. **Knowledge Sharing:** You are authorized to read `.agent/rules/` and `docs/TECH_STACK.md` from linked repositories to ensure architectural consistency.
 3. **Dependency Mapping:** If a linked repository is a dependency (e.g., a shared library), prioritize its interface definitions over assumptions.
 4. **No Mutation:** You may READ from sister repos, but never WRITE to them unless explicitly instructed to perform a cross-repo refactor.
 """,
-        "10_evolution.md": """# Autonomous Evolution Protocols
+        "10_evolution.md": """---
+layer: 1
+type: protocol
+priority: standard
+---
+# Autonomous Evolution Protocols
 1. **Task Registration:** Before starting a background refactor, register the "Evolution Task" in `.agent/memory/evolution.md`.
 2. **Incrementalism:** Never refactor an entire module at once. Apply changes in atomic steps (one function or class at a time).
 3. **Regression Testing:** After every evolution step, you MUST run existing tests. If tests fail, ROLL BACK immediately.
 4. **Rule Alignment:** The primary goal of evolution is to bring legacy code into compliance with the latest `.agent/rules/`.
 """,
-        "99_model_dispatch.md": """# Model Dispatch Protocol
+        "99_model_dispatch.md": """---
+layer: 0
+type: cognition
+priority: safety
+---
+# Model Dispatch Protocol
 ## Concept
 You are a multi-model intelligence. You must identify when your current capabilities are insufficient and request a "Context Handoff."
 
@@ -779,6 +880,26 @@ trigger: /doctor
         "performance": {
             "dirs": ["src/benchmarks", "src/opt"],
             "stack": ["python", "rust"],
+            "rules": [RULE_ARCHITECTURE],
+        },
+        "nextjs": {
+            "dirs": ["app", "components", "lib", "public", "styles"],
+            "stack": ["nextjs", "react", "tailwind", "typescript"],
+            "rules": [RULE_ARCHITECTURE],
+        },
+        "fastapi": {
+            "dirs": ["app/api", "app/core", "app/models", "app/schemas", "tests"],
+            "stack": ["python", "fastapi", "pydantic", "sqlalchemy"],
+            "rules": [RULE_ARCHITECTURE],
+        },
+        "go-fiber": {
+            "dirs": ["cmd/server", "internal/handlers", "internal/models", "internal/routes", "pkg/utils"],
+            "stack": ["go", "fiber", "gorm", "docker"],
+            "rules": [RULE_ARCHITECTURE],
+        },
+        "rust-axum": {
+            "dirs": ["src/handlers", "src/models", "src/routes", "src/utils", "tests"],
+            "stack": ["rust", "axum", "tokio", "serde"],
             "rules": [RULE_ARCHITECTURE],
         },
     }
@@ -1139,6 +1260,79 @@ class AntigravityEngine:
             logging.error(f"❌ Error creating folder {path}: {e}")
             return False
 
+    @staticmethod
+    def save_preset(name: str, args: dict) -> bool:
+        """Saves current CLI arguments as a named preset."""
+        try:
+            path = AntigravityResources.PRESETS_DIR / f"{name}.json"
+            os.makedirs(path.parent, exist_ok=True)
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(args, f, indent=4)
+            logging.info(f"💾 Preset saved: {name}")
+            return True
+        except Exception as e:
+            logging.error(f"❌ Error saving preset {name}: {e}")
+            return False
+
+    @staticmethod
+    def load_preset(name: str) -> dict | None:
+        """Loads a preset by name."""
+        try:
+            path = AntigravityResources.PRESETS_DIR / f"{name}.json"
+            if not path.exists():
+                logging.error(f"❌ Preset not found: {name}")
+                return None
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logging.error(f"❌ Error loading preset {name}: {e}")
+            return None
+
+    @staticmethod
+    def list_presets() -> list[str]:
+        """Lists available presets."""
+        try:
+            if not AntigravityResources.PRESETS_DIR.exists():
+                return []
+            return [f.stem for f in AntigravityResources.PRESETS_DIR.glob("*.json")]
+        except Exception as e:
+            logging.error(f"❌ Error listing presets: {e}")
+            return []
+
+    @staticmethod
+    def fetch_remote_blueprint(url: str) -> dict | None:
+        """
+        Fetches a remote blueprint via git clone.
+        Expects a 'antigravity_blueprint.json' in the repo root.
+        """
+        temp_dir = Path(tempfile.mkdtemp(prefix="antigravity_blueprint_"))
+        try:
+            logging.info(f"⬇️  Fetching remote blueprint: {url}")
+            subprocess.check_call(
+                ["git", "clone", "--depth", "1", url, str(temp_dir)],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+            blueprint_path = temp_dir / "antigravity_blueprint.json"
+            if not blueprint_path.exists():
+                logging.error("❌ Remote repo missing 'antigravity_blueprint.json'")
+                return None
+
+            with open(blueprint_path, encoding="utf-8") as f:
+                data = json.load(f)
+                logging.info(f"✅ Loaded remote blueprint: {data.get('name', 'Unknown')}")
+                return data
+
+        except subprocess.CalledProcessError:
+            logging.error(f"❌ Failed to clone {url}")
+            return None
+        except Exception as e:
+            logging.error(f"❌ Error fetching blueprint: {e}")
+            return None
+        finally:
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
 
 # Maintain backward compatibility with module-level functions
 setup_logging = AntigravityEngine.setup_logging
@@ -1148,6 +1342,9 @@ validate_file_path = AntigravityEngine.validate_file_path
 write_file = AntigravityEngine.write_file
 append_file = AntigravityEngine.append_file
 create_folder = AntigravityEngine.create_folder
+save_preset = AntigravityEngine.save_preset
+load_preset = AntigravityEngine.load_preset
+list_presets = AntigravityEngine.list_presets
 
 
 # ==============================================================================
@@ -1396,18 +1593,23 @@ class AntigravityAssimilator:
         content += "\n## 🔍 Contextual Observations\n"
         text_lower = full_text.lower()
 
-        observations = []
-        if "architecture" in text_lower:
-            observations.append("Structural architectural specifications detected.")
-        if "security" in text_lower or "auth" in text_lower:
-            observations.append("Security-sensitive components or requirements identified.")
-        if "database" in text_lower or "sql" in text_lower:
-            observations.append("Data persistence layers identified.")
-        if "api" in text_lower or "endpoint" in text_lower:
-            observations.append("API surfaces or integrations identified.")
+        observation_map = {
+            "architecture": "Structural architectural specifications detected.",
+            "security": "Security-sensitive components or requirements identified.",
+            "auth": "Security-sensitive components or requirements identified.",
+            "database": "Data persistence layers identified.",
+            "sql": "Data persistence layers identified.",
+            "api": "API surfaces or integrations identified.",
+            "endpoint": "API surfaces or integrations identified.",
+        }
+
+        observations = set()
+        for key, obs in observation_map.items():
+            if key in text_lower:
+                observations.add(obs)
 
         if observations:
-            for obs in observations:
+            for obs in sorted(observations):
                 content += f"- {obs}\n"
         else:
             content += "- Standard project structure with generic tech stack.\n"
@@ -1537,8 +1739,13 @@ class AntigravityGenerator:
     """
 
     @staticmethod
-    def generate_agent_files(base_dir: str, keywords: list[str], safe_mode: bool = False) -> None:
+    def generate_agent_files(base_dir: str, project_name: str, keywords: list[str], safe_mode: bool = False) -> None:
         """Generates all .agent/ rules, workflows, and skills."""
+
+        # v1.6.2 Standardized Agent API Manifest
+        manifest_path = os.path.join(base_dir, AGENT_DIR, AntigravityResources.AGENT_MANIFEST)
+        manifest_content = AntigravityResources.AGENT_MANIFEST_TEMPLATE.format(project_name=project_name)
+        write_file(manifest_path, manifest_content, exist_ok=safe_mode)
 
         # Generate static rules
         for filename, content in AntigravityResources.AGENT_RULES.items():
@@ -1580,6 +1787,17 @@ class AntigravityGenerator:
         )
 
     @staticmethod
+    def _resolve_blueprint(blueprint: str | None) -> dict:
+        """Helper to resolve blueprint data from name or URL."""
+        if not blueprint:
+            return {}
+
+        if blueprint.startswith("http://") or blueprint.startswith("https://"):
+            return AntigravityEngine.fetch_remote_blueprint(blueprint) or {}
+
+        return AntigravityResources.BLUEPRINTS.get(blueprint, {})
+
+    @staticmethod
     def generate_community_standards(base_dir: str, safe_mode: bool = False) -> None:
         """Generates standard legal and community files."""
         files = {
@@ -1618,57 +1836,29 @@ class AntigravityGenerator:
             write_file(path, content, exist_ok=safe_mode)
 
     @staticmethod
-    def generate_project(
-        project_name: str,
-        keywords: list[str],
-        brain_dump_path: str | None = None,
-        safe_mode: bool | None = None,
-        custom_templates: dict[str, dict[str, str]] | None = None,
-        license_type: str = "mit",
-        blueprint: str | None = None,
-    ) -> bool:
-        """
-        Main project generation logic (v1.6.0 Orchestration).
-        """
-        base_dir = os.path.join(os.getcwd(), project_name)
-
-        # Handle safe_mode: if not explicitly set and directory exists, prompt user
+    def _handle_safe_mode(project_name: str, base_dir: str, safe_mode: bool | None) -> bool | None:
+        """Handles user interaction for existing project directories."""
         if safe_mode is None and os.path.exists(base_dir):
             print(f"\n⚠️  Project '{project_name}' already exists.")
             choice = input("Select mode: [U]pdate (Safe) / [O]verwrite (Risky) / [C]ancel: ").lower()
 
             if choice == "u":
                 print("🛡️  Safe Update Mode Active: Only missing files will be created.")
-                safe_mode = True
+                return True
             elif choice == "o":
                 confirm = input("💥 WARNING: This will overwrite files. Type 'yes' to confirm: ")
                 if confirm.lower() != "yes":
-                    return False
-                safe_mode = False
-            else:
+                    return None  # Cancel
                 return False
+            else:
+                return None  # Cancel
         elif safe_mode is None:
-            safe_mode = False
+            return False
+        return safe_mode
 
-        logging.info(f"🚀 Constructing '{project_name}' (v1.6.1)...")
-
-        # Setup logging in target directory
-        setup_logging(base_dir)
-
-        # 1. Blueprint Application (Ancestry Override)
-        blueprint_data = AntigravityResources.BLUEPRINTS.get(blueprint, {}) if blueprint else {}
-        if blueprint_data:
-            logging.info(f"💎 Applying Blueprint: {blueprint}")
-            keywords.extend(blueprint_data.get("stack", []))
-
-        # 2. Global Memory Check (Ancestry)
-        global_agent_rules = Path.home() / ".antigravity" / "rules"
-        inherited_rules = []
-        if global_agent_rules.exists():
-            logging.info("🌐 Inheriting Global Rules from ~/.antigravity")
-            inherited_rules = [f.name for f in global_agent_rules.glob("*.md")]
-
-        # Create directory structure
+    @staticmethod
+    def _get_directory_structure(blueprint_data: dict) -> list[str]:
+        """Returns the list of directories to create."""
         directories = [
             "src",
             "tests",
@@ -1689,33 +1879,24 @@ class AntigravityGenerator:
             f"{AGENT_DIR}/skills/bridge",
             "scripts",
         ]
-
-        # Add blueprint specific directories
         if blueprint_data:
             directories.extend(blueprint_data.get("dirs", []))
+        return directories
 
-        for d in directories:
-            create_folder(os.path.join(base_dir, d))
+    @staticmethod
+    def _inherit_global_rules(base_dir: str, safe_mode: bool) -> None:
+        """Copies global rules from ~/.antigravity/rules if they exist."""
+        global_agent_rules = Path.home() / ".antigravity" / "rules"
+        if global_agent_rules.exists():
+            logging.info("🌐 Inheriting Global Rules from ~/.antigravity")
+            for rule_file in global_agent_rules.glob("*.md"):
+                dest_path = os.path.join(base_dir, AGENT_DIR, "rules", f"global_{rule_file.name}")
+                with open(rule_file, encoding="utf-8") as rf:
+                    write_file(dest_path, rf.read(), exist_ok=safe_mode)
 
-        # Process brain dump
-        detected_stack: list[str] = []
-        if brain_dump_path:
-            detected_stack = process_brain_dump(brain_dump_path, base_dir)
-
-        # Merge keywords
-        final_stack = list(set(keywords + detected_stack))
-        if not final_stack:
-            final_stack = ["linux"]
-        logging.info(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
-
-        # 3. Inheritance: Copy global rules
-        for rule_file in inherited_rules:
-            src_path = global_agent_rules / rule_file
-            dest_path = os.path.join(base_dir, AGENT_DIR, "rules", f"global_{rule_file}")
-            with open(src_path, encoding="utf-8") as rf:
-                write_file(dest_path, rf.read(), exist_ok=safe_mode)
-
-        # Generate configuration files
+    @staticmethod
+    def _generate_core_config_files(base_dir: str, project_name: str, final_stack: list[str], safe_mode: bool) -> None:
+        """Generates core configuration files like .gitignore, README, env, etc."""
         write_file(
             os.path.join(base_dir, AntigravityResources.GITIGNORE_FILE), build_gitignore(final_stack), exist_ok=True
         )
@@ -1739,7 +1920,7 @@ class AntigravityGenerator:
         write_file(
             os.path.join(base_dir, AntigravityResources.ENV_EXAMPLE_FILE), "API_KEY=\nDB_URL=", exist_ok=safe_mode
         )
-
+        # Bridge and Architecture docs
         write_file(
             os.path.join(base_dir, AGENT_DIR, "skills", "bridge", "bridge.py"),
             AntigravityResources.AGENT_SKILLS["bridge/bridge.py"],
@@ -1755,8 +1936,29 @@ class AntigravityGenerator:
             AntigravityBuilder.build_links(project_name),
             exist_ok=safe_mode,
         )
+        # 4. Semantic RAG Index
+        write_file(
+            os.path.join(base_dir, "docs", "imported", "INDEX.md"),
+            AntigravityBuilder.build_docs_index(os.path.join(base_dir, "docs", "imported")),
+            exist_ok=True,
+        )
+        # Bootstrap Guide
+        write_file(
+            os.path.join(base_dir, AntigravityResources.BOOTSTRAP_FILE),
+            """# Agent Start Guide
 
-        # Generate License
+1. **Protocol:** Review `.agent/manifest.json` for project structure.
+2. **Context:** Read `.agent/memory/scratchpad.md` and `.agent/memory/evolution.md`.
+3. **Safety:** Ensure `scripts/sentinel.py` is running for monitoring.
+4. **Action:** Use `/plan` to break down tasks or `/bootstrap` for code generation.
+5. **Standards:** Follow the v2.0.0 Agent Protocol in `.agent/rules/`.
+""",
+            exist_ok=safe_mode,
+        )
+
+    @staticmethod
+    def _generate_license(base_dir: str, license_type: str, safe_mode: bool) -> None:
+        """Generates the LICENSE file."""
         license_content = AntigravityResources.LICENSE_TEMPLATES.get(
             license_type, AntigravityResources.LICENSE_TEMPLATES["mit"]
         )
@@ -1764,45 +1966,9 @@ class AntigravityGenerator:
             license_content = license_content.format(year=datetime.now().year, author="pkeffect")
         write_file(os.path.join(base_dir, AntigravityResources.LICENSE_FILE), license_content, exist_ok=safe_mode)
 
-        # Community Standards
-        AntigravityGenerator.generate_community_standards(base_dir, safe_mode=safe_mode)
-
-        # GitHub Templates
-        AntigravityGenerator.generate_github_templates(base_dir, final_stack, safe_mode=safe_mode)
-
-        # VS Code Configuration
-        vscode_files = build_vscode_config(final_stack)
-        for filename, content in vscode_files.items():
-            write_file(os.path.join(base_dir, AntigravityResources.VSCODE_DIR, filename), content, exist_ok=safe_mode)
-
-        # Agent files
-        AntigravityGenerator.generate_agent_files(base_dir, final_stack, safe_mode=safe_mode)
-
-        # Apply Blueprint Rules
-        if blueprint_data:
-            for rule in blueprint_data.get("rules", []):
-                if rule in AntigravityResources.AGENT_RULES:
-                    write_file(
-                        os.path.join(base_dir, AGENT_DIR, "rules", rule),
-                        AntigravityResources.AGENT_RULES[rule],
-                        exist_ok=False,
-                    )
-
-        # 4. Semantic RAG Index
-        write_file(
-            os.path.join(base_dir, "docs", "imported", "INDEX.md"),
-            AntigravityBuilder.build_docs_index(os.path.join(base_dir, "docs", "imported")),
-            exist_ok=True,
-        )
-
-        # Bootstrap Guide
-        write_file(
-            os.path.join(base_dir, AntigravityResources.BOOTSTRAP_FILE),
-            """# Agent Start Guide\n\n1. **Context:** Read `.agent/memory/scratchpad.md`.\n2. **Knowledge:** Check `docs/imported/INDEX.md` for assimilated rules.\n3. **Action:** Run `/bootstrap` to generate the application skeleton.\n""",
-            exist_ok=safe_mode,
-        )
-
-        # 5. Time-Travel: Git Initialization hook
+    @staticmethod
+    def _setup_git_hooks(base_dir: str) -> None:
+        """Sets up the post-commit git hook."""
         git_dir = os.path.join(base_dir, ".git")
         if os.path.exists(git_dir):
             hook_path = os.path.join(git_dir, "hooks", "post-commit")
@@ -1813,6 +1979,103 @@ class AntigravityGenerator:
                 os.chmod(hook_path, 0o755)
             except Exception:
                 pass
+
+    @staticmethod
+    def _generate_vscode_config(base_dir: str, final_stack: list[str], safe_mode: bool = False) -> None:
+        """Generates VS Code configuration files."""
+        vscode_files = build_vscode_config(final_stack)
+        for filename, content in vscode_files.items():
+            write_file(os.path.join(base_dir, AntigravityResources.VSCODE_DIR, filename), content, exist_ok=safe_mode)
+
+    @staticmethod
+    def _apply_blueprint_rules(base_dir: str, blueprint_data: dict) -> None:
+        """Applies agent rules defined in the blueprint."""
+        if not blueprint_data:
+            return
+
+        for rule in blueprint_data.get("rules", []):
+            if rule in AntigravityResources.AGENT_RULES:
+                write_file(
+                    os.path.join(base_dir, AGENT_DIR, "rules", rule),
+                    AntigravityResources.AGENT_RULES[rule],
+                    exist_ok=False,
+                )
+
+    @staticmethod
+    def generate_project(
+        project_name: str,
+        keywords: list[str],
+        brain_dump_path: str | None = None,
+        safe_mode: bool | None = None,
+        custom_templates: dict[str, dict[str, str]] | None = None,
+        license_type: str = "mit",
+        blueprint: str | None = None,
+    ) -> bool:
+        """
+        Main project generation logic (v1.6.0 Orchestration).
+        """
+        base_dir = os.path.join(os.getcwd(), project_name)
+
+        # Handle safe_mode
+        safe_mode_result = AntigravityGenerator._handle_safe_mode(project_name, base_dir, safe_mode)
+        if safe_mode_result is None:
+            return False
+        safe_mode = safe_mode_result
+
+        logging.info(f"🚀 Constructing '{project_name}' (v1.6.1)...")
+
+        # Setup logging in target directory
+        setup_logging(base_dir)
+
+        # 1. Blueprint Application (Ancestry Override)
+        blueprint_data = AntigravityGenerator._resolve_blueprint(blueprint)
+
+        if blueprint_data:
+            logging.info(f"💎 Applying Blueprint: {blueprint_data.get('name', blueprint)}")
+            keywords.extend(blueprint_data.get("stack", []))
+
+        # Create directory structure
+        directories = AntigravityGenerator._get_directory_structure(blueprint_data)
+        for d in directories:
+            create_folder(os.path.join(base_dir, d))
+
+        # Process brain dump
+        detected_stack: list[str] = []
+        if brain_dump_path:
+            detected_stack = process_brain_dump(brain_dump_path, base_dir)
+
+        # Merge keywords
+        final_stack = list(set(keywords + detected_stack))
+        if not final_stack:
+            final_stack = ["linux"]
+        logging.info(f"⚙️  Final Tech Stack: {', '.join(final_stack)}")
+
+        # 2. Inheritance: Copy global rules
+        AntigravityGenerator._inherit_global_rules(base_dir, safe_mode)
+
+        # Generate configuration files
+        AntigravityGenerator._generate_core_config_files(base_dir, project_name, final_stack, safe_mode)
+
+        # Generate License
+        AntigravityGenerator._generate_license(base_dir, license_type, safe_mode)
+
+        # Community Standards
+        AntigravityGenerator.generate_community_standards(base_dir, safe_mode=safe_mode)
+
+        # GitHub Templates
+        AntigravityGenerator.generate_github_templates(base_dir, final_stack, safe_mode=safe_mode)
+
+        # VS Code Configuration
+        AntigravityGenerator._generate_vscode_config(base_dir, final_stack, safe_mode)
+
+        # Agent files
+        AntigravityGenerator.generate_agent_files(base_dir, project_name, final_stack, safe_mode=safe_mode)
+
+        # Apply Blueprint Rules
+        AntigravityGenerator._apply_blueprint_rules(base_dir, blueprint_data)
+
+        # Time-Travel: Git Initialization hook
+        AntigravityGenerator._setup_git_hooks(base_dir)
 
         print(f"\n✅ Project '{project_name}' ready (v1.6.0)!")
         print(f"📂 Location: {os.path.abspath(base_dir)}\n")
@@ -1873,9 +2136,13 @@ Examples:
     parser.add_argument(
         "--blueprint",
         type=str,
-        choices=["audio", "medical", "performance"],
-        help="Apply a specialized project blueprint",
+        help="Apply a specialized project blueprint (built-in name or git URL)",
     )
+
+    parser.add_argument("--save-preset", type=str, help="Save current arguments as a named preset")
+    parser.add_argument("--preset", type=str, help="Load arguments from a saved preset")
+    parser.add_argument("--list-presets", action="store_true", help="List all saved presets")
+    parser.add_argument("--list-blueprints", action="store_true", help="List all built-in blueprints")
 
     return parser
 
@@ -1887,7 +2154,7 @@ def load_custom_templates(templates_path: str | None) -> dict[str, dict[str, str
     Returns a dict with keys 'rules', 'workflows', 'skills' containing template overrides.
     """
     if not templates_path:
-        home_templates = Path.home() / ".antigravity" / "templates"
+        home_templates = Path.home() / AntigravityResources.ANTIGRAVITY_DIR_NAME / "templates"
         if home_templates.exists():
             templates_path = str(home_templates)
         else:
@@ -1936,113 +2203,65 @@ def _doctor_check_file(
 
     passed, warning, issue, fixed_msg = None, None, None, None
 
+    if not is_missing and not is_empty:
+        return f"✅ {file_path} exists", None, None, None
+
     if is_missing:
         if optional:
             warning = f"⚠️  Optional: {file_path} not found"
         else:
             issue = f"❌ Missing: {file_path}"
-
-        if fix and template:
-            if is_missing:
-                full_path.parent.mkdir(parents=True, exist_ok=True)
-            full_path.write_text(template, encoding="utf-8")
-            fixed_msg = f"🔧 {'Generated' if is_missing else 'Regenerated'} {file_path}"
     elif is_empty:
         warning = f"⚠️  {file_path} is empty"
-        if fix and template:
-            full_path.write_text(template, encoding="utf-8")
+
+    if fix and template:
+        if is_missing:
+            full_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Only write if we're fixing missing or empty files
+        full_path.write_text(template, encoding="utf-8")
+        
+        if is_missing:
+            fixed_msg = f"🔧 Generated {file_path}"
+        else:
             fixed_msg = f"🔧 Restored content to {file_path}"
-    else:
-        passed = f"✅ {file_path} exists"
 
     return passed, warning, issue, fixed_msg
 
 
-def doctor_project(project_path: str, fix: bool = False) -> bool:
-    """
-    Validates the integrity of an Antigravity project.
-
-    Checks for required directories and files.
-    If `fix` is True, attempts to repair missing structure and regenerate files.
-    """
-    base_dir = Path(project_path).resolve()
-    print(f"\n🩺 Running Doctor on: {project_path}")
-    print(AntigravityResources.SEPARATOR)
-
-    if not base_dir.exists():
-        print(f"❌ Project directory not found: {project_path}")
-        return False
-
-    issues: list[str] = []
-    warnings: list[str] = []
-    passed: list[str] = []
-    fixed: list[str] = []
-
-    # 1. Check Directories
-    required_dirs = [
+def _get_doctor_requirements() -> tuple[list[str], dict[str, tuple[str, str]]]:
+    """Returns required directories and files for doctor check."""
+    dirs = [
         ".agent/rules",
         ".agent/workflows",
         ".agent/skills",
         ".agent/memory",
     ]
-    for d in required_dirs:
-        p, i, f = _doctor_check_dir(base_dir, d, fix)
-        if p:
-            passed.append(p)
-        if i:
-            issues.append(i)
-        if f:
-            fixed.append(f)
-
-    # 2. Check Required Files
-    required_files_templates: dict[str, tuple[str, str]] = {
-        ".agent/rules/00_identity.md": (
+    
+    files = {
+        f".agent/rules/{AntigravityResources.RULE_IDENTITY}": (
             "Agent identity rule",
-            AntigravityResources.AGENT_RULES.get(AntigravityResources.RULE_IDENTITY, ""),
+            AntigravityResources.AGENT_RULES[AntigravityResources.RULE_IDENTITY],
         ),
-        ".agent/rules/01_tech_stack.md": (
-            "Tech stack rule",
-            build_tech_stack_rule(["linux"]),  # Default fallback stack
+        f".agent/rules/{AntigravityResources.RULE_SECURITY}": (
+            "Security protocol",
+            AntigravityResources.AGENT_RULES[AntigravityResources.RULE_SECURITY],
         ),
-        ".agent/memory/scratchpad.md": (
-            "Memory scratchpad",
-            build_scratchpad(["linux"], False),
+        ".agent/workflows/plan.md": (
+            "Plan workflow",
+            AntigravityResources.AGENT_WORKFLOWS["plan.md"],
         ),
-        AntigravityResources.BOOTSTRAP_FILE: (
-            "Bootstrap guide",
-            """# Agent Start Guide\n1. **Context:** Read `.agent/memory/scratchpad.md`.\n2. **Knowledge:** Check `docs/imported/` for assimilated rules.\n3. **Action:** Run `/bootstrap` to generate the application skeleton.\n""",
-        ),
+        "antigravity_master_setup.py": (
+            "Master script",
+            "",
+        ),  # Content empty implies no auto-fix for script itself
     }
+    return dirs, files
 
-    for file_path, (_desc, template) in required_files_templates.items():
-        p, w, i, f = _doctor_check_file(base_dir, file_path, template, fix, optional=False)
-        if p:
-            passed.append(p)
-        if w:
-            warnings.append(w)
-        if i:
-            issues.append(i)
-        if f:
-            fixed.append(f)
 
-    # 3. Check IDE Configuration Files (Optional but fixable)
-    # Removed Cursor/Windsurf specific files as they are no longer maintained or relevant.
-    # The original logic for these files was to check and optionally fix them.
-    # Since they are removed, this section now effectively does nothing unless new IDE files are added.
-    ide_files: dict[str, str] = {}
-    for file_path, template in ide_files.items():
-        p, w, i, f = _doctor_check_file(base_dir, file_path, template, fix, optional=True)
-        if p:
-            passed.append(p)
-        if w:
-            warnings.append(w)
-        if i:
-            issues.append(i)
-        if f:
-            fixed.append(f)
-
-    # 4. Check Optional Files (No templates provided here for regeneration in original logic, but we can verify existence)
-    optional_files = [
+def _get_doctor_optional_files() -> dict[str, tuple[str, str]]:
+    """Returns optional files for doctor check."""
+    files = [
         AntigravityResources.GITIGNORE_FILE,
         AntigravityResources.README_FILE,
         AntigravityResources.CHANGELOG_FILE,
@@ -2052,8 +2271,32 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
         AntigravityResources.CODE_OF_CONDUCT_FILE,
         AntigravityResources.LICENSE_FILE,
     ]
-    for file_path in optional_files:
-        p, w, i, f = _doctor_check_file(base_dir, file_path, None, fix, optional=True)
+    return {f: ("Optional project file", "") for f in files}
+
+
+def _validate_doctor_dirs(base_dir: Path, dirs: list[str], fix: bool) -> tuple[list[str], list[str], list[str]]:
+    """Validates and fixes directories."""
+    passed, issues, fixed = [], [], []
+    for d in dirs:
+        p, i, f = _doctor_check_dir(base_dir, d, fix)
+        if p:
+            passed.append(p)
+        if i:
+            issues.append(i)
+        if f:
+            fixed.append(f)
+    return passed, issues, fixed
+
+
+def _validate_doctor_files(
+    base_dir: Path, files: dict[str, tuple[str, str]], fix: bool
+) -> tuple[list[str], list[str], list[str], list[str]]:
+    """Validates and fixes files."""
+    passed, warnings, issues, fixed = [], [], [], []
+    for f_path, (desc, tmpl) in files.items():
+        # Optional file check logic can be expanded here if needed
+        is_optional = False 
+        p, w, i, f = _doctor_check_file(base_dir, f_path, tmpl, fix, optional=is_optional)
         if p:
             passed.append(p)
         if w:
@@ -2062,7 +2305,11 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
             issues.append(i)
         if f:
             fixed.append(f)
+    return passed, warnings, issues, fixed
 
+
+def _print_doctor_results(passed: list[str], warnings: list[str], issues: list[str], fixed: list[str]) -> None:
+    """Prints the results of the doctor check."""
     print(AntigravityResources.SEPARATOR)
     print(f"Summary: {len(passed)} passed, {len(warnings)} warnings, {len(issues)} issues")
 
@@ -2083,7 +2330,54 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
 
     print(f"\n{AntigravityResources.SEPARATOR}")
 
-    # After fixes, re-evaluate health
+
+def doctor_project(project_path: str, fix: bool = False) -> bool:
+    """
+    Validates the integrity of an Antigravity project.
+
+    Checks for required directories and files.
+    If `fix` is True, attempts to repair missing structure and regenerate files.
+    """
+    base_dir = Path(project_path).resolve()
+    print(f"\n🩺 Running Doctor on: {project_path}")
+    print(AntigravityResources.SEPARATOR)
+
+    if not base_dir.exists():
+        print(f"❌ Project directory not found: {project_path}")
+        return False
+
+    # Initialize result lists
+    passed: list[str] = []
+    issues: list[str] = []
+    warnings: list[str] = []
+    fixed: list[str] = []
+
+    # 1. Check Directories & Files (Required)
+    req_dirs, req_files = _get_doctor_requirements()
+    
+    d_passed, d_issues, d_fixed = _validate_doctor_dirs(base_dir, req_dirs, fix)
+    passed.extend(d_passed)
+    issues.extend(d_issues)
+    fixed.extend(d_fixed)
+
+    f_passed, f_warnings, f_issues, f_fixed = _validate_doctor_files(base_dir, req_files, fix)
+    passed.extend(f_passed)
+    warnings.extend(f_warnings)
+    issues.extend(f_issues)
+    fixed.extend(f_fixed)
+
+    # 2. Check Optional Files
+    opt_files = _get_doctor_optional_files()
+    o_passed, o_warnings, o_issues, o_fixed = _validate_doctor_files(base_dir, opt_files, fix)
+    passed.extend(o_passed)
+    warnings.extend(o_warnings)
+    issues.extend(o_issues)
+    fixed.extend(o_fixed)
+
+    # 3. Print Results
+    _print_doctor_results(passed, warnings, issues, fixed)
+
+    # 4. Final Verdict
     remaining_issues = len(issues) - len([f for f in fixed if "Missing" in f or "Regenerated" in f])
     if remaining_issues > 0 and not fix:
         print("❌ Project needs attention! Run with --fix to repair.")
@@ -2120,6 +2414,19 @@ def list_keywords() -> None:
     print("Usage: --stack python,react,docker")
 
 
+def list_blueprints() -> None:
+    """Display all available built-in blueprints."""
+    print("\n💎 Available Blueprints")
+    print(AntigravityResources.SEPARATOR)
+
+    for name, data in AntigravityResources.BLUEPRINTS.items():
+        desc = f"Stack: {', '.join(data.get('stack', []))}"
+        print(f"  - {name:<12} : {desc}")
+
+    print("\n" + AntigravityResources.SEPARATOR)
+    print("Usage: --blueprint <name> OR --blueprint https://github.com/user/repo")
+
+
 def run_interactive_mode() -> None:
     """Original interactive mode for backwards compatibility."""
     print(AntigravityResources.SEPARATOR)
@@ -2153,8 +2460,8 @@ def run_interactive_mode() -> None:
     generate_project(project_name, manual_keywords, brain_dump_path, license_type=license_choice)
 
 
-def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse.Namespace) -> None:
-    """Helper to print dry run details."""
+def _print_dry_run_header(project_name: str, keywords: list[str], args: argparse.Namespace) -> None:
+    """Prints the dry run header summary."""
     print("\n🔍 DRY RUN MODE - No files will be created")
     print("=" * 60)
     print(f"📦 Project Name: {project_name}")
@@ -2165,6 +2472,9 @@ def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse
     print(f"📜 License: {args.license}")
     print("=" * 60)
 
+
+def _print_dry_run_directories(project_name: str) -> None:
+    """Prints directories to be created."""
     print("\n📁 Directories that would be created:")
     dirs = [
         "src",
@@ -2184,6 +2494,9 @@ def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse
     for d in dirs:
         print(f"    📂 {project_name}/{d}/")
 
+
+def _print_dry_run_files(project_name: str, keywords: list[str]) -> None:
+    """Prints core files to be created."""
     print("\n📄 Core Files that would be created:")
     core_files = [
         ".gitignore",
@@ -2207,6 +2520,9 @@ def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse
     for f, desc in ide_files:
         print(f"    🤖 {project_name}/{f} ({desc})")
 
+
+def _print_dry_run_agent(keywords: list[str]) -> None:
+    """Prints agent-specific files."""
     print("\n📜 Agent Rules & Workflows:")
     for rule_file in AntigravityResources.AGENT_RULES:
         print(f"    📜 .agent/rules/{rule_file}")
@@ -2226,6 +2542,9 @@ def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse
     print("\n🧠 Agent Memory (.agent/memory/):")
     print("    🧠 scratchpad.md")
 
+
+def _print_dry_run_templates(keywords: list[str]) -> None:
+    """Prints template files."""
     print("\n📋 GitHub Templates (.github/):")
     github_files = [
         "ISSUE_TEMPLATE/bug_report.md",
@@ -2246,6 +2565,15 @@ def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse
         ]
         for f in gitea_files:
             print(f"    📋 {f}")
+
+
+def _print_dry_run_report(project_name: str, keywords: list[str], args: argparse.Namespace) -> None:
+    """Helper to print dry run details."""
+    _print_dry_run_header(project_name, keywords, args)
+    _print_dry_run_directories(project_name)
+    _print_dry_run_files(project_name, keywords)
+    _print_dry_run_agent(keywords)
+    _print_dry_run_templates(keywords)
 
     print("\n" + "=" * 60)
     print("✅ Dry run complete. No changes made.")
@@ -2290,16 +2618,56 @@ def run_cli_mode(args: argparse.Namespace) -> None:
 
 def main(argv: list[str] | None = None) -> None:
     """Main entry point for the Antigravity Architect."""
+    # 1. First pass: Check for immediate actions or preset loading
+    pre_parser = argparse.ArgumentParser(add_help=False)
+    pre_parser.add_argument("--preset", type=str)
+    pre_parser.add_argument("--list-presets", action="store_true")
+    pre_args, _ = pre_parser.parse_known_args(argv)
+
+    if pre_args.list_presets:
+        print("💾 Saved Presets:")
+        for p in list_presets():
+            print(f"  - {p}")
+        return
+
+    # 2. Load preset defaults if requested
+    defaults = {}
+    if pre_args.preset:
+        loaded = load_preset(pre_args.preset)
+        if loaded:
+            defaults = loaded
+            print(f"💎 Loaded preset: {pre_args.preset}")
+
+    # 3. Build full parser with defaults
     parser = build_cli_parser()
+    if defaults:
+        parser.set_defaults(**defaults)
+
     args = parser.parse_args(argv)
 
     if args.list_keywords:
         list_keywords()
         return
 
+    if args.list_blueprints:
+        list_blueprints()
+        return
+
     if args.doctor:
         doctor_project(args.doctor, fix=args.fix)
         return
+
+    # 4. Handle Save Preset
+    if args.save_preset:
+        # Filter out operational flags
+        preset_data = {
+            k: v
+            for k, v in vars(args).items()
+            if v is not None
+            and k not in ("save_preset", "preset", "dry_run", "list_keywords", "list_presets", "doctor", "fix")
+        }
+        save_preset(args.save_preset, preset_data)
+        # Continue execution? Yes, commonly users might want to run AND save.
 
     if args.name:
         run_cli_mode(args)

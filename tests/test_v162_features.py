@@ -75,13 +75,17 @@ class TestV162Features:
         assert result is False
 
     def test_generate_agent_files_v162(self, temp_dir):
-        """Should create Sentinel and Evolution files."""
-        ag.generate_agent_files(temp_dir, ["python"])
+        """Should create Sentinel, Evolution, and Manifest files."""
+        ag.generate_agent_files(temp_dir, "test-v162", ["python"])
 
-        rules_dir = os.path.join(temp_dir, ".agent", "rules")
-        workflows_dir = os.path.join(temp_dir, ".agent", "workflows")
-        memory_dir = os.path.join(temp_dir, ".agent", "memory")
+        agent_dir = os.path.join(temp_dir, ".agent")
+        rules_dir = os.path.join(agent_dir, "rules")
+        workflows_dir = os.path.join(agent_dir, "workflows")
+        memory_dir = os.path.join(agent_dir, "memory")
         scripts_dir = os.path.join(temp_dir, "scripts")
+
+        # Check manifest
+        assert os.path.exists(os.path.join(agent_dir, "manifest.json"))
 
         # Check new rules
         assert os.path.exists(os.path.join(rules_dir, "08_boundaries.md"))

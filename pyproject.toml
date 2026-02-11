@@ -1,6 +1,6 @@
 [project]
 name = "antigravity-architect"
-version = "1.6.2"
+version = "1.7.0"
 description = "Agent-First bootstrapping tool for AI-assisted development"
 readme = "README.md"
 license = {text = "MIT"}
@@ -62,6 +62,7 @@ select = [
 ]
 ignore = [
     "E501",   # line too long (handled by formatter)
+    "SIM117", # nested with statements
 ]
 
 [tool.ruff.format]
@@ -91,7 +92,7 @@ addopts = "-v --tb=short"
 #   bump2version major  # 1.4.0 -> 2.0.0
 # ============================================================================
 [tool.bumpversion]
-current_version = "1.6.2"
+current_version = "1.7.0"
 commit = true
 tag = true
 tag_name = "v{new_version}"

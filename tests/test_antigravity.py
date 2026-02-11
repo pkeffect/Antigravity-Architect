@@ -521,7 +521,7 @@ class TestGenerateAgentFiles:
 
     def test_creates_rule_files(self, temp_dir: str) -> None:
         """Should create all rule files."""
-        ag.generate_agent_files(temp_dir, ["python"])
+        ag.generate_agent_files(temp_dir, "test-project", ["python"])
 
         rules_dir = os.path.join(temp_dir, ".agent", "rules")
         assert os.path.exists(os.path.join(rules_dir, "00_identity.md"))
@@ -530,7 +530,7 @@ class TestGenerateAgentFiles:
 
     def test_creates_workflow_files(self, temp_dir: str) -> None:
         """Should create all workflow files."""
-        ag.generate_agent_files(temp_dir, ["python"])
+        ag.generate_agent_files(temp_dir, "test-project", ["python"])
 
         workflows_dir = os.path.join(temp_dir, ".agent", "workflows")
         assert os.path.exists(os.path.join(workflows_dir, "plan.md"))
@@ -539,7 +539,7 @@ class TestGenerateAgentFiles:
 
     def test_creates_skill_files(self, temp_dir: str) -> None:
         """Should create all skill files."""
-        ag.generate_agent_files(temp_dir, ["python"])
+        ag.generate_agent_files(temp_dir, "test-project", ["python"])
 
         skills_dir = os.path.join(temp_dir, ".agent", "skills")
         assert os.path.exists(os.path.join(skills_dir, "git_automation", "SKILL.md"))
