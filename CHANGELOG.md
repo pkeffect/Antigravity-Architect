@@ -16,16 +16,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed (v1.7.0)
 
-- **Refactoring:** Significantly reduced cognitive complexity in `generate_project` by extracting helper methods (`_resolve_blueprint`, `_generate_vscode_config`, `_apply_blueprint_rules`).
+- **Refactoring:** significantly reduced cognitive complexity in `generate_project`.
 - **Roadmap:** Updated roadmap to reflect completed milestones.
 
-### Deprecated (v1.7.0)
+### Test Suite (v1.7.0)
 
-- None
-
-### Removed (v1.7.0)
-
-- None
+- **Coverage:** Increased to 91% (806/883 lines).
+- **Refactoring:** Renamed and organized test files.
+- **Robustness:** Validated 106 tests (100% passing).
 
 ### Fixed (v1.7.0)
 

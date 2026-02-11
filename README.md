@@ -25,14 +25,14 @@
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)
-[![Test Coverage](https://img.shields.io/badge/coverage-86%25-brightgreen.svg)](AUDIT.md)
+[![Test Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)](AUDIT.md)
 [![Audit Score](https://img.shields.io/badge/audit%20score-99%2F100-brightgreen.svg)](AUDIT.md)
 
 <!-- Code Quality -->
 [![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Type Checking: MyPy](https://img.shields.io/badge/type%20checking-mypy-blue.svg)](http://mypy-lang.org/)
 [![Formatting: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Tests: Pytest](https://img.shields.io/badge/tests-79%20passed-success.svg)](https://docs.pytest.org/)
+[![Tests: Pytest](https://img.shields.io/badge/tests-106%20passed-success.svg)](https://docs.pytest.org/)
 
 **[Antigravity Architect](https://github.com/pkeffect/antigravity-architect)** is the definitive "Agent-First" project engine. It is a single-file, zero-dependency powerhouse that constructs **Living Repositories** designed to protect, evolve, and describe themselves to AI Agents (Gemini, Claude, GPT).
 
@@ -252,7 +252,7 @@ my-project/
 
 ## 🧪 Development & Quality
 
-[Antigravity Architect](https://github.com/pkeffect/antigravity-architect) is built with 100% type safety and 68+ passing tests.
+[Antigravity Architect](https://github.com/pkeffect/antigravity-architect) is built with 100% type safety and 106+ passing tests.
 
 ```bash
 # Install development environment
