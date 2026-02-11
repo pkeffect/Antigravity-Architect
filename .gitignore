@@ -216,7 +216,8 @@ __marimo__/
 #  Project-specific instructions for GitHub Copilot
 /.github/copilot-instructions.md
 
-# --- Generated Project Artifacts (Local Testing) ---
+
+# Generated Project Artifacts (Local Testing)
 .agent/
 .idx/
 .devcontainer/
@@ -224,8 +225,16 @@ src/
 context/
 docs/
 BOOTSTRAP_INSTRUCTIONS.md
-BRANCH_PROTECTION.md
-TASK.md
 antigravity_setup.log
-.env.example
 
+# Tracked Configuration
+# .env.example
+
+
+# Test Artifacts
+bd_project/
+fallback_project/
+git_project/
+antigravity-project/
+dump.md
+specs.md

@@ -1,5 +1,5 @@
 """
-Tests for v1.6.2 features: Sentinel, Evolution, Context Bridge, and Documentation Genie.
+Tests for advanced features: Sentinel, Evolution, Context Bridge, and Documentation Genie.
 """
 
 import os
@@ -23,8 +23,8 @@ def temp_dir():
         yield tmpdir
 
 
-class TestV162Features:
-    """Tests for features introduced in v1.6.2."""
+class TestAdvancedFeatures:
+    """Tests for advanced features introduced in v1.6+."""
 
     def test_build_links_discovery(self, temp_dir):
         """Should discover sibling directories and create links.md."""

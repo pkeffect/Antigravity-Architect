@@ -2217,14 +2217,11 @@ def _doctor_check_file(
     if fix and template:
         if is_missing:
             full_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Only write if we're fixing missing or empty files
         full_path.write_text(template, encoding="utf-8")
-        
-        if is_missing:
-            fixed_msg = f"🔧 Generated {file_path}"
-        else:
-            fixed_msg = f"🔧 Restored content to {file_path}"
+
+        fixed_msg = f"🔧 Generated {file_path}" if is_missing else f"🔧 Restored content to {file_path}"
 
     return passed, warning, issue, fixed_msg
 

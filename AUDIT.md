@@ -81,10 +81,8 @@
 
 #### Minor Improvements (-2 points)
 
-- **Test Coverage**: 53% coverage (307/658 lines tested)
-  - Recommendation: Increase coverage to 70%+ by adding tests for edge cases
-- **Test Coverage**: 53% coverage (307/658 lines tested)
-  - Recommendation: Increase coverage to 70%+ by adding tests for edge cases
+- **Test Coverage**: 91% coverage (806/883 lines tested)
+  - Improvement: Increased from 53% by adding `tests/test_cli_core.py` and `tests/test_features.py`
 
 **Code Quality Score: 98/100** - Excellent, with minor optimization opportunities.
 
@@ -94,7 +92,7 @@
 
 #### Test Suite ✅
 
-- **Total Tests**: 59 tests (100% passing)
+- **Total Tests**: 106 tests (100% passing)
 - **Test Framework**: pytest with coverage plugin
 - **Cross-Platform**: Verified on Windows, macOS, Ubuntu
 - **Python Versions**: Tested on 3.10, 3.11, 3.12, 3.13, 3.14-dev
@@ -167,7 +165,8 @@
 - **Backward Compatible**: All v1.0 functions still work
 
 #### Class Structure ✅
-```
+
+```text
 AntigravityResources (831 lines)
 ├── Templates (AGENT_RULES, AGENT_WORKFLOWS, AGENT_SKILLS)
 ├── Mappings (GITIGNORE_MAP, NIX_PACKAGE_MAP, VSCODE_EXTENSIONS_MAP)
