@@ -238,3 +238,7 @@ git_project/
 antigravity-project/
 dump.md
 specs.md
+
+# Linter & Hook Configuration
+.markdownlint.json
+.pre-commit-config.yaml
