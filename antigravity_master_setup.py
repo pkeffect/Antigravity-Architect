@@ -31,6 +31,7 @@ import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 VERSION = "1.7.0"
 
@@ -1283,7 +1284,8 @@ class AntigravityEngine:
                 logging.error(f"❌ Preset not found: {name}")
                 return None
             with open(path, encoding="utf-8") as f:
-                return json.load(f)
+                data: dict[Any, Any] = json.load(f)
+                return data
         except Exception as e:
             logging.error(f"❌ Error loading preset {name}: {e}")
             return None
@@ -1320,7 +1322,7 @@ class AntigravityEngine:
                 return None
 
             with open(blueprint_path, encoding="utf-8") as f:
-                data = json.load(f)
+                data: dict[Any, Any] = json.load(f)
                 logging.info(f"✅ Loaded remote blueprint: {data.get('name', 'Unknown')}")
                 return data
 
