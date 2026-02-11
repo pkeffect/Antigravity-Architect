@@ -2237,7 +2237,7 @@ def _get_doctor_requirements() -> tuple[list[str], dict[str, tuple[str, str]]]:
         ".agent/skills",
         ".agent/memory",
     ]
-    
+
     files = {
         f".agent/rules/{AntigravityResources.RULE_IDENTITY}": (
             "Agent identity rule",
@@ -2271,7 +2271,7 @@ def _get_doctor_optional_files() -> dict[str, tuple[str, str]]:
         AntigravityResources.CODE_OF_CONDUCT_FILE,
         AntigravityResources.LICENSE_FILE,
     ]
-    return {f: ("Optional project file", "") for f in files}
+    return dict.fromkeys(files, ("Optional project file", ""))
 
 
 def _validate_doctor_dirs(base_dir: Path, dirs: list[str], fix: bool) -> tuple[list[str], list[str], list[str]]:
@@ -2293,9 +2293,9 @@ def _validate_doctor_files(
 ) -> tuple[list[str], list[str], list[str], list[str]]:
     """Validates and fixes files."""
     passed, warnings, issues, fixed = [], [], [], []
-    for f_path, (desc, tmpl) in files.items():
+    for f_path, (_, tmpl) in files.items():
         # Optional file check logic can be expanded here if needed
-        is_optional = False 
+        is_optional = False
         p, w, i, f = _doctor_check_file(base_dir, f_path, tmpl, fix, optional=is_optional)
         if p:
             passed.append(p)
@@ -2354,7 +2354,7 @@ def doctor_project(project_path: str, fix: bool = False) -> bool:
 
     # 1. Check Directories & Files (Required)
     req_dirs, req_files = _get_doctor_requirements()
-    
+
     d_passed, d_issues, d_fixed = _validate_doctor_dirs(base_dir, req_dirs, fix)
     passed.extend(d_passed)
     issues.extend(d_issues)
