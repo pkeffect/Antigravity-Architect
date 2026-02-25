@@ -202,7 +202,12 @@ class AntigravityGenerator:
                 "rule_count": len(AGENT_RULES),
                 "generated_at": datetime.now().isoformat(),
             },
-            "capabilities": {"reasoning_tier": "3", "mcp_support": True, "adaptive_priority": True, "declarative_governance": True},
+            "capabilities": {
+                "reasoning_tier": "3",
+                "mcp_support": True,
+                "adaptive_priority": True,
+                "declarative_governance": True,
+            },
             "structure": {
                 "rules": ".agent/rules/",
                 "workflows": ".agent/workflows/",
@@ -233,6 +238,7 @@ class AntigravityGenerator:
         # Phase 17: Skill Chaining
         final_skill_names = set()
         from typing import Any
+
         skill_contents: dict[str, list[tuple[str, str]]] = {}
         skill_metadata: dict[str, dict[str, Any]] = {}
 
@@ -473,6 +479,7 @@ class AntigravityGenerator:
         from typing import Any
 
         import yaml
+
         content: dict[str, Any] = {
             "project": project_name,
             "version": VERSION,

@@ -318,10 +318,13 @@ class AntigravityEngine:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
     @staticmethod
-    def fetch_remote_blueprints(url: str = "https://raw.githubusercontent.com/antigravity/market/main/index.json") -> dict:
+    def fetch_remote_blueprints(
+        url: str = "https://raw.githubusercontent.com/antigravity/market/main/index.json",
+    ) -> dict:
         """Phase 17: Fetches the Blueprint Marketplace Index."""
         try:
             import urllib.request
+
             with urllib.request.urlopen(url, timeout=5) as response:
                 result = json.loads(response.read().decode("utf-8"))
                 if isinstance(result, dict):
@@ -335,6 +338,7 @@ class AntigravityEngine:
     def get_all_blueprints() -> dict:
         """Merges local and remote blueprints."""
         from antigravity_architect.resources.templates import BLUEPRINTS
+
         local = dict(BLUEPRINTS.items())
         # Try to fetch remote (async-like or with timeout)
         remote = AntigravityEngine.fetch_remote_blueprints()

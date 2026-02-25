@@ -8,8 +8,10 @@ from typing import Any
 
 TEMPLATE_BASE = Path(__file__).parent / "templates"
 
+
 class LazyTemplateDict(dict):
     """Lazily loads template files from a specific category directory."""
+
     def __init__(self, category: str) -> None:
         self.category = category
         self._data: dict | None = None
@@ -71,9 +73,11 @@ class LazyTemplateDict(dict):
         self._load()
         return key in self._data
 
+
 def load_common(name: str) -> str:
     path = TEMPLATE_BASE / "common" / name
     return path.read_text(encoding="utf-8") if path.exists() else ""
+
 
 # --- Mapping Dicts (Lazy) ---
 AGENT_RULES = LazyTemplateDict("rules")
@@ -100,6 +104,7 @@ EVOLUTION_TEMPLATE = load_common("evolution.md")
 # Static legacy placeholders required for backward compatibility
 AGENT_MANIFEST_TEMPLATE = ""
 
+
 def _load_json_resource(category: str, name: str) -> dict:
     path = TEMPLATE_BASE / category / name
     if path.exists():
@@ -108,6 +113,7 @@ def _load_json_resource(category: str, name: str) -> dict:
         except Exception:
             return {}
     return {}
+
 
 GITIGNORE_MAP = _load_json_resource("common", "gitignore_map.json")
 LICENSE_TEMPLATES = _load_json_resource("common", "licenses.json")

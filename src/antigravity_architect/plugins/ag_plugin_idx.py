@@ -1,6 +1,7 @@
 """
 Google Project IDX Integration Plugin for Antigravity Architect
 """
+
 import logging
 import os
 from typing import Any
@@ -15,6 +16,7 @@ NIX_PACKAGE_MAP = {
     "docker": ["pkgs.docker", "pkgs.docker-compose"],
     "sql": ["pkgs.sqlite", "pkgs.postgresql"],
 }
+
 
 def build_nix_config(keywords: list[str]) -> str:
     """Builds a dev.nix configuration for Google Project IDX."""
@@ -54,6 +56,7 @@ def build_nix_config(keywords: list[str]) -> str:
   }};
 }}
 """
+
 
 def on_generation_complete(**kwargs: Any) -> None:
     """Triggered after core project generation is complete."""

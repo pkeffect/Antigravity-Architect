@@ -113,6 +113,7 @@ VSCODE_TASKS_TEMPLATE = """{{
     ]
 }}"""
 
+
 def build_vscode_config(keywords: list[str]) -> dict[str, str]:
     """Builds all .vscode/ configuration files."""
     files: dict[str, str] = {}
@@ -126,7 +127,7 @@ def build_vscode_config(keywords: list[str]) -> dict[str, str]:
         if key in VSCODE_EXTENSIONS_MAP:
             extensions.extend(VSCODE_EXTENSIONS_MAP[key])
 
-    ext_str = ',\n        '.join(f'"{ext}"' for ext in sorted(set(extensions)))
+    ext_str = ",\n        ".join(f'"{ext}"' for ext in sorted(set(extensions)))
     files["extensions.json"] = f"""{{
     "recommendations": [
         {ext_str}

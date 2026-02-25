@@ -3,6 +3,7 @@ Gitea Plugin for Antigravity Architect.
 
 Provides templates and configuration for Gitea Actions CI/CD workflows.
 """
+
 import logging
 from pathlib import Path
 from typing import Any
@@ -24,8 +25,13 @@ jobs:
         run: echo "Building..."
 """
 
+
 def on_generation_complete(
-    project_name: str, base_dir: str, final_stack: list[str], safe_mode: bool, **kwargs: Any  # noqa: ARG001
+    project_name: str,
+    base_dir: str,
+    final_stack: list[str],
+    safe_mode: bool,
+    **kwargs: Any,  # noqa: ARG001
 ) -> None:
     """Generates Gitea-specific templates and workflows if requested."""
     if "gitea" not in final_stack:

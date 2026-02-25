@@ -11,5 +11,6 @@ def detect() -> None:
     print(f"Venv: {os.environ.get('VIRTUAL_ENV', 'None')}")
     print(f"In Docker: {os.path.exists('/.dockerenv')}")
 
+
 if __name__ == "__main__":
     detect()

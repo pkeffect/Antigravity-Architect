@@ -24,6 +24,7 @@ class AntigravityGovernance:
     def generate_sbom(base_dir: str, project_name: str) -> str:
         """Generates a minimal CycloneDX-style SBOM in JSON format."""
         from typing import Any
+
         sbom: dict[str, Any] = {
             "bomFormat": "CycloneDX",
             "specVersion": "1.4",

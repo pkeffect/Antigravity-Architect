@@ -64,7 +64,9 @@ Examples:
     )
     parser.add_argument("--ci", type=str, choices=["gitlab", "azure"], help="Generate CI pipeline")
     parser.add_argument("--docker", action="store_true", help="Generate Docker Compose configuration")
-    parser.add_argument("--personality", type=str, choices=["startup", "enterprise", "minimal"], help="Agent behavior personality pack")
+    parser.add_argument(
+        "--personality", type=str, choices=["startup", "enterprise", "minimal"], help="Agent behavior personality pack"
+    )
     parser.add_argument("--sbom", type=str, metavar="PATH", help="Generate CycloneDX SBOM for a project")
 
     return parser
