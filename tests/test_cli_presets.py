@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-# Add project root to sys.path to allow importing antigravity_master_setup
+# Add project root to sys.path to allow importing antigravity_architect package
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 from antigravity_architect.resources import constants
@@ -77,7 +77,7 @@ def test_list_presets():
 @patch("antigravity_architect.cli.run_cli_mode")
 def test_main_save_preset(mock_run):
     """Test that main() saves a preset when --save-preset is passed."""
-    # Simulate: python antigravity_master_setup.py --name p1 --stack python --save-preset my-preset --dry-run
+    # Simulate: antigravity-architect --name p1 --stack python --save-preset my-preset --dry-run
     # We use dry-run to avoid actual execution if run_cli_mode triggers logic
     argv = ["--name", "p1", "--stack", "python", "--save-preset", "my-preset", "--dry-run"]
 
@@ -104,7 +104,7 @@ def test_main_load_preset(mock_run):
         json.dump(preset_data, f)
 
     # Run with preset but override name
-    # python antigravity_master_setup.py --preset my-rust --name rust-project
+    # antigravity-architect --preset my-rust --name rust-project
     argv = ["--preset", "my-rust", "--name", "rust-project"]
 
     main(argv)
