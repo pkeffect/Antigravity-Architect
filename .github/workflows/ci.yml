@@ -61,11 +61,12 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest tests/ -v --cov=antigravity_architect --cov-report=term-missing
+          pytest tests/ -v --cov=antigravity_architect --cov-report=term-missing --cov-report=xml
+          # Run coverage json to ensure a file is produced explicitly, or upload xml
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: matrix.python-version == '3.12'
         with:
           name: coverage-report-${{ matrix.os }}
-          path: .coverage
+          path: coverage.xml
