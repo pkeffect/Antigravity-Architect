@@ -77,6 +77,14 @@ Antigravity Architect aims to be the definitive standard for **Agent-First** inf
 - [x] **Neural Bridge**: Cross-repository knowledge discovery.
 - [x] **Atomic Documentation**: Machine-readable header IDs for surgical tool-use.
 
+### ✅ Completed (v3.0.1 "CI/CD Reliability")
+
+*Focus: Pipeline integrity and packaging resilience.*
+
+- [x] **CI/CD Hardening**: Fixed `.gitignore` collision excluding `src/`, added PyYAML to test matrix.
+- [x] **Coverage Reporting**: Migrated from `.coverage` SQLite to `coverage.xml` for GitHub Actions.
+- [x] **Agent Rules**: Added 3 `CRITICAL` directives to `.agent/workflows/ci_sync.md`.
+
 ### 🚀 Future: Total Autonomy (v4.0+)
 
 *Focus: Zero-knowledge handovers and predictive scaffolding.*

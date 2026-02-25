@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 # ==============================================================================
-# 🛡️ Antigravity Sentinel (v3.0.0)
+# 🛡️ Antigravity Sentinel (v3.0.1)
 # ==============================================================================
 # This script monitors critical files for unauthorized changes and triggers
 # automated security audits via the --doctor command.
