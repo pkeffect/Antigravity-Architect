@@ -1,4 +1,4 @@
-# 🏗️ Antigravity Architect (v3.0.0)
+# 🏗️ Antigravity Architect (v3.0.1)
 
 > [!CAUTION]
 > **DISCLAIMER**
@@ -8,7 +8,7 @@
 > For future development and major releases, we repeat this rigorous process to ensure continued architectural integrity.
 
 <!-- Project & Build Status -->
-[![Version](https://img.shields.io/badge/version-3.0.0-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
+[![Version](https://img.shields.io/badge/version-3.0.1-brightgreen.svg)](https://github.com/pkeffect/antigravity-architect/releases)
 [![Python](https://img.shields.io/badge/python-3.10--3.14-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI Status](https://github.com/pkeffect/antigravity-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/pkeffect/antigravity-architect/actions)

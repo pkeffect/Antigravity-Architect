@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.0.1] - 2026-02-24
+
+### Fixed
+
+- **CI/CD Reliability:** Fixed critical `.gitignore` collision excluding the `src/` directory.
+- **Test Matrix:** Added `PyYAML` to exact test dependency matrix to fix missing modules on GitHub Runners.
+- **Coverage Artifacts:** Fixed `pytest-cov` reporting missing SQLite `.coverage` files by generating and uploading standard `coverage.xml`.
+
 ## [3.0.0] - 2026-02-24
 
 ### Added (The Intelligence Layer)

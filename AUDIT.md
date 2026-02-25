@@ -232,6 +232,7 @@ AntigravityGenerator (189 lines)
 | 1.7.1 | 2026-02-15 | 100/100 | **Lockdown.** 100% test coverage and cross-platform fix. |
 | 2.0.0 | 2026-02-24 | 100/100 | **Agent-First Evolution.** Conditional rules & skill chaining. |
 | 3.0.0 | 2026-02-24 | **100/100** | **The Intelligence Layer.** Declarative Governance & Semantic Maps. |
+| 3.0.1 | 2026-02-24 | **100/100** | **CI/CD Reliability.** Fixed packaging & test matrix pipelines. |
 
 ---
 
