@@ -139,7 +139,7 @@ class AntigravityGenerator:
                 try:
                     parts = content.split("---")
                     if len(parts) >= 3:
-                        import yaml  # type: ignore
+                        import yaml
 
                         metadata = yaml.safe_load(parts[1])
                         applies_to = metadata.get("applies_to", "*")
