@@ -1,0 +1,18 @@
+{
+  "dirs": [
+    "app/api",
+    "app/core",
+    "app/models",
+    "app/schemas",
+    "tests"
+  ],
+  "stack": [
+    "python",
+    "fastapi",
+    "pydantic",
+    "sqlalchemy"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

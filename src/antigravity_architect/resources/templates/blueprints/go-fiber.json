@@ -1,0 +1,18 @@
+{
+  "dirs": [
+    "cmd/server",
+    "internal/handlers",
+    "internal/models",
+    "internal/routes",
+    "pkg/utils"
+  ],
+  "stack": [
+    "go",
+    "fiber",
+    "gorm",
+    "docker"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

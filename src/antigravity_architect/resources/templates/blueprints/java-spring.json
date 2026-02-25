@@ -1,0 +1,19 @@
+{
+  "dirs": [
+    "src/main/java/com/{author}/{project_name}/api",
+    "src/main/java/com/{author}/{project_name}/core",
+    "src/main/java/com/{author}/{project_name}/data",
+    "src/main/resources",
+    "src/test/java/com/{author}/{project_name}",
+    "docs/architecture"
+  ],
+  "stack": [
+    "java",
+    "spring-boot",
+    "maven",
+    "junit"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

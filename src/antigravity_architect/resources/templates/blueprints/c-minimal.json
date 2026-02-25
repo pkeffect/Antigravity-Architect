@@ -1,0 +1,17 @@
+{
+  "dirs": [
+    "src",
+    "include",
+    "lib",
+    "scripts",
+    "tests"
+  ],
+  "stack": [
+    "c",
+    "make",
+    "gcc"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

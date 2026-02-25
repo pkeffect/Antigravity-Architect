@@ -1,0 +1,18 @@
+{
+  "dirs": [
+    "crates/core/src",
+    "crates/ffi/src",
+    "crates/cli/src",
+    "examples",
+    "benches"
+  ],
+  "stack": [
+    "rust",
+    "cargo",
+    "workspace",
+    "tokio"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

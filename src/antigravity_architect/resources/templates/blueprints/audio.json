@@ -1,0 +1,16 @@
+{
+  "dirs": [
+    "src/audio",
+    "src/dsp",
+    "resources/samples"
+  ],
+  "stack": [
+    "python",
+    "numpy",
+    "scipy",
+    "librosa"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

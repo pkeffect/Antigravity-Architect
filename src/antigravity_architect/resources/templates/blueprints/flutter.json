@@ -1,0 +1,18 @@
+{
+  "dirs": [
+    "lib/src/models",
+    "lib/src/views",
+    "lib/src/services",
+    "lib/src/widgets",
+    "test/unit",
+    "test/widget"
+  ],
+  "stack": [
+    "flutter",
+    "dart",
+    "material-design"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

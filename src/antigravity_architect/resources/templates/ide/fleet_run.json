@@ -1,0 +1,15 @@
+{
+  "configurations": [
+    {
+      "name": "Ruff",
+      "type": "command",
+      "program": "ruff",
+      "args": ["check", "."]
+    },
+    {
+      "name": "Pytest",
+      "type": "python",
+      "module": "pytest"
+    }
+  ]
+}

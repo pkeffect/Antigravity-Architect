@@ -1,0 +1,20 @@
+{
+    "python": "\n# --- Python ---\n__pycache__/\n*.pyc\nvenv/\n.venv/\n.pytest_cache/\n.mypy_cache/\n.ruff_cache/\n*.egg-info/\n",
+    "node": "\n# --- Node/JS ---\nnode_modules/\ndist/\nbuild/\ncoverage/\n.npm/\n.eslintcache\n.yarn-integrity\n",
+    "docker": "\n# --- Docker ---\n.docker/\n",
+    "postgres": "",
+    "react": "\n# --- React ---\nbuild/\n.env.local\n",
+    "nextjs": "\n# --- NextJS ---\n.next/\nout/\n",
+    "macos": "\n# --- macOS ---\n.DS_Store\n.AppleDouble\n",
+    "windows": "\n# --- Windows ---\nThumbs.db\nehthumbs.db\n*.exe\n*.dll\n",
+    "linux": "\n# --- Linux ---\n*~\n.fuse_hidden*\n",
+    "vscode": "\n# --- VS Code ---\n.vscode/\n",
+    "gitea": "\n# --- Gitea ---\n.gitea/\n",
+    "csharp": "\n# --- .NET/C# ---\nbin/\nobj/\n*.user\n*.userosscache\n*.sln.doccache\n.vs/\n",
+    "java": "\n# --- Java ---\nbin/\nbuild/\n.gradle/\n.metadata/\n*.class\n*.jar\n*.war\n*.ear\n",
+    "elixir": "\n# --- Elixir ---\n/_build/\n/deps/\n/*.ez\n",
+    "rust": "\n# --- Rust ---\ntarget/\nCargo.lock\n",
+    "zig": "\n# --- Zig ---\nzig-cache/\nzig-out/\n",
+    "c": "\n# --- C/C++ ---\n*.o\n*.obj\n*.a\n*.lib\n*.so\n*.dll\n*.exe\n*.out\n",
+    "flutter": "\n# --- Flutter/Dart ---\n.dart_tool/\n.flutter-plugins\n.flutter-plugins-dependencies\n.pub-cache/\nbuild/\n"
+}

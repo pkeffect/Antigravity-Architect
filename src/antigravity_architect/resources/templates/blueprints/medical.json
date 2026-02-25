@@ -1,0 +1,16 @@
+{
+  "dirs": [
+    "src/encryption",
+    "src/hipaa",
+    "docs/compliance"
+  ],
+  "stack": [
+    "python",
+    "cryptography",
+    "postgres"
+  ],
+  "rules": [
+    "02_security.md",
+    "07_security_expert.md"
+  ]
+}

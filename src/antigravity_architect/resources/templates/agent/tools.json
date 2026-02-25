@@ -1,0 +1,23 @@
+{
+    "version": "1.0.0",
+    "tiers": {
+        "safe": {
+            "description": "Read-only and harmless tools that can be run autonomously.",
+            "tools": ["ls", "cat", "grep", "find", "git log", "pytest", "ruff check", "mypy"]
+        },
+        "sensitive": {
+            "description": "Tools that modify state but are generally safe within the repository.",
+            "tools": ["git add", "git commit", "mkdir", "rm (local non-core)", "pip install", "npm install"]
+        },
+        "restricted": {
+            "description": "High-risk tools that require explicit human approval.",
+            "tools": ["git push", "rm -rf /", "deploy", "publish", "format --all"]
+        }
+    },
+    "default_policy": "require_approval_for_restricted",
+    "agent_guardrails": {
+        "max_deletions_per_task": 5,
+        "allow_external_network": false,
+        "enforce_dry_run_for_sensitive": true
+    }
+}

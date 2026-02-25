@@ -1,0 +1,15 @@
+{
+  "dirs": [
+    "src",
+    "lib",
+    "tests",
+    "docs"
+  ],
+  "stack": [
+    "zig",
+    "build-system"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

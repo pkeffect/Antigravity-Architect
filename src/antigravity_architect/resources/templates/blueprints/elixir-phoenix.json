@@ -1,0 +1,19 @@
+{
+  "dirs": [
+    "lib/{project_name}",
+    "lib/{project_name}_web/controllers",
+    "lib/{project_name}_web/live",
+    "lib/{project_name}_web/templates",
+    "test/support",
+    "test/{project_name}_web"
+  ],
+  "stack": [
+    "elixir",
+    "phoenix",
+    "postgresql",
+    "liveview"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

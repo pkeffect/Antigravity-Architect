@@ -1,0 +1,19 @@
+{
+  "dirs": [
+    "src/{project_name}.Api",
+    "src/{project_name}.Application",
+    "src/{project_name}.Domain",
+    "src/{project_name}.Infrastructure",
+    "tests/{project_name}.UnitTests",
+    "tests/{project_name}.IntegrationTests"
+  ],
+  "stack": [
+    "csharp",
+    "dotnet",
+    "efcore",
+    "xunit"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "dirs": [
+    "src/benchmarks",
+    "src/opt"
+  ],
+  "stack": [
+    "python",
+    "rust"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

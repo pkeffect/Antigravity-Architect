@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Ruff Check",
+    "command": "ruff check .",
+    "use_clean_environment": true
+  },
+  {
+    "label": "Pytest",
+    "command": "pytest",
+    "use_clean_environment": true
+  }
+]

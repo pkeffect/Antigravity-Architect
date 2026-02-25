@@ -1,0 +1,30 @@
+stages:
+  - lint
+  - test
+  - deploy
+
+variables:
+  PYTHON_IMAGE: python:3.11
+  NODE_IMAGE: node:20
+
+lint-python:
+  image: $PYTHON_IMAGE
+  stage: lint
+  script:
+    - pip install ruff
+    - ruff check .
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      exists:
+        - "**/*.py"
+
+test-python:
+  image: $PYTHON_IMAGE
+  stage: test
+  script:
+    - pip install pytest
+    - pytest
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      exists:
+        - "tests/"

@@ -1,0 +1,18 @@
+{
+  "dirs": [
+    "src/handlers",
+    "src/models",
+    "src/routes",
+    "src/utils",
+    "tests"
+  ],
+  "stack": [
+    "rust",
+    "axum",
+    "tokio",
+    "serde"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "dirs": [
+    "app",
+    "components",
+    "lib",
+    "public",
+    "styles"
+  ],
+  "stack": [
+    "nextjs",
+    "react",
+    "tailwind",
+    "typescript"
+  ],
+  "rules": [
+    "05_architecture.md"
+  ]
+}
