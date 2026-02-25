@@ -11,9 +11,15 @@ from unittest.mock import patch
 import pytest
 
 # Add parent directory to path so we can import the module
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import antigravity_architect.cli as ag
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-import antigravity_master_setup as ag
+from antigravity_architect.core.engine import AntigravityEngine
+from antigravity_architect.core.builder import AntigravityGenerator, AntigravityBuilder
+from antigravity_architect.core.assimilator import AntigravityAssimilator
+import antigravity_architect.core.engine as engine
+import antigravity_architect.core.builder as builder
+import antigravity_architect.core.assimilator as assimilator
 
 
 @pytest.fixture
@@ -41,7 +47,7 @@ class TestAdvancedFeatures:
         try:
             # Run from temp_dir (the workspace) to discover current-project's siblings
             os.chdir(temp_dir)
-            builder = ag.AntigravityBuilder()
+            builder = AntigravityBuilder()
             links_content = builder.build_links("current-project")
 
             assert "sibling-1" in links_content
@@ -53,7 +59,7 @@ class TestAdvancedFeatures:
 
     def test_tech_stack_deep_dive_generation(self):
         """Should generate accurate TECH_STACK.md content."""
-        assimilator = ag.AntigravityAssimilator()
+        assimilator = AntigravityAssimilator()
         keywords = ["python", "docker", "react"]
         raw_text = "This project uses FastAPI for the backend and React for the frontend."
 
@@ -76,7 +82,7 @@ class TestAdvancedFeatures:
 
     def test_generate_agent_files_v162(self, temp_dir):
         """Should create Sentinel, Evolution, and Manifest files."""
-        ag.generate_agent_files(temp_dir, "test-v162", ["python"])
+        AntigravityGenerator.generate_agent_files(temp_dir, "test-v162", ["python"])
 
         agent_dir = os.path.join(temp_dir, ".agent")
         rules_dir = os.path.join(agent_dir, "rules")
@@ -102,7 +108,7 @@ class TestAdvancedFeatures:
 
     def test_detect_tech_stack_aliases(self):
         """Should detect technologies using aliases (e.g. sveltekit -> node)."""
-        assimilator = ag.AntigravityAssimilator()
+        assimilator = AntigravityAssimilator()
         text = "This is a sveltekit application with fastapi endpoint."
 
         keywords = assimilator.detect_tech_stack(text)
@@ -118,7 +124,7 @@ class TestAdvancedFeatures:
 
     def test_cli_doctor_integration(self, temp_dir):
         """Test CLI --doctor entry point."""
-        with patch("antigravity_master_setup.doctor_project", return_value=True) as mock_doctor:
+        with patch("antigravity_architect.cli.doctor_project", return_value=True) as mock_doctor:
             with patch("builtins.print"):
                 with patch("sys.exit"):
                     ag.main(["--doctor", temp_dir])
@@ -129,14 +135,14 @@ class TestAdvancedFeatures:
 
     def test_detect_tech_stack_no_match(self):
         """Should return empty list for unknown tech."""
-        assimilator = ag.AntigravityAssimilator()
+        assimilator = AntigravityAssimilator()
         text = "This project uses alien-technology-x."
         keywords = assimilator.detect_tech_stack(text)
         assert len(keywords) == 0
 
     def test_build_tech_deep_dive_no_observations(self):
         """Should provide generic response when no tech patterns match."""
-        assimilator = ag.AntigravityAssimilator()
+        assimilator = AntigravityAssimilator()
         deep_dive = assimilator.build_tech_deep_dive([], "Just some text.")
         assert "Standard project structure" in deep_dive
 

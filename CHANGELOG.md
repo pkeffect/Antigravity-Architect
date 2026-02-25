@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.0.0] - 2026-02-24
+
+### Added (The Intelligence Layer)
+
+- **Protocol v3.0.0:** Upgraded agent manifest structure with lifecycle awareness.
+- **Declarative Governance:** Added `.agent/tools.json` for explicit agent tool control.
+- **Semantic Mapping:** Added `AGENT_MAP.yaml` for pre-computed repository summaries.
+- **Autonomic Compaction:** Implemented state-reduction protocols in self-learning rules.
+- **Atomic Documentation:** Standardized machine-readable header IDs across all templates.
+- **Neural Bridge:** Enhanced global knowledge discovery via `KNOWLEDGE_LAKE_DIR`.
+
+## [2.0.0] - 2026-02-24
+
+### Added (Agent-First Evolution)
+
+- **Conditional Rules:** Rules are now stack-aware and load dynamically.
+- **Skill Chaining:** Automated dependency resolution for executable agent skills.
+- **Personality Packs:** Added `startup` and `enterprise` development personas.
+- **Health Badges:** Added automated SVG project health badge generation.
+- **Project Lockdown:** Achieved 100% test coverage and lint compliance.
+
 ## [1.7.0] - 2026-02-11
 
 ### Added (v1.7.0)
@@ -16,7 +37,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed (v1.7.0)
 
-- **Refactoring:** significantly reduced cognitive complexity in `generate_project`.
+- **Architectural Overhaul:** Refactored 2,200+ line monolith into a modular Python package (`src/antigravity_architect/`).
+- **New CLI Tool:** The project is now an installable tool (`pip install -e .`) with the `antigravity-architect` global command.
+- **Refactoring:** significantly reduced cognitive complexity in `generate_project` by extracting logic into `core.builder`.
 - **Roadmap:** Updated roadmap to reflect completed milestones.
 
 ### Test Suite (v1.7.0)
@@ -28,7 +51,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed (v1.7.0)
 
 - **Markdown Linting:** Fixed formatting issues in documentation files.
-- **Code Duplication:** Resolved repeated string literals in `antigravity_master_setup.py`.
+- **Code Duplication:** Resolved repeated string literals across the new package structure.
 
 ### Security (v1.7.0)
 

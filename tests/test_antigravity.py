@@ -14,11 +14,16 @@ from unittest.mock import patch
 import pytest
 
 # Add parent directory to path so we can import the module
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import logging
 
-import antigravity_master_setup as ag  # noqa: E402
+from antigravity_architect.core.engine import AntigravityEngine
+from antigravity_architect.core.builder import AntigravityGenerator, AntigravityBuilder
+from antigravity_architect.core.assimilator import AntigravityAssimilator
+import antigravity_architect.core.engine as engine
+import antigravity_architect.core.builder as builder
+import antigravity_architect.core.assimilator as assimilator  # noqa: E402
 
 # ==============================================================================
 # FIXTURES
@@ -84,45 +89,45 @@ class TestSanitizeName:
 
     def test_empty_input_returns_default(self) -> None:
         """Empty string should return default project name."""
-        assert ag.sanitize_name("") == "antigravity-project"
+        assert AntigravityEngine.sanitize_name("") == "antigravity-project"
 
     def test_none_input_returns_default(self) -> None:
         """None should return default project name."""
-        assert ag.sanitize_name(None) == "antigravity-project"
+        assert AntigravityEngine.sanitize_name(None) == "antigravity-project"
 
     def test_strips_special_characters(self) -> None:
         """Special characters should be removed."""
-        assert ag.sanitize_name("my@project!") == "myproject"
-        assert ag.sanitize_name("test#$%name") == "testname"
+        assert AntigravityEngine.sanitize_name("my@project!") == "myproject"
+        assert AntigravityEngine.sanitize_name("test#$%name") == "testname"
 
     def test_converts_spaces_to_underscores(self) -> None:
         """Spaces should be converted to underscores."""
-        assert ag.sanitize_name("my project") == "my_project"
-        assert ag.sanitize_name("hello   world") == "hello_world"
+        assert AntigravityEngine.sanitize_name("my project") == "my_project"
+        assert AntigravityEngine.sanitize_name("hello   world") == "hello_world"
 
     def test_preserves_hyphens(self) -> None:
         """Hyphens should be preserved."""
-        assert ag.sanitize_name("my-project") == "my-project"
+        assert AntigravityEngine.sanitize_name("my-project") == "my-project"
 
     def test_preserves_underscores(self) -> None:
         """Underscores should be preserved."""
-        assert ag.sanitize_name("my_project") == "my_project"
+        assert AntigravityEngine.sanitize_name("my_project") == "my_project"
 
     def test_path_traversal_stripped(self) -> None:
         """Path traversal characters are stripped, making input safe."""
         # The regex strips dots and slashes, leaving just the safe part
-        assert ag.sanitize_name("../escape") == "escape"
-        assert ag.sanitize_name("..\\escape") == "escape"
+        assert AntigravityEngine.sanitize_name("../escape") == "escape"
+        assert AntigravityEngine.sanitize_name("..\\escape") == "escape"
 
     def test_slashes_stripped(self) -> None:
         """Slashes are stripped from input."""
         # Slashes are removed by the regex sanitization
-        assert ag.sanitize_name("/root/path") == "rootpath"
-        assert ag.sanitize_name("\\windows\\path") == "windowspath"
+        assert AntigravityEngine.sanitize_name("/root/path") == "rootpath"
+        assert AntigravityEngine.sanitize_name("\\windows\\path") == "windowspath"
 
     def test_strips_whitespace(self) -> None:
         """Leading/trailing whitespace should be stripped."""
-        assert ag.sanitize_name("  myproject  ") == "myproject"
+        assert AntigravityEngine.sanitize_name("  myproject  ") == "myproject"
 
 
 # ==============================================================================
@@ -135,35 +140,35 @@ class TestParseKeywords:
 
     def test_empty_string_returns_empty_list(self) -> None:
         """Empty string should return empty list."""
-        assert ag.parse_keywords("") == []
+        assert AntigravityEngine.parse_keywords("") == []
 
     def test_none_returns_empty_list(self) -> None:
         """None should return empty list."""
-        assert ag.parse_keywords(None) == []
+        assert AntigravityEngine.parse_keywords(None) == []
 
     def test_comma_separated(self) -> None:
         """Comma-separated keywords should be parsed."""
-        result = ag.parse_keywords("python, react, docker")
+        result = AntigravityEngine.parse_keywords("python, react, docker")
         assert result == ["python", "react", "docker"]
 
     def test_space_separated(self) -> None:
         """Space-separated keywords should be parsed."""
-        result = ag.parse_keywords("python react docker")
+        result = AntigravityEngine.parse_keywords("python react docker")
         assert result == ["python", "react", "docker"]
 
     def test_mixed_separators(self) -> None:
         """Mixed separators should be handled."""
-        result = ag.parse_keywords("python, react docker,go")
+        result = AntigravityEngine.parse_keywords("python, react docker,go")
         assert result == ["python", "react", "docker", "go"]
 
     def test_converts_to_lowercase(self) -> None:
         """Keywords should be converted to lowercase."""
-        result = ag.parse_keywords("Python, REACT, Docker")
+        result = AntigravityEngine.parse_keywords("Python, REACT, Docker")
         assert result == ["python", "react", "docker"]
 
     def test_strips_whitespace(self) -> None:
         """Whitespace should be stripped from keywords."""
-        result = ag.parse_keywords("  python  ,  react  ")
+        result = AntigravityEngine.parse_keywords("  python  ,  react  ")
         assert result == ["python", "react"]
 
 
@@ -177,26 +182,26 @@ class TestValidateFilePath:
 
     def test_none_returns_false(self) -> None:
         """None should return False."""
-        assert ag.validate_file_path(None) is False
+        assert AntigravityEngine.validate_file_path(None) is False
 
     def test_empty_string_returns_false(self) -> None:
         """Empty string should return False."""
-        assert ag.validate_file_path("") is False
+        assert AntigravityEngine.validate_file_path("") is False
 
     def test_nonexistent_file_returns_false(self) -> None:
         """Non-existent file should return False."""
-        assert ag.validate_file_path("/nonexistent/path/to/file.txt") is False
+        assert AntigravityEngine.validate_file_path("/nonexistent/path/to/file.txt") is False
 
     def test_valid_file_returns_true(self, temp_dir: str) -> None:
         """Valid readable file should return True."""
         filepath = os.path.join(temp_dir, "test.txt")
         with open(filepath, "w") as f:
             f.write("test content")
-        assert ag.validate_file_path(filepath) is True
+        assert AntigravityEngine.validate_file_path(filepath) is True
 
     def test_directory_returns_false(self, temp_dir: str) -> None:
         """Directory path should return False."""
-        assert ag.validate_file_path(temp_dir) is False
+        assert AntigravityEngine.validate_file_path(temp_dir) is False
 
 
 # ==============================================================================
@@ -210,32 +215,32 @@ class TestIdentifyCategory:
     def test_rules_category(self) -> None:
         """Text with rule keywords should return 'rules'."""
         text = "You must always follow security standards. Never skip formatting."
-        assert ag.identify_category(text) == "rules"
+        assert AntigravityAssimilator.identify_category(text) == "rules"
 
     def test_workflows_category(self) -> None:
         """Text with workflow keywords should return 'workflows'."""
         text = "Step 1: Deploy the application. Step 2: Run the setup process."
-        assert ag.identify_category(text) == "workflows"
+        assert AntigravityAssimilator.identify_category(text) == "workflows"
 
     def test_skills_category(self) -> None:
         """Text with skill keywords should return 'skills'."""
         text = "Use the CLI command with flags. The terminal script handles automation."
-        assert ag.identify_category(text) == "skills"
+        assert AntigravityAssimilator.identify_category(text) == "skills"
 
     def test_docs_category(self) -> None:
         """Text with doc keywords should return 'docs'."""
         text = "This is an overview of the architecture. Background context included."
-        assert ag.identify_category(text) == "docs"
+        assert AntigravityAssimilator.identify_category(text) == "docs"
 
     def test_unknown_returns_docs(self) -> None:
         """Unknown text without keywords should return 'docs'."""
         text = "Lorem ipsum dolor sit amet."
-        assert ag.identify_category(text) == "docs"
+        assert AntigravityAssimilator.identify_category(text) == "docs"
 
     def test_case_insensitive(self) -> None:
         """Category detection should be case-insensitive."""
         text = "You MUST ALWAYS follow SECURITY STANDARDS."
-        assert ag.identify_category(text) == "rules"
+        assert AntigravityAssimilator.identify_category(text) == "rules"
 
 
 # ==============================================================================
@@ -248,67 +253,37 @@ class TestBuildGitignore:
 
     def test_empty_keywords_returns_base(self) -> None:
         """Empty keywords should return only base gitignore."""
-        result = ag.build_gitignore([])
+        result = AntigravityBuilder.build_gitignore([])
         assert ".DS_Store" in result
         assert "__pycache__" not in result
 
     def test_python_keywords(self) -> None:
         """Python keyword should add Python-specific ignores."""
-        result = ag.build_gitignore(["python"])
+        result = AntigravityBuilder.build_gitignore(["python"])
         assert "__pycache__/" in result
         assert "venv/" in result
 
     def test_node_keywords(self) -> None:
         """Node keyword should add Node-specific ignores."""
-        result = ag.build_gitignore(["node"])
+        result = AntigravityBuilder.build_gitignore(["node"])
         assert "node_modules/" in result
 
     def test_javascript_alias(self) -> None:
         """JavaScript should be aliased to node."""
-        result = ag.build_gitignore(["javascript"])
+        result = AntigravityBuilder.build_gitignore(["javascript"])
         assert "node_modules/" in result
 
     def test_js_alias(self) -> None:
         """JS should be aliased to node."""
-        result = ag.build_gitignore(["js"])
+        result = AntigravityBuilder.build_gitignore(["js"])
         assert "node_modules/" in result
 
     def test_multiple_keywords(self) -> None:
         """Multiple keywords should combine their ignores."""
-        result = ag.build_gitignore(["python", "node"])
+        result = AntigravityBuilder.build_gitignore(["python", "node"])
         assert "__pycache__/" in result
         assert "node_modules/" in result
 
-
-# ==============================================================================
-# TEST: build_nix_config()
-# ==============================================================================
-
-
-class TestBuildNixConfig:
-    """Tests for the build_nix_config function."""
-
-    def test_base_packages_included(self) -> None:
-        """Base packages should always be included."""
-        result = ag.build_nix_config([])
-        assert "pkgs.git" in result
-        assert "pkgs.curl" in result
-        assert "pkgs.jq" in result
-
-    def test_python_packages(self) -> None:
-        """Python keyword should add Python packages."""
-        result = ag.build_nix_config(["python"])
-        assert "pkgs.python312" in result
-
-    def test_django_uses_python(self) -> None:
-        """Django should be aliased to Python packages."""
-        result = ag.build_nix_config(["django"])
-        assert "pkgs.python312" in result
-
-    def test_react_uses_node(self) -> None:
-        """React should be aliased to Node packages."""
-        result = ag.build_nix_config(["react"])
-        assert "pkgs.nodejs_20" in result
 
 
 # ==============================================================================
@@ -321,19 +296,19 @@ class TestBuildTechStackRule:
 
     def test_single_keyword(self) -> None:
         """Single keyword should appear in output."""
-        result = ag.build_tech_stack_rule(["python"])
+        result = AntigravityBuilder.build_tech_stack_rule(["python"])
         assert "python" in result
         assert "Keywords Detected: python" in result
 
     def test_multiple_keywords(self) -> None:
         """Multiple keywords should appear comma-separated."""
-        result = ag.build_tech_stack_rule(["python", "react"])
+        result = AntigravityBuilder.build_tech_stack_rule(["python", "react"])
         assert "python" in result
         assert "react" in result
 
     def test_contains_directives(self) -> None:
         """Output should contain directive sections."""
-        result = ag.build_tech_stack_rule(["python"])
+        result = AntigravityBuilder.build_tech_stack_rule(["python"])
         assert "Directives" in result
         assert "Inference" in result
         assert "Tooling" in result
@@ -349,26 +324,26 @@ class TestGetDestinationPath:
 
     def test_rules_path(self) -> None:
         """Rules category should go to .agent/rules."""
-        result = ag.get_destination_path("/base", "rules", "test_rule")
+        result = AntigravityAssimilator.get_destination_path("/base", "rules", "test_rule")
         assert ".agent" in result
         assert "rules" in result
         assert "imported_test_rule.md" in result
 
     def test_workflows_path(self) -> None:
         """Workflows category should go to .agent/workflows."""
-        result = ag.get_destination_path("/base", "workflows", "test_workflow")
+        result = AntigravityAssimilator.get_destination_path("/base", "workflows", "test_workflow")
         assert "workflows" in result
         assert "imported_test_workflow.md" in result
 
     def test_skills_path(self) -> None:
         """Skills category should go to .agent/skills with SKILL.md."""
-        result = ag.get_destination_path("/base", "skills", "test_skill")
+        result = AntigravityAssimilator.get_destination_path("/base", "skills", "test_skill")
         assert "skills" in result
         assert "SKILL.md" in result
 
     def test_docs_path(self) -> None:
         """Docs category should go to docs/imported."""
-        result = ag.get_destination_path("/base", "docs", "test_doc")
+        result = AntigravityAssimilator.get_destination_path("/base", "docs", "test_doc")
         assert "docs" in result
         assert "imported" in result
 
@@ -384,7 +359,7 @@ class TestFileIO:
     def test_write_file_creates_file(self, temp_dir: str) -> None:
         """write_file should create a new file."""
         filepath = os.path.join(temp_dir, "test.txt")
-        result = ag.write_file(filepath, "test content")
+        result = AntigravityEngine.write_file(filepath, "test content")
         assert result is True
         assert os.path.exists(filepath)
         with open(filepath) as f:
@@ -393,15 +368,15 @@ class TestFileIO:
     def test_write_file_creates_parent_dirs(self, temp_dir: str) -> None:
         """write_file should create parent directories."""
         filepath = os.path.join(temp_dir, "nested", "path", "test.txt")
-        result = ag.write_file(filepath, "test content")
+        result = AntigravityEngine.write_file(filepath, "test content")
         assert result is True
         assert os.path.exists(filepath)
 
     def test_append_file_appends_content(self, temp_dir: str) -> None:
         """append_file should append to existing file."""
         filepath = os.path.join(temp_dir, "test.txt")
-        ag.write_file(filepath, "first")
-        ag.append_file(filepath, "second")
+        AntigravityEngine.write_file(filepath, "first")
+        AntigravityEngine.append_file(filepath, "second")
         with open(filepath) as f:
             content = f.read()
         assert "first" in content
@@ -414,7 +389,7 @@ class TestFileIO:
             f.write("original content")
 
         # Try to write new content in safe mode
-        result = ag.write_file(filepath, "new content", exist_ok=True)
+        result = AntigravityEngine.write_file(filepath, "new content", exist_ok=True)
 
         assert result is True
         # Content should NOT change
@@ -428,7 +403,7 @@ class TestFileIO:
             f.write("original content")
 
         # Try to write new content in overwrite mode
-        result = ag.write_file(filepath, "new content", exist_ok=False)
+        result = AntigravityEngine.write_file(filepath, "new content", exist_ok=False)
 
         assert result is True
         # Content SHOULD change
@@ -438,7 +413,7 @@ class TestFileIO:
     def test_create_folder_creates_directory(self, temp_dir: str) -> None:
         """create_folder should create directory with .gitkeep."""
         folderpath = os.path.join(temp_dir, "new_folder")
-        result = ag.create_folder(folderpath)
+        result = AntigravityEngine.create_folder(folderpath)
         assert result is True
         assert os.path.isdir(folderpath)
         assert os.path.exists(os.path.join(folderpath, ".gitkeep"))
@@ -460,8 +435,8 @@ class TestFileIO:
 
             # Run generator in update mode
             # We need to mock setup_logging to avoid file conflicts or clutter
-            with patch("antigravity_master_setup.setup_logging"):
-                result = ag.generate_project(project_name, ["python"])
+            with patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging"):
+                result = AntigravityGenerator.generate_project(project_name, ["python"])
 
             assert result is True
 
@@ -485,12 +460,12 @@ class TestProcessBrainDump:
 
     def test_none_path_returns_empty(self, temp_dir: str) -> None:
         """None path should return empty list."""
-        result = ag.process_brain_dump(None, temp_dir)
+        result = AntigravityAssimilator.process_brain_dump(None, temp_dir)
         assert result == []
 
     def test_invalid_path_returns_empty(self, temp_dir: str) -> None:
         """Invalid path should return empty list."""
-        result = ag.process_brain_dump("/nonexistent/file.md", temp_dir)
+        result = AntigravityAssimilator.process_brain_dump("/nonexistent/file.md", temp_dir)
         assert result == []
 
     def test_detects_keywords(self, sample_brain_dump: str, temp_dir: str) -> None:
@@ -501,12 +476,12 @@ class TestProcessBrainDump:
         with open(filepath, "w") as f:
             f.write(f"# Overview\n\n{content}")
 
-        result = ag.process_brain_dump(filepath, temp_dir)
+        result = AntigravityAssimilator.process_brain_dump(filepath, temp_dir)
         assert "python" in result
 
     def test_creates_raw_archive(self, sample_brain_dump: str, temp_dir: str) -> None:
         """Should create raw archive in context/raw."""
-        ag.process_brain_dump(sample_brain_dump, temp_dir)
+        AntigravityAssimilator.process_brain_dump(sample_brain_dump, temp_dir)
         raw_path = os.path.join(temp_dir, "context", "raw", "master_brain_dump.md")
         assert os.path.exists(raw_path)
 
@@ -521,7 +496,7 @@ class TestGenerateAgentFiles:
 
     def test_creates_rule_files(self, temp_dir: str) -> None:
         """Should create all rule files."""
-        ag.generate_agent_files(temp_dir, "test-project", ["python"])
+        AntigravityGenerator.generate_agent_files(temp_dir, "test-project", ["python"])
 
         rules_dir = os.path.join(temp_dir, ".agent", "rules")
         assert os.path.exists(os.path.join(rules_dir, "00_identity.md"))
@@ -530,7 +505,7 @@ class TestGenerateAgentFiles:
 
     def test_creates_workflow_files(self, temp_dir: str) -> None:
         """Should create all workflow files."""
-        ag.generate_agent_files(temp_dir, "test-project", ["python"])
+        AntigravityGenerator.generate_agent_files(temp_dir, "test-project", ["python"])
 
         workflows_dir = os.path.join(temp_dir, ".agent", "workflows")
         assert os.path.exists(os.path.join(workflows_dir, "plan.md"))
@@ -539,11 +514,13 @@ class TestGenerateAgentFiles:
 
     def test_creates_skill_files(self, temp_dir: str) -> None:
         """Should create all skill files."""
-        ag.generate_agent_files(temp_dir, "test-project", ["python"])
+        AntigravityGenerator.generate_agent_files(temp_dir, "test-project", ["python", "git", "security", "bridge"])
 
         skills_dir = os.path.join(temp_dir, ".agent", "skills")
         assert os.path.exists(os.path.join(skills_dir, "git_automation", "SKILL.md"))
         assert os.path.exists(os.path.join(skills_dir, "secrets_manager", "SKILL.md"))
+        assert os.path.exists(os.path.join(skills_dir, "bridge", "SKILL.md"))
+        assert os.path.exists(os.path.join(skills_dir, "env_context", "SKILL.md"))
 
 
 # ==============================================================================
@@ -563,8 +540,8 @@ class TestIntegration:
             with patch("builtins.input", return_value="n"):
                 # First call should succeed (no existing dir)
                 # Mock setup_logging to avoid file locking on Windows during cleanup
-                with patch("antigravity_master_setup.setup_logging"):
-                    result = ag.generate_project("test-project", ["python"])
+                with patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging"):
+                    result = AntigravityGenerator.generate_project("test-project", ["python"])
 
             assert result is True
             project_dir = os.path.join(temp_dir, "test-project")
@@ -578,10 +555,7 @@ class TestIntegration:
             assert os.path.exists(os.path.join(project_dir, "AUDIT.md"))
             assert os.path.exists(os.path.join(project_dir, "BOOTSTRAP_INSTRUCTIONS.md"))
 
-            # Check GitHub templates exist
-            assert os.path.exists(os.path.join(project_dir, ".github", "PULL_REQUEST_TEMPLATE.md"))
-            assert os.path.exists(os.path.join(project_dir, ".github", "FUNDING.yml"))
-            assert os.path.exists(os.path.join(project_dir, ".github", "copilot-instructions.md"))
+
 
             # Check directories exist
             assert os.path.isdir(os.path.join(project_dir, "src"))

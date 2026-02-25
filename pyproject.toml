@@ -1,6 +1,6 @@
 [project]
 name = "antigravity-architect"
-version = "1.7.0"
+version = "3.0.0"
 description = "Agent-First bootstrapping tool for AI-assisted development"
 readme = "README.md"
 license = {text = "MIT"}
@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 [project.scripts]
-antigravity-architect = "antigravity_master_setup:main"
+antigravity-architect = "antigravity_architect.cli:main"
 
 [project.optional-dependencies]
 dev = [
@@ -45,6 +45,12 @@ target-version = ['py310']
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.ruff]
 line-length = 120
 target-version = "py310"
@@ -59,10 +65,19 @@ select = [
     "C4",     # flake8-comprehensions
     "UP",     # pyupgrade
     "SIM",    # flake8-simplify
+    "N",      # pep8-naming
+    "ANN",    # flake8-annotations
+    "ARG",    # flake8-unused-arguments
+    "PTH",    # flake8-use-pathlib
+    "RUF",    # Ruff-specific rules
 ]
 ignore = [
     "E501",   # line too long (handled by formatter)
     "SIM117", # nested with statements
+    "ANN101", # Missing type annotation for self in method
+    "ANN102", # Missing type annotation for cls in classmethod
+    "ANN401", # Dynamically typed expressions (Any) are allowed
+    "PTH",    # pathlib vs os.path is stylistic; project uses os.path natively
 ]
 
 [tool.ruff.format]
@@ -92,14 +107,14 @@ addopts = "-v --tb=short"
 #   bump2version major  # 1.4.0 -> 2.0.0
 # ============================================================================
 [tool.bumpversion]
-current_version = "1.7.0"
+current_version = "3.0.0"
 commit = true
 tag = true
 tag_name = "v{new_version}"
 message = "chore: bump version {current_version} → {new_version}"
 
 [[tool.bumpversion.files]]
-filename = "antigravity_master_setup.py"
+filename = "src/antigravity_architect/resources/constants.py"
 search = 'VERSION = "{current_version}"'
 replace = 'VERSION = "{new_version}"'
 

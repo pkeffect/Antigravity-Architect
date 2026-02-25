@@ -242,3 +242,32 @@ specs.md
 # Linter & Hook Configuration
 .markdownlint.json
 .pre-commit-config.yaml
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Common Temporary & Backup Files
+*.bak
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local Environment Variables
+.env.local
+.env.*.local

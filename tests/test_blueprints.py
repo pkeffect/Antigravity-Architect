@@ -8,12 +8,12 @@ from unittest.mock import patch
 import pytest
 
 # Add project root to sys.path
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent.parent / "src"))
 
-from antigravity_master_setup import (
+from antigravity_architect.resources import templates
+from antigravity_architect.cli import (
     AntigravityEngine,
     AntigravityGenerator,
-    AntigravityResources,
     list_blueprints,
 )
 
@@ -35,14 +35,14 @@ def setup_teardown_blueprints():
 
 def test_builtin_blueprints_exist():
     """Verify that new built-in blueprints are registered."""
-    assert "nextjs" in AntigravityResources.BLUEPRINTS
-    assert "fastapi" in AntigravityResources.BLUEPRINTS
-    assert "go-fiber" in AntigravityResources.BLUEPRINTS
-    assert "rust-axum" in AntigravityResources.BLUEPRINTS
+    assert "nextjs" in templates.BLUEPRINTS
+    assert "fastapi" in templates.BLUEPRINTS
+    assert "go-fiber" in templates.BLUEPRINTS
+    assert "rust-axum" in templates.BLUEPRINTS
 
 def test_builtin_blueprints_structure():
     """Verify built-in blueprints have required keys."""
-    for name, data in AntigravityResources.BLUEPRINTS.items():
+    for name, data in templates.BLUEPRINTS.items():
         assert "stack" in data, f"Blueprint {name} missing 'stack'"
         assert "dirs" in data, f"Blueprint {name} missing 'dirs'"
         assert "rules" in data, f"Blueprint {name} missing 'rules'"
@@ -91,26 +91,24 @@ def test_list_blueprints(capsys):
     """Test list_blueprints output."""
     list_blueprints()
     captured = capsys.readouterr()
-    assert "Available Blueprints" in captured.out
+    assert "Blueprints Index" in captured.out
     assert "nextjs" in captured.out
     assert "fastapi" in captured.out
     assert "rust-axum" in captured.out
 
-@patch("antigravity_master_setup.AntigravityGenerator._resolve_blueprint")
-@patch("antigravity_master_setup.create_folder")
-@patch("antigravity_master_setup.AntigravityGenerator._generate_vscode_config")
-@patch("antigravity_master_setup.AntigravityGenerator._apply_blueprint_rules")
-@patch("antigravity_master_setup.AntigravityGenerator.generate_agent_files")
-@patch("antigravity_master_setup.AntigravityGenerator._generate_core_config_files")
-@patch("antigravity_master_setup.AntigravityGenerator._generate_license")
-@patch("antigravity_master_setup.AntigravityGenerator.generate_community_standards")
-@patch("antigravity_master_setup.AntigravityGenerator.generate_github_templates")
-@patch("antigravity_master_setup.AntigravityGenerator._setup_git_hooks")
-@patch("antigravity_master_setup.AntigravityGenerator._handle_safe_mode")
-@patch("antigravity_master_setup.setup_logging")
+@patch("antigravity_architect.core.builder.AntigravityGenerator._resolve_blueprint")
+@patch("antigravity_architect.core.engine.AntigravityEngine.create_folder")
+@patch("antigravity_architect.core.builder.AntigravityGenerator._apply_blueprint_rules")
+@patch("antigravity_architect.core.builder.AntigravityGenerator.generate_agent_files")
+@patch("antigravity_architect.core.builder.AntigravityGenerator._generate_core_config_files")
+@patch("antigravity_architect.core.builder.AntigravityGenerator._generate_license")
+@patch("antigravity_architect.core.builder.AntigravityGenerator.generate_community_standards")
+@patch("antigravity_architect.core.builder.AntigravityGenerator._setup_git_hooks")
+@patch("antigravity_architect.core.builder.AntigravityGenerator._handle_safe_mode")
+@patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging")
 def test_generate_project_with_remote_blueprint(
-    mock_logging, mock_safe, mock_hooks, mock_github, mock_community,
-    mock_license, mock_core, mock_agent, mock_apply_rules, mock_vscode,
+    mock_logging, mock_safe, mock_hooks, mock_community,
+    mock_license, mock_core, mock_agent, mock_apply_rules,
     mock_create_folder, mock_resolve
 ):
     """Test generate_project using a resolved blueprint."""

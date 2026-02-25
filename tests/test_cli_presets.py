@@ -7,15 +7,12 @@ from unittest.mock import patch
 import pytest
 
 # Add project root to sys.path to allow importing antigravity_master_setup
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent.parent / "src"))
 
-from antigravity_master_setup import (
-    AntigravityResources,
-    list_presets,
-    load_preset,
-    main,
-    save_preset,
-)
+from antigravity_architect.resources import constants
+from antigravity_architect.core.engine import AntigravityEngine
+from antigravity_architect.core import engine
+from antigravity_architect.cli import main
 
 # Setup a temporary presets directory for testing
 TEST_PRESETS_DIR = Path("tests/temp_presets")
@@ -24,8 +21,8 @@ TEST_PRESETS_DIR = Path("tests/temp_presets")
 def setup_teardown_presets():
     """Fixture to setup and teardown test presets directory."""
     # Override the PRESETS_DIR constant for testing
-    original_presets_dir = AntigravityResources.PRESETS_DIR
-    AntigravityResources.PRESETS_DIR = TEST_PRESETS_DIR
+    original_presets_dir = engine.PRESETS_DIR
+    engine.PRESETS_DIR = TEST_PRESETS_DIR
 
     if TEST_PRESETS_DIR.exists():
         shutil.rmtree(TEST_PRESETS_DIR)
@@ -36,12 +33,12 @@ def setup_teardown_presets():
     # Cleanup
     if TEST_PRESETS_DIR.exists():
         shutil.rmtree(TEST_PRESETS_DIR)
-    AntigravityResources.PRESETS_DIR = original_presets_dir
+    engine.PRESETS_DIR = original_presets_dir
 
 def test_save_preset():
     """Test saving a preset."""
     args = {"name": "test-project", "stack": "python,react"}
-    assert save_preset("test_save", args) is True
+    assert AntigravityEngine.save_preset("test_save", args) is True
 
     preset_path = TEST_PRESETS_DIR / "test_save.json"
     assert preset_path.exists()
@@ -58,12 +55,12 @@ def test_load_preset():
     with open(preset_path, "w") as f:
         json.dump(data, f)
 
-    loaded = load_preset("test_load")
+    loaded = AntigravityEngine.load_preset("test_load")
     assert loaded == data
 
 def test_load_nonexistent_preset():
     """Test loading a missing preset."""
-    assert load_preset("nonexistent") is None
+    assert AntigravityEngine.load_preset("nonexistent") is None
 
 def test_list_presets():
     """Test listing presets."""
@@ -71,13 +68,13 @@ def test_list_presets():
     (TEST_PRESETS_DIR / "beta.json").touch()
     (TEST_PRESETS_DIR / "not_a_preset.txt").touch()
 
-    presets = list_presets()
+    presets = AntigravityEngine.list_presets()
     assert "alpha" in presets
     assert "beta" in presets
     assert "not_a_preset" not in presets
     assert len(presets) == 2
 
-@patch("antigravity_master_setup.run_cli_mode")
+@patch("antigravity_architect.cli.run_cli_mode")
 def test_main_save_preset(mock_run):
     """Test that main() saves a preset when --save-preset is passed."""
     # Simulate: python antigravity_master_setup.py --name p1 --stack python --save-preset my-preset --dry-run
@@ -98,7 +95,7 @@ def test_main_save_preset(mock_run):
     assert "save_preset" not in content
     assert "dry_run" not in content
 
-@patch("antigravity_master_setup.run_cli_mode")
+@patch("antigravity_architect.cli.run_cli_mode")
 def test_main_load_preset(mock_run):
     """Test that main() loads a preset and uses its values."""
     # Create a preset first

@@ -1,34 +1,30 @@
 import logging
-import os
 import subprocess
 import sys
 
 # ==============================================================================
-# 🛡️ Antigravity Sentinel (v1.7.0)
+# 🛡️ Antigravity Sentinel (v3.0.0)
 # ==============================================================================
 # This script monitors critical files for unauthorized changes and triggers
-# automated security audits via the /doctor command.
+# automated security audits via the --doctor command.
 
-CRITICAL_FILES = [".env", ".agent/rules/02_security.md", "antigravity_master_setup.py", "scripts/sentinel.py"]
+CRITICAL_FILES = [".env", ".agent/rules/02_security.md", "src/antigravity_architect/cli.py", "scripts/sentinel.py"]
 
 
-def run_audit():
+def run_audit() -> None:
     logging.info("🕵️ Sentinel: Triggering Security Audit...")
     try:
-        # Run the doctor command on the current directory
-        # We assume the master script is in the same or parent directory
-        script_path = "antigravity_master_setup.py"
-        if os.path.exists(script_path):
-            result = subprocess.run(
-                [sys.executable, script_path, "--doctor", ".", "--fix"], capture_output=True, text=True
-            )
-            print(result.stdout)
-            if result.returncode == 0:
-                logging.info("✅ Sentinel: Audit completed successfully.")
-            else:
-                logging.error(f"❌ Sentinel: Audit failed with exit code {result.returncode}")
+        # Use python -m to run the package entry point
+        result = subprocess.run(
+            [sys.executable, "-m", "src.antigravity_architect.cli", "--doctor", ".", "--fix"],
+            capture_output=True,
+            text=True
+        )
+        print(result.stdout)
+        if result.returncode == 0:
+            logging.info("✅ Sentinel: Audit completed successfully.")
         else:
-            logging.error("❌ Sentinel: Could not find antigravity_master_setup.py")
+            logging.error(f"❌ Sentinel: Audit failed with exit code {result.returncode}")
     except Exception as e:
         logging.error(f"❌ Sentinel: Audit exception: {e}")
 

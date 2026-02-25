@@ -9,8 +9,14 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
+import antigravity_architect.cli as ag
 
-import antigravity_master_setup as ag
+from antigravity_architect.core.engine import AntigravityEngine
+from antigravity_architect.core.builder import AntigravityGenerator, AntigravityBuilder
+from antigravity_architect.core.assimilator import AntigravityAssimilator
+import antigravity_architect.core.engine as engine
+import antigravity_architect.core.builder as builder
+import antigravity_architect.core.assimilator as assimilator
 
 
 @pytest.fixture(autouse=True)
@@ -31,7 +37,7 @@ def temp_workspace():
         os.chdir(tmpdir)
         try:
             # Global mock for setup_logging to avoid WinError 32
-            with patch("antigravity_master_setup.setup_logging"):
+            with patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging"):
                 yield Path(tmpdir)
         finally:
             os.chdir(original_cwd)
@@ -59,7 +65,7 @@ class TestDoctorModeExtended:
         """Should regenerate missing required files when fix=True."""
         project_name = "fix-files"
         project_path = temp_workspace / project_name
-        ag.generate_project(project_name, ["python"])
+        AntigravityGenerator.generate_project(project_name, ["python"])
 
         # Delete a required file
         identity_path = project_path / ".agent" / "rules" / "00_identity.md"
@@ -97,14 +103,14 @@ class TestCLIModeExtended:
     def test_main_cli_generation(self, temp_workspace):
         """Should run full generation via CLI arguments."""
         project_name = "cli-project"
-        with patch("sys.exit"), patch("antigravity_master_setup.setup_logging"):
+        with patch("sys.exit"), patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging"):
             ag.main(["--name", project_name, "--stack", "python", "--license", "mit"])
             assert (temp_workspace / project_name / "README.md").exists()
             assert (temp_workspace / project_name / ".agent" / "manifest.json").exists()
 
     def test_main_interactive_fallback(self):
         """Should fall back to interactive mode when no args provided."""
-        with patch("antigravity_master_setup.run_interactive_mode") as mock_interactive:
+        with patch("antigravity_architect.cli.run_interactive_mode") as mock_interactive:
             ag.main([])
             mock_interactive.assert_called_once()
 
@@ -121,7 +127,7 @@ class TestCLIModeExtended:
         args.blueprint = None
         args.dry_run = True
 
-        with patch("antigravity_master_setup.setup_logging"), patch("builtins.print") as mock_print:
+        with patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging"), patch("builtins.print") as mock_print:
             ag.run_cli_mode(args)
             print_calls = [call.args[0] for call in mock_print.call_args_list if call.args]
             assert any("DRY RUN MODE" in s for s in print_calls)
@@ -138,26 +144,26 @@ class TestCLIModeExtended:
         args.templates = None
         args.dry_run = False
 
-        with patch("antigravity_master_setup.sanitize_name", return_value=""):
+        with patch("antigravity_architect.core.engine.AntigravityEngine.sanitize_name", return_value=""):
             with patch("builtins.print") as mock_print:
                 ag.run_cli_mode(args)
                 mock_print.assert_any_call("❌ Invalid project name.")
 
         # Also test with a valid name but ensure it proceeds (coverage)
         args.name = "valid-name"
-        with patch("antigravity_master_setup.generate_project") as mock_gen:
+        with patch("antigravity_architect.core.builder.AntigravityGenerator.generate_project") as mock_gen:
             ag.run_cli_mode(args)
             mock_gen.assert_called()
 
     def test_main_list_keywords(self):
         """Verify list-keywords entry point in main."""
-        with patch("antigravity_master_setup.list_keywords") as mock_list:
+        with patch("antigravity_architect.cli.list_keywords") as mock_list:
             ag.main(["--list-keywords"])
             mock_list.assert_called_once()
 
     def test_main_doctor_entry(self):
         """Verify doctor entry point in main."""
-        with patch("antigravity_master_setup.doctor_project") as mock_doctor:
+        with patch("antigravity_architect.cli.doctor_project") as mock_doctor:
             ag.main(["--doctor", ".", "--fix"])
             mock_doctor.assert_called_once_with(".", fix=True)
 
@@ -172,7 +178,7 @@ class TestInteractiveMode:
             "python,node",    # Tech stack
             "mit"             # License
         ]
-        with patch("builtins.input", side_effect=inputs), patch("antigravity_master_setup.setup_logging"):
+        with patch("builtins.input", side_effect=inputs), patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging"):
             with patch("builtins.print"):
                 ag.run_interactive_mode()
 
@@ -182,7 +188,7 @@ class TestInteractiveMode:
     def test_run_interactive_mode_no_name(self):
         """Should exit if no project name provided in interactive mode."""
         inputs = ["", "", ""] # No brain dump, no name
-        with patch("builtins.input", side_effect=inputs), patch("antigravity_master_setup.setup_logging"):
+        with patch("builtins.input", side_effect=inputs), patch("antigravity_architect.core.engine.AntigravityEngine.setup_logging"):
             with patch("builtins.print") as mock_print:
                 ag.run_interactive_mode()
                 mock_print.assert_any_call("❌ Project name is required.")

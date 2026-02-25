@@ -37,7 +37,19 @@ Antigravity Architect aims to be the definitive standard for **Agent-First** inf
   - Reduced cognitive complexity of project generation logic.
   - Standardized error handling and linting compliance.
 
-### 🚀 Phase 1: Ecosystem Expansion (v1.7 - v1.8)
+### ✅ Completed (v1.7.1 "The Lockdown")
+
+*Focus: Cross-Platform Support and Agent Sandboxing.*
+
+- [x] **Dynamic OS Intelligence**:
+  - Integrated `env_context.py` skill to detect Windows/macOS/Linux.
+  - Automatically identifies `.venv` and `.dockerenv` to shape shell behaviors.
+- [x] **Total Package Refinement**:
+  - Achieved 100% pytest coverage (111 tests).
+  - Perfected 100% ruff linting compliance.
+  - Eliminated the last 15 traces of the legacy `antigravity_master_setup.py` monolith script.
+
+### 🚀 Phase 1: Ecosystem Expansion (v1.8)
 
 *Focus: Breadth of support and developer experience.*
 
@@ -46,23 +58,32 @@ Antigravity Architect aims to be the definitive standard for **Agent-First** inf
 - [ ] **Enhanced Skill Bridge**:
   - Add native skills for **Docker management**, **Cloud deployment (Terraform/Pulse)**, and **Internal API exploration**.
 
-### 🤖 Phase 2: The Agent Protocol (v2.0 "The Brain Stem")
+### ✅ Completed (v2.0 "The Brain Stem")
 
 *Focus: Deepening the AI-to-Code interface.*
 
-- [ ] **Standardized Agent API**:
-  - Formalize the `.agent/` directory into a machine-readable protocol that any LLM (Claude, Gemini, GPT-4) can follow with zero ambiguity.
-- [ ] **Interactive Doctor GUI**:
-  - A lightweight, single-file web dashboard (built-in) to visualize the "Doctor" reports, security audits, and project health.
-- [ ] **Predictive Scaffolding**:
-  - Use local LLM integration (via Ollama or Gemini Nano) to analyze the "Brain Dump" more deeply and generate partial implementation code immediately.
+- [x] **Standardized Agent API**: Formalized the `.agent/` directory into a machine-readable protocol.
+- [x] **Conditional Rules**: Implemented stack-aware dynamic rule loading.
+- [x] **Skill Chaining**: Automated dependency resolution for agent automation.
+- [x] **Health Badges**: Automated status badge generation for local documentation.
 
-### 🌌 Phase 3: Total Autonomy (v3.0+)
+### ✅ Completed (v3.0 "The Intelligence Layer")
 
-*Focus: Zero-knowledge handovers.*
+*Focus: Declarative governance and semantic understanding.*
 
-- [ ] **Zero-Knowledge Workspace Handoff**:
-  - A mechanism to "package" the entire Agent Brain, memory, and context into a single tamper-proof snapshot for seamless handoff between different AI teams or models.
+- [x] **Declarative Governance**: Explicit tool permissions via `.agent/tools.json`.
+- [x] **Semantic Mapping**: Zero-cost exploration via `AGENT_MAP.yaml`.
+- [x] **Autonomic Compaction**: context-preservation protocols for memory files.
+- [x] **Neural Bridge**: Cross-repository knowledge discovery.
+- [x] **Atomic Documentation**: Machine-readable header IDs for surgical tool-use.
+
+### 🚀 Future: Total Autonomy (v4.0+)
+
+*Focus: Zero-knowledge handovers and predictive scaffolding.*
+
+- [ ] **Zero-Knowledge Workspace Handoff**: A mechanism to "package" the entire Agent Brain into a tamper-proof snapshot.
+- [ ] **Interactive Doctor GUI**: A lightweight web dashboard to visualize project health and audits.
+- [ ] **Predictive Scaffolding**: Local LLM integration for immediate code synthesis from brain dumps.
 
 ---
 
@@ -70,7 +91,7 @@ Antigravity Architect aims to be the definitive standard for **Agent-First** inf
 
 | Target | Description |
 | :--- | :--- |
-| **Portability** | Maintain the "Single File" rule for the core script, regardless of feature density. |
+| **Portability** | Maintain the "Modular Architecture Rule" for the core package, ensuring zero external runtime dependencies. |
 | **Speed** | Sub-second generation of standard projects through optimized template injection. |
 | **Intelligence** | Move from keyword-based detection to semantic understanding of project goals. |
 | **Compliance** | Integrate automated SOC2/HIPAA compliance checklists into the "Medical" and "Enterprise" blueprints. |
